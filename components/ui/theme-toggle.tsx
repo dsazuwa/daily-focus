@@ -1,8 +1,14 @@
+'use client';
+
+import { useTheme } from 'next-themes';
+
 import { Button } from '../ui/button';
 
 export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
   return (
-    <Button variant='ghost'>
+    <Button variant='ghost' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         fill='none'

@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';import { ThemeProvider } from 'next-themes'
+import type { Metadata } from 'next';
+import { ThemeProvider } from 'next-themes';
 
 import AppBar from '@/components/ui/layout/app-bar';
 import Footer from '@/components/ui/layout/footer';
@@ -23,13 +24,16 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         ebGaramond.variable,
         merriweatherHeading.variable,
       )}
+      suppressHydrationWarning
     >
       <body className='flex min-h-full flex-col'>
-        <AppBar />
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <AppBar />
 
-       <ThemeProvider>{children}</ThemeProvider>
+          {children}
 
-        <Footer />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
