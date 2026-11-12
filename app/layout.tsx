@@ -1,21 +1,10 @@
+import type { Metadata } from 'next';import { ThemeProvider } from 'next-themes'
+
+import AppBar from '@/components/ui/layout/app-bar';
+import Footer from '@/components/ui/layout/footer';
+import { ebGaramond, geistMono, geistSans, merriweatherHeading } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
-import type { Metadata } from 'next';
-import { EB_Garamond, Geist, Geist_Mono, Merriweather } from 'next/font/google';
 import './globals.css';
-
-const merriweatherHeading = Merriweather({ subsets: ['latin'], variable: '--font-heading' });
-
-const ebGaramond = EB_Garamond({ subsets: ['latin'], variable: '--font-serif' });
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: 'Daily Focus',
@@ -28,16 +17,20 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang='en'
       className={cn(
-        'h-full',
-        'antialiased',
+        'h-full font-serif antialiased',
         geistSans.variable,
         geistMono.variable,
-        'font-serif',
         ebGaramond.variable,
         merriweatherHeading.variable,
       )}
     >
-      <body className='flex min-h-full flex-col'>{children}</body>
+      <body className='flex min-h-full flex-col'>
+        <AppBar />
+
+       <ThemeProvider>{children}</ThemeProvider>
+
+        <Footer />
+      </body>
     </html>
   );
 }
