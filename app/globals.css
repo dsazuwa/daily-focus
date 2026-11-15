@@ -47,6 +47,9 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --spacing-uniform: clamp(2rem, 5vw, 4.5rem);
+  --spacing-uniform-half: clamp(1rem, 2.5vw, 2.25rem);
 }
 
 :root {
@@ -122,10 +125,34 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-serif;
   }
+}
+
+/* globals.css */
+
+@utility text-eyebrow {
+  @apply text-[10px] font-medium tracking-wider uppercase;
+}
+
+@utility text-heading {
+  @apply font-heading text-[30px] leading-10 font-medium tracking-tighter sm:leading-12 md:text-[40px];
+}
+
+@utility text-body {
+  @apply text-xs leading-relaxed sm:text-sm md:text-base;
+}
+
+@utility text-stat {
+  @apply text-lg md:text-xl leading-none font-bold;
+}
+
+@utility text-xxs {
+  @apply text-[10px];
 }

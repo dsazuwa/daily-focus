@@ -1,0 +1,73 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
+import { Separator } from '../ui/separator';
+
+const formatHours = (val: number) => `${Number(val.toFixed(1))}h`;
+export default function ProgressCard() {
+  const completedHours = 2;
+  const goalHours = 8;
+  const remainingHours = Math.max(0, goalHours - completedHours);
+  const progressPercentage =
+    goalHours > 0 ? Math.round((completedHours / goalHours) * 100) : 0;
+
+  return (
+    <Card className='bg-primary text-primary-foreground ring-0 md:flex-row md:items-center md:justify-between'>
+      <CardHeader className='flex-1'>
+        <CardTitle>Duis aute irure dolor in reprehenderit in voluptate.</CardTitle>
+
+        <CardDescription className='text-primary-foreground/80'>
+          Ut enim ad minim veniam, quis nostrud exercitation
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:gap-(--card-spacing)'>
+        <div className='inline-flex gap-4 max-sm:flex-wrap md:gap-[calc(var(--card-spacing)/2)]'>
+          <ProgressStat name='Completed' value={formatHours(completedHours)} />
+          <Separator orientation='vertical' />
+          <ProgressStat name='Remaining' value={formatHours(remainingHours)} />
+        </div>
+
+        <ProgressRing progress={progressPercentage} goalText={formatHours(goalHours)} />
+      </CardContent>
+    </Card>
+  );
+}
+
+function ProgressStat({ name, value }: { name: string; value: string }) {
+  return (
+    <div className='flex flex-col items-center justify-center gap-2'>
+      <span className='text-eyebrow'>{name}</span>
+      <span className='text-stat'>{value}</span>
+    </div>
+  );
+}
+
+function ProgressRing({ progress, goalText }: { progress: number; goalText?: string }) {
+  const clampedProgress = Math.min(100, Math.max(0, progress));
+
+  return (
+    <div
+      className='grid size-18 place-items-center rounded-full bg-[conic-gradient(var(--primary-foreground)_var(--progress,0%),color-mix(in_srgb,var(--primary),white_18%)_0%)] p-1'
+      style={{ '--progress': `${clampedProgress}%` } as React.CSSProperties}
+      role='progressbar'
+      aria-valuenow={clampedProgress}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <div className='bg-primary flex shrink-0 flex-col items-center justify-center rounded-full text-center size-full'>
+        <strong className='text-stat'>
+          {clampedProgress}
+          <span className='text-sm'>%</span>
+        </strong>
+        {goalText && (
+          <span className='text-xxs mt-1 md:text-xs'>{`of ${goalText} goal`}</span>
+        )}
+      </div>
+    </div>
+  );
+}
