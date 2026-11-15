@@ -6,8 +6,8 @@ import ThemeToggle from '@/components/ui/theme-toggle';
 
 export default function AppBar() {
   return (
-    <header className='flex h-16 w-full border-b border-solid border-black/8 dark:border-white/[.145]'>
-      <div className='container mx-auto flex items-center px-4'>
+    <header className='border-border flex min-h-16 w-full border-b border-solid sm:h-16'>
+      <div className='container mx-auto flex items-center px-4 max-sm:flex-wrap max-sm:gap-2 max-sm:py-2'>
         <div className='flex flex-1'>
           <Logo />
         </div>
@@ -15,12 +15,12 @@ export default function AppBar() {
         <div className='flex items-center gap-1'>
           <ThemeToggle />
 
-          <Button variant='ghost'>
-            <Settings2 />
+          <Button variant='ghost' aria-label='Settings'>
+            <Settings2 aria-hidden='true' />
           </Button>
 
-          <Button variant='ghost'>
-            <User />
+          <Button variant='ghost' aria-label='User'>
+            <User aria-hidden='true' />
           </Button>
         </div>
       </div>

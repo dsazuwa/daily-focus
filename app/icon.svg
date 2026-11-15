@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="lab(35.3675% -33.1188 8.04002)"/><circle cx="32" cy="32" r="12" fill="none" stroke="lab(95.7289% -.644743 -.229919)" stroke-width="4"/><path d="M32 9v5m0 36v5M9 32h5m36 0h5M16 16l4 4m24 24 4 4M16 48l4-4m24-24 4-4" stroke="lab(95.7289% -.644743 -.229919)" stroke-width="3" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>Daily Focus</title>
+  <rect width="64" height="64" rx="18" fill="oklch(37.8% 0.077 168.94)"/>
+  <g fill="none" stroke="oklch(0.9691 0.0158 110.55)">
+    <circle cx="32" cy="32" r="12" stroke-width="4"/>
+    <path d="M32 9v5m0 36v5M9 32h5m36 0h5M16 16l4 4m24 24 4 4M16 48l4-4m24-24 4-4"
+      stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>
+

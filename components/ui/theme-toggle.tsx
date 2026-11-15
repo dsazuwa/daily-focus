@@ -15,6 +15,8 @@ export default function ThemeToggle() {
         viewBox='0 0 24 24'
         id='Light-Dark-Mode--Streamline-Sharp-Remix'
         className='transition-transform duration-300 dark:rotate-180'
+        aria-hidden='true'
+        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       >
         <desc>Light Dark Mode Streamline Icon: https://streamlinehq.com</desc>
         <g id='light-dark-mode--light-dark-mode-setting-camera-picture-photo-image-brightness'>
