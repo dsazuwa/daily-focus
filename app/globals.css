@@ -4,6 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@source inline("bg-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}/10");
+@source inline("{text,fill}-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}");
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -50,6 +53,17 @@
 
   --spacing-uniform: clamp(2rem, 5vw, 4.5rem);
   --spacing-uniform-half: clamp(1rem, 2.5vw, 2.25rem);
+
+  --color-task-sage: var(--task-sage);
+  --color-task-sky: var(--task-sky);
+  --color-task-sand: var(--task-sand);
+  --color-task-lavender: var(--task-lavender);
+  --color-task-rose: var(--task-rose);
+  --color-task-teal: var(--task-teal);
+  --color-task-peach: var(--task-peach);
+  --color-task-indigo: var(--task-indigo);
+  --color-task-amber: var(--task-amber);
+  --color-task-slate: var(--task-slate);
 }
 
 :root {
@@ -85,6 +99,17 @@
   --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
   --sidebar-border: oklch(0.925 0.005 214.3);
   --sidebar-ring: oklch(0.723 0.014 214.4);
+
+  --task-sage: #8aa677;
+  --task-sky: #6fa3c7;
+  --task-sand: #b59776;
+  --task-lavender: #ac94c7;
+  --task-rose: #cc8b9f;
+  --task-teal: #69afa7;
+  --task-peach: #d49270;
+  --task-indigo: #8d96cf;
+  --task-amber: #c29e4c;
+  --task-slate: #8ca1b0;
 }
 
 .dark {
@@ -119,9 +144,26 @@
   --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.56 0.021 213.5);
+
+  --task-sage: #9ed17b;
+  --task-sky: #6ec2f7;
+  --task-sand: #e3b478;
+  --task-lavender: #c79ef7;
+  --task-rose: #f28dab;
+  --task-teal: #62dbcd;
+  --task-peach: #f79d6e;
+  --task-indigo: #9aa6ff;
+  --task-amber: #f0bf4c;
+  --task-slate: #94bddb;
 }
 
 @layer base {
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

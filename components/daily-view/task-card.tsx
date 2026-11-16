@@ -1,0 +1,91 @@
+import ArrowRight from 'lucide-react/icons/arrow-right';
+import BookOpen from 'lucide-react/icons/book-open';
+import Pencil from 'lucide-react/icons/pencil';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Task, TaskBlock, TaskCategory } from '@/lib/types';
+import { cn, formatDuration, getEndTime } from '@/lib/utils';
+
+type TaskCardProps = {
+  task: Task;
+  block: TaskBlock;
+  category: TaskCategory;
+  timezone?: string;
+};
+
+export default function TaskCard({
+  task,
+  block,
+  category,
+  timezone = 'WAT',
+}: TaskCardProps) {
+  const isCompleted = block.status === 'completed';
+  const duration = formatDuration(block.durationMinutes);
+  const endTime = getEndTime(block.startTime, block.durationMinutes);
+
+  return (
+    <Card
+      size='sm'
+      style={{ '--task-color': `var(--task-${category.color})` } as React.CSSProperties}
+      className={cn(
+        'relative transition-opacity',
+        'before:absolute before:left-0 before:w-1 before:rounded-r before:bg-(--task-color) before:content-[""] before:inset-y-5',
+        isCompleted && 'opacity-60',
+      )}
+    >
+      <CardContent className='flex items-center gap-3 sm:gap-4'>
+        <Checkbox
+          aria-label={`Complete: ${task.title}`}
+          checked={isCompleted}
+          // onCheckedChange={(checked) => onCompletedChange?.(block.id, checked === true)}
+          className='mt-1 size-3.5 rounded-full sm:mt-0 md:size-4.5'
+        />
+
+        <div className='min-w-0 flex-1 space-y-1.5'>
+          <div className='flex flex-wrap items-center gap-2'>
+            <Badge
+              variant='secondary'
+              className='text-xxs gap-1 uppercase'
+              style={{ color: `var(--task-${category.color})` }}
+            >
+              <BookOpen className='size-3' aria-hidden='true' />
+              {category.name}
+            </Badge>
+
+            <span className='text-muted-foreground text-xs tabular-nums'>{duration}</span>
+          </div>
+
+          <h3
+            className={cn(
+              'truncate text-sm font-medium sm:text-base',
+              isCompleted && 'line-through',
+            )}
+          >
+            {task.title}
+          </h3>
+
+          <div className='text-muted-foreground flex items-center gap-1.5 text-xs tabular-nums'>
+            <span>{block.startTime}</span>
+            <ArrowRight className='size-3 shrink-0' aria-hidden='true' />
+            <span>{endTime}</span>
+            <span className='text-xxs font-medium uppercase'>{timezone}</span>
+          </div>
+        </div>
+
+        <Button
+          type='button'
+          variant='ghost'
+          size='icon-sm'
+          aria-label={`Edit ${task.title}`}
+          // onClick={() => onEdit?.(block.id)}
+          className='text-muted-foreground hover:text-foreground shrink-0'
+        >
+          <Pencil className='size-3.5 md:size-4.5' aria-hidden='true' />
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}

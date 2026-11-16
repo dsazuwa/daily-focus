@@ -32,14 +32,14 @@ export default function Home() {
 
           <TabsContent
             value='daily-view'
-            className='border-border pt-uniform-half gap-uniform-half flex flex-col border-t border-solid'
+            className='border-border py-uniform-half gap-uniform-half flex flex-col border-t border-solid'
           >
             <DailyView />
           </TabsContent>
 
           <TabsContent
             value='calendar-view'
-            className='border-border pt-uniform-half gap-uniform-half flex flex-col border-t border-solid'
+            className='border-border py-uniform-half gap-uniform-half flex flex-col border-t border-solid'
           >
             <CalendarView />
           </TabsContent>
