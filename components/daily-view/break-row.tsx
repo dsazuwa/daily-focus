@@ -1,4 +1,4 @@
-import Coffee  from 'lucide-react/icons/coffee';
+import Coffee from 'lucide-react/icons/coffee';
 
 import type { BreakBlock } from '@/lib/types';
 import { cn, formatDuration } from '@/lib/utils';

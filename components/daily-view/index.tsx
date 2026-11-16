@@ -17,7 +17,12 @@ export default function DailyView() {
       <DayBar selectedDate={selectedDate} />
       <WeekBar selectedDate={selectedDate} today={today} />
       <ProgressCard summary={summary} />
-      <DailyContent plan={dailyPlan} tasks={tasks} categories={categories} summary={summary} />
+      <DailyContent
+        plan={dailyPlan}
+        tasks={tasks}
+        categories={categories}
+        summary={summary}
+      />
     </>
   );
 }

@@ -3,7 +3,10 @@ import LoaderCircle from 'lucide-react/icons/loader-circle';
 
 type SaveState = 'saving' | 'saved' | 'idle';
 
-const STATUS_CONFIG: Record<SaveState, { icon: React.ReactNode; label: string }> = {
+const STATUS_CONFIG: Record<
+  SaveState,
+  { icon: React.ReactNode; label: string }
+> = {
   saving: {
     icon: <LoaderCircle className='size-3 animate-spin' aria-hidden='true' />,
     label: 'Saving...',
@@ -39,7 +42,7 @@ export default function SaveStatus() {
     <div
       role='status'
       aria-live='polite'
-      className='text-muted-foreground text-xxs font-medium flex items-center gap-1 md:text-xs'
+      className='text-muted-foreground text-xxs flex items-center gap-1 font-medium md:text-xs'
     >
       {icon}
       <span>{label}</span>

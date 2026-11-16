@@ -38,7 +38,10 @@ const eslintConfig = defineConfig([
 
       // Tailwind CSS overridden rules
       'tailwindcss/classnames-order': 'off', // handled by Prettier
-      'tailwindcss/no-custom-classname': ['warn', { whitelist: [String.raw`custom\-*`] }],
+      'tailwindcss/no-custom-classname': [
+        'warn',
+        { whitelist: [String.raw`custom\-*`] },
+      ],
     },
   },
 

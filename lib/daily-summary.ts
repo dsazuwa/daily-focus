@@ -54,7 +54,13 @@ export function getDailySummary(
     remainingMinutes: Math.max(0, plan.targetMinutes - completedMinutes),
     progressPercentage:
       plan.targetMinutes > 0
-        ? Math.min(100, Math.max(0, Math.round((completedMinutes / plan.targetMinutes) * 100)))
+        ? Math.min(
+            100,
+            Math.max(
+              0,
+              Math.round((completedMinutes / plan.targetMinutes) * 100),
+            ),
+          )
         : 0,
   };
 }

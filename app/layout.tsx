@@ -3,7 +3,12 @@ import { ThemeProvider } from 'next-themes';
 
 import AppBar from '@/components/layout/app-bar';
 import Footer from '@/components/layout/footer';
-import { ebGaramond, geistMono, geistSans, merriweatherHeading } from '@/lib/fonts';
+import {
+  ebGaramond,
+  geistMono,
+  geistSans,
+  merriweatherHeading,
+} from '@/lib/fonts';
 import { cn } from '@/lib/utils';
 import './globals.css';
 

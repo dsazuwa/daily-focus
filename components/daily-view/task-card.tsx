@@ -31,10 +31,12 @@ export default function TaskCard({
   return (
     <Card
       size='sm'
-      style={{ '--task-color': `var(--task-${category.color})` } as CSSProperties}
+      style={
+        { '--task-color': `var(--task-${category.color})` } as CSSProperties
+      }
       className={cn(
         'relative transition-opacity',
-        'before:absolute before:left-0 before:w-1 before:rounded-r before:bg-(--task-color) before:content-[""] before:inset-y-5',
+        'before:absolute before:inset-y-5 before:left-0 before:w-1 before:rounded-r before:bg-(--task-color) before:content-[""]',
         isCompleted && 'opacity-60',
       )}
     >
@@ -53,11 +55,17 @@ export default function TaskCard({
               className='text-xxs gap-1 uppercase'
               style={{ color: `var(--task-${category.color})` }}
             >
-              <CategoryIcon name={category.icon} className='size-3' aria-hidden='true' />
+              <CategoryIcon
+                name={category.icon}
+                className='size-3'
+                aria-hidden='true'
+              />
               {category.name}
             </Badge>
 
-            <span className='text-muted-foreground text-xs tabular-nums'>{duration}</span>
+            <span className='text-muted-foreground text-xs tabular-nums'>
+              {duration}
+            </span>
           </div>
 
           <h3

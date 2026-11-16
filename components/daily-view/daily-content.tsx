@@ -12,7 +12,12 @@ type DailyContentProps = {
   categories: TaskCategory[];
 };
 
-export default function DailyContent({ plan, tasks, categories, summary }: DailyContentProps) {
+export default function DailyContent({
+  plan,
+  tasks,
+  categories,
+  summary,
+}: DailyContentProps) {
   const taskMap = new Map(tasks.map((task) => [task.id, task]));
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 

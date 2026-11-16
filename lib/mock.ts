@@ -1,4 +1,10 @@
-import type { BreakBlock, DailyPlan, Task, TaskBlock, TaskCategory } from './types';
+import type {
+  BreakBlock,
+  DailyPlan,
+  Task,
+  TaskBlock,
+  TaskCategory,
+} from './types';
 
 export const categories: TaskCategory[] = [
   { id: 'study', name: 'Study', color: 'sage', icon: 'book-open' },
@@ -50,7 +56,11 @@ function taskBlock(
   };
 }
 
-function breakBlock(id: string, startTime: string, durationMinutes: number): BreakBlock {
+function breakBlock(
+  id: string,
+  startTime: string,
+  durationMinutes: number,
+): BreakBlock {
   return {
     id,
     type: 'break',

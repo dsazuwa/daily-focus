@@ -8,7 +8,10 @@ export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Button variant='ghost' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+    <Button
+      variant='ghost'
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+    >
       <svg
         xmlns='http://www.w3.org/2000/svg'
         fill='none'

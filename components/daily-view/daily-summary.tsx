@@ -6,15 +6,23 @@ import { CategoryIcon } from './category-icon';
 import AdjustSplitDialog from './dialog-adjust-split';
 import { ChangeDefaultsDialog } from './dialog-change-defaults';
 
-export default function DailySummary({ summary }: { summary: DailySummaryData }) {
+export default function DailySummary({
+  summary,
+}: {
+  summary: DailySummaryData;
+}) {
   const { rows, plannedMinutes: totalPlanned, targetMinutes } = summary;
 
   return (
     <Card>
       <CardHeader className='gap-1'>
-        <h2 className='font-heading text-xl tracking-tight'>Nunc feugiat mi a tellus</h2>
+        <h2 className='font-heading text-xl tracking-tight'>
+          Nunc feugiat mi a tellus
+        </h2>
 
-        <p className='text-muted-foreground text-sm'>Donec lacus nunc, viverra nec.</p>
+        <p className='text-muted-foreground text-sm'>
+          Donec lacus nunc, viverra nec.
+        </p>
       </CardHeader>
 
       <CardContent className='space-y-uniform-half'>
@@ -91,7 +99,6 @@ function CategoryBreakdownRow({
   plannedMinutes: number;
   completedMinutes: number;
 }) {
-
   return (
     <div className='flex items-center gap-3'>
       <span
@@ -100,7 +107,11 @@ function CategoryBreakdownRow({
           `bg-task-${category.color}/10 text-task-${category.color}`,
         )}
       >
-        <CategoryIcon name={category.icon} className='size-4.5' aria-hidden='true' />
+        <CategoryIcon
+          name={category.icon}
+          className='size-4.5'
+          aria-hidden='true'
+        />
       </span>
 
       <div className='min-w-0 flex-1 space-y-0.5'>

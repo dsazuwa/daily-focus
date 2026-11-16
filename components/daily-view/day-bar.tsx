@@ -20,7 +20,12 @@ export default function DayBar({ selectedDate }: { selectedDate: Date }) {
           aria-label='Date navigation'
           className='flex items-center gap-2 max-sm:flex-1'
         >
-          <Button type='button' variant='ghost' size='icon-xs' aria-label='Previous Day'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon-xs'
+            aria-label='Previous Day'
+          >
             <ChevronLeft aria-hidden='true' />
           </Button>
 
@@ -32,7 +37,12 @@ export default function DayBar({ selectedDate }: { selectedDate: Date }) {
             <span>{date}</span>
           </time>
 
-          <Button type='button' variant='ghost' size='icon-xs' aria-label='Next Day'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon-xs'
+            aria-label='Next Day'
+          >
             <ChevronRight aria-hidden='true' />
           </Button>
         </div>

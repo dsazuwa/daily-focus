@@ -19,7 +19,10 @@ export default function Home() {
           <p className='text-body'>Eligendi quo assumenda at dignissimos</p>
         </div>
 
-        <Tabs defaultValue='daily-view' className='gap-uniform-half w-full flex-1'>
+        <Tabs
+          defaultValue='daily-view'
+          className='gap-uniform-half w-full flex-1'
+        >
           <TabsList>
             <TabsTrigger value='daily-view'>
               <ListTodo /> Daily
