@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react';
 
 import ArrowRight from 'lucide-react/icons/arrow-right';
-import BookOpen from 'lucide-react/icons/book-open';
 import Pencil from 'lucide-react/icons/pencil';
 
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Task, TaskBlock, TaskCategory } from '@/lib/types';
 import { cn, formatDuration, getEndTime } from '@/lib/utils';
+import { CategoryIcon } from './category-icon';
 
 type TaskCardProps = {
   task: Task;
@@ -53,7 +53,7 @@ export default function TaskCard({
               className='text-xxs gap-1 uppercase'
               style={{ color: `var(--task-${category.color})` }}
             >
-              <BookOpen className='size-3' aria-hidden='true' />
+              <CategoryIcon name={category.icon} className='size-3' aria-hidden='true' />
               {category.name}
             </Badge>
 

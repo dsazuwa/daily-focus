@@ -1,9 +1,9 @@
 import type { BreakBlock, DailyPlan, Task, TaskBlock, TaskCategory } from './types';
 
 export const categories: TaskCategory[] = [
-  { id: 'study', name: 'Study', color: 'sage' },
-  { id: 'interview', name: 'Interview coding', color: 'sky' },
-  { id: 'project', name: 'Project coding', color: 'sand' },
+  { id: 'study', name: 'Study', color: 'sage', icon: 'book-open' },
+  { id: 'interview', name: 'Interview coding', color: 'sky', icon: 'code-xml' },
+  { id: 'project', name: 'Project coding', color: 'sand', icon: 'folder-code' },
 ];
 
 function createTask(

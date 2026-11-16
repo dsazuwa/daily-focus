@@ -1,9 +1,7 @@
-import type { LucideIcon } from 'lucide-react';
-import { BookOpen, CodeXml, FolderCode } from 'lucide-react';
-
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailyPlan, Task, TaskBlock, TaskCategory } from '@/lib/types';
 import { cn, formatDuration } from '@/lib/utils';
+import { CategoryIcon } from './category-icon';
 import AdjustSplitDialog from './dialog-adjust-split';
 import { ChangeDefaultsDialog } from './dialog-change-defaults';
 
@@ -11,12 +9,6 @@ type DailySummaryProps = {
   plan: DailyPlan;
   tasks: Task[];
   categories: TaskCategory[];
-};
-
-const categoryIcons: Record<string, LucideIcon> = {
-  study: BookOpen,
-  interview: CodeXml,
-  project: FolderCode,
 };
 
 export default function DailySummary({ plan, tasks, categories }: DailySummaryProps) {
@@ -135,7 +127,6 @@ function CategoryBreakdownRow({
   plannedMinutes: number;
   completedMinutes: number;
 }) {
-  const Icon = categoryIcons[category.id] ?? BookOpen;
 
   return (
     <div className='flex items-center gap-3'>
@@ -145,7 +136,7 @@ function CategoryBreakdownRow({
           `bg-task-${category.color}/10 text-task-${category.color}`,
         )}
       >
-        <Icon className='size-4.5' aria-hidden='true' />
+        <CategoryIcon name={category.icon} className='size-4.5' aria-hidden='true' />
       </span>
 
       <div className='min-w-0 flex-1 space-y-0.5'>

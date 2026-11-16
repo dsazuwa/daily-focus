@@ -14,6 +14,7 @@ export type TaskCategory = {
   id: string;
   name: string;
   color: TaskColor;
+  icon: string; // Lucide icon name saved with the category
 };
 
 export type Task = {
