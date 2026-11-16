@@ -5,8 +5,8 @@ import ChevronRight from 'lucide-react/icons/chevron-right';
 import SaveStatus from '../save-status';
 import { Button } from '@/components/ui/button';
 
-export default function DayBar() {
-  const date = new Date().toLocaleDateString(undefined, {
+export default function DayBar({ selectedDate }: { selectedDate: Date }) {
+  const date = selectedDate.toLocaleDateString(undefined, {
     weekday: 'long',
     month: 'long',
     day: 'numeric',

@@ -1,18 +1,22 @@
-import { categories, dailyPlan, tasks } from '@/lib/mock';
-import type { ScheduleBlock, Task, TaskCategory } from '@/lib/types';
+import type { DailyPlan, ScheduleBlock, Task, TaskCategory } from '@/lib/types';
 import BreakRow from './break-row';
 import DailySummary from './daily-summary';
 import MotivationCard from './motivation-card';
 import TaskCard from './task-card';
 
-export default function DailyContent() {
-  // TODO: Remove when we have a real backend
+type DailyContentProps = {
+  plan: DailyPlan;
+  tasks: Task[];
+  categories: TaskCategory[];
+};
+
+export default function DailyContent({ plan, tasks, categories }: DailyContentProps) {
   const taskMap = new Map(tasks.map((task) => [task.id, task]));
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 
-  const sortedBlocks = [...dailyPlan.blocks].sort((a, b) =>
-    a.startTime.localeCompare(b.startTime),
-  );
+  const sortedBlocks = plan.blocks
+    .filter((block) => block.date === plan.date)
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
 
   return (
     <div className='gap-uniform grid md:grid-cols-12'>
@@ -34,7 +38,7 @@ export default function DailyContent() {
       </div>
 
       <div className='space-y-uniform md:col-span-5'>
-        <DailySummary plan={dailyPlan} tasks={tasks} categories={categories} />
+        <DailySummary plan={plan} tasks={tasks} categories={categories} />
 
         <MotivationCard />
       </div>

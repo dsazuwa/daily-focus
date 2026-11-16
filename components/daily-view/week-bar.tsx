@@ -1,9 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-function getWeekDays(referenceDate: Date = new Date()) {
-  const now = new Date();
-  const todayString = now.toDateString();
+function getWeekDays(referenceDate: Date, today: Date) {
+  const todayString = today.toDateString();
 
   const target = new Date(
     referenceDate.getFullYear(),
@@ -28,9 +27,14 @@ function getWeekDays(referenceDate: Date = new Date()) {
   });
 }
 
-export default function WeekBar() {
-  const selectedDate = new Date();
-  const days = getWeekDays(selectedDate);
+export default function WeekBar({
+  selectedDate,
+  today,
+}: {
+  selectedDate: Date;
+  today: Date;
+}) {
+  const days = getWeekDays(selectedDate, today);
 
   return (
     <nav

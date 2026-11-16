@@ -8,11 +8,18 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import type { DailyPlan } from '@/lib/types';
 
 const formatHours = (val: number) => `${Number(val.toFixed(1))}h`;
-export default function ProgressCard() {
-  const completedHours = 2;
-  const goalHours = 8;
+export default function ProgressCard({ plan }: { plan: DailyPlan }) {
+  let completedMinutes = 0;
+  for (const block of plan.blocks) {
+    if (block.type === 'task' && block.date === plan.date) {
+      completedMinutes += block.actualMinutes;
+    }
+  }
+  const completedHours = completedMinutes / 60;
+  const goalHours = plan.targetMinutes / 60;
   const remainingHours = Math.max(0, goalHours - completedHours);
   const progressPercentage =
     goalHours > 0 ? Math.round((completedHours / goalHours) * 100) : 0;
