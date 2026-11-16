@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { CategorySummary, DailySummaryData } from '@/lib/daily-summary';
 import type { TaskCategory } from '@/lib/types';
-import { cn, formatDuration } from '@/lib/utils';
+import { formatDuration } from '@/lib/time';
+import { cn } from '@/lib/utils';
 import { CategoryIcon } from './category-icon';
 import AdjustSplitDialog from './dialog-adjust-split';
 import { ChangeDefaultsDialog } from './dialog-change-defaults';

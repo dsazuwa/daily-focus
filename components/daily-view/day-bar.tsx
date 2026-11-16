@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/dates';
 import CalendarDays from 'lucide-react/icons/calendar-days';
 import ChevronLeft from 'lucide-react/icons/chevron-left';
 import ChevronRight from 'lucide-react/icons/chevron-right';
@@ -5,12 +6,8 @@ import ChevronRight from 'lucide-react/icons/chevron-right';
 import SaveStatus from '../save-status';
 import { Button } from '@/components/ui/button';
 
-export default function DayBar({ selectedDate }: { selectedDate: Date }) {
-  const date = selectedDate.toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
+export default function DayBar({ selectedDate }: { selectedDate: string }) {
+  const date = formatDate(selectedDate);
 
   return (
     <div className='flex flex-wrap items-center justify-between gap-2'>
@@ -30,6 +27,7 @@ export default function DayBar({ selectedDate }: { selectedDate: Date }) {
           </Button>
 
           <time
+            dateTime={selectedDate}
             aria-live='polite'
             className='flex items-center justify-center gap-1 self-stretch px-1 text-center text-xs font-medium tabular-nums select-none max-sm:flex-1 sm:min-w-48'
           >

@@ -1,3 +1,4 @@
+import { getDateKey } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { categories, dailyPlan, tasks } from '@/lib/mock';
 
@@ -7,9 +8,8 @@ import ProgressCard from './progress-card';
 import WeekBar from './week-bar';
 
 export default function DailyView() {
-  const [year, month, day] = dailyPlan.date.split('-').map(Number);
-  const selectedDate = new Date(year, month - 1, day);
-  const today = new Date();
+  const selectedDate = dailyPlan.date;
+  const today = getDateKey(new Date());
   const summary = getDailySummary(dailyPlan, tasks, categories);
 
   return (

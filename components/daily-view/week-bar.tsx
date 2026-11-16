@@ -1,38 +1,13 @@
+import { getWeekDays } from '@/lib/dates';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
-function getWeekDays(referenceDate: Date, today: Date) {
-  const todayString = today.toDateString();
-
-  const target = new Date(
-    referenceDate.getFullYear(),
-    referenceDate.getMonth(),
-    referenceDate.getDate(),
-  );
-
-  const sunday = new Date(target);
-  sunday.setDate(target.getDate() - target.getDay());
-
-  return Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(sunday);
-    date.setDate(sunday.getDate() + index);
-
-    return {
-      dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
-      dayNumber: date.getDate(),
-      dateKey: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
-      isSelected: date.getTime() === target.getTime(),
-      isToday: date.toDateString() === todayString,
-    };
-  });
-}
 
 export default function WeekBar({
   selectedDate,
   today,
 }: {
-  selectedDate: Date;
-  today: Date;
+  selectedDate: string;
+  today: string;
 }) {
   const days = getWeekDays(selectedDate, today);
 

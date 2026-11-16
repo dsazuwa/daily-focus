@@ -1,7 +1,8 @@
 import Coffee from 'lucide-react/icons/coffee';
 
 import type { BreakBlock } from '@/lib/types';
-import { cn, formatDuration } from '@/lib/utils';
+import { formatDuration } from '@/lib/time';
+import { cn } from '@/lib/utils';
 
 export default function BreakRow({ block }: { block: BreakBlock }) {
   const isSkipped = block.status === 'skipped';

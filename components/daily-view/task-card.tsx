@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Task, TaskBlock, TaskCategory } from '@/lib/types';
-import { cn, formatDuration, getEndTime } from '@/lib/utils';
+import { formatDuration, getEndTime } from '@/lib/time';
+import { cn } from '@/lib/utils';
 import { CategoryIcon } from './category-icon';
 
 type TaskCardProps = {
