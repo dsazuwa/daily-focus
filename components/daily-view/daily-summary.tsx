@@ -1,4 +1,5 @@
-import { BookOpen, CodeXml, FolderCode, type LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { BookOpen, CodeXml, FolderCode } from 'lucide-react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailyPlan, Task, TaskBlock, TaskCategory } from '@/lib/types';

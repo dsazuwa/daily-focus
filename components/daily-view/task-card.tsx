@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 import ArrowRight from 'lucide-react/icons/arrow-right';
 import BookOpen from 'lucide-react/icons/book-open';
 import Pencil from 'lucide-react/icons/pencil';
@@ -6,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Task, TaskBlock, TaskCategory } from '@/lib/types';
+import type { Task, TaskBlock, TaskCategory } from '@/lib/types';
 import { cn, formatDuration, getEndTime } from '@/lib/utils';
 
 type TaskCardProps = {
@@ -29,7 +31,7 @@ export default function TaskCard({
   return (
     <Card
       size='sm'
-      style={{ '--task-color': `var(--task-${category.color})` } as React.CSSProperties}
+      style={{ '--task-color': `var(--task-${category.color})` } as CSSProperties}
       className={cn(
         'relative transition-opacity',
         'before:absolute before:left-0 before:w-1 before:rounded-r before:bg-(--task-color) before:content-[""] before:inset-y-5',

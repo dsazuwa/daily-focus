@@ -1,5 +1,5 @@
 import { categories, dailyPlan, tasks } from '@/lib/mock';
-import { ScheduleBlock, Task, TaskCategory } from '@/lib/types';
+import type { ScheduleBlock, Task, TaskCategory } from '@/lib/types';
 import BreakRow from './break-row';
 import DailySummary from './daily-summary';
 import MotivationCard from './motivation-card';

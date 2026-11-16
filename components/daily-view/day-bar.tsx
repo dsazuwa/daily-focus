@@ -3,7 +3,7 @@ import ChevronLeft from 'lucide-react/icons/chevron-left';
 import ChevronRight from 'lucide-react/icons/chevron-right';
 
 import SaveStatus from '../save-status';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 
 export default function DayBar() {
   const date = new Date().toLocaleDateString(undefined, {

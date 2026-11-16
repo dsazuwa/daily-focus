@@ -1,11 +1,13 @@
+import type { CSSProperties } from 'react';
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { Separator } from '../ui/separator';
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 const formatHours = (val: number) => `${Number(val.toFixed(1))}h`;
 export default function ProgressCard() {
@@ -53,7 +55,7 @@ function ProgressRing({ progress, goalText }: { progress: number; goalText?: str
   return (
     <div
       className='grid size-18 place-items-center rounded-full bg-[conic-gradient(var(--primary-foreground)_var(--progress,0%),color-mix(in_srgb,var(--primary),white_18%)_0%)] p-1'
-      style={{ '--progress': `${clampedProgress}%` } as React.CSSProperties}
+      style={{ '--progress': `${clampedProgress}%` } as CSSProperties}
       role='progressbar'
       aria-valuenow={clampedProgress}
       aria-valuemin={0}
