@@ -8,21 +8,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type { DailyPlan } from '@/lib/types';
+import type { DailySummaryData } from '@/lib/daily-summary';
 
-const formatHours = (val: number) => `${Number(val.toFixed(1))}h`;
-export default function ProgressCard({ plan }: { plan: DailyPlan }) {
-  let completedMinutes = 0;
-  for (const block of plan.blocks) {
-    if (block.type === 'task' && block.date === plan.date) {
-      completedMinutes += block.actualMinutes;
-    }
-  }
-  const completedHours = completedMinutes / 60;
-  const goalHours = plan.targetMinutes / 60;
-  const remainingHours = Math.max(0, goalHours - completedHours);
-  const progressPercentage =
-    goalHours > 0 ? Math.round((completedHours / goalHours) * 100) : 0;
+const formatHours = (minutes: number) => `${Number((minutes / 60).toFixed(1))}h`;
+export default function ProgressCard({ summary }: { summary: DailySummaryData }) {
+  const { completedMinutes, remainingMinutes, targetMinutes, progressPercentage } = summary;
 
   return (
     <Card className='bg-primary text-primary-foreground ring-0 md:flex-row md:items-center md:justify-between'>
@@ -36,12 +26,12 @@ export default function ProgressCard({ plan }: { plan: DailyPlan }) {
 
       <CardContent className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:gap-(--card-spacing)'>
         <div className='inline-flex gap-4 max-sm:flex-wrap md:gap-[calc(var(--card-spacing)/2)]'>
-          <ProgressStat name='Completed' value={formatHours(completedHours)} />
+          <ProgressStat name='Completed' value={formatHours(completedMinutes)} />
           <Separator orientation='vertical' />
-          <ProgressStat name='Remaining' value={formatHours(remainingHours)} />
+          <ProgressStat name='Remaining' value={formatHours(remainingMinutes)} />
         </div>
 
-        <ProgressRing progress={progressPercentage} goalText={formatHours(goalHours)} />
+        <ProgressRing progress={progressPercentage} goalText={formatHours(targetMinutes)} />
       </CardContent>
     </Card>
   );

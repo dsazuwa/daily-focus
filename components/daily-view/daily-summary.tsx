@@ -1,45 +1,13 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import type { DailyPlan, Task, TaskBlock, TaskCategory } from '@/lib/types';
+import type { CategorySummary, DailySummaryData } from '@/lib/daily-summary';
+import type { TaskCategory } from '@/lib/types';
 import { cn, formatDuration } from '@/lib/utils';
 import { CategoryIcon } from './category-icon';
 import AdjustSplitDialog from './dialog-adjust-split';
 import { ChangeDefaultsDialog } from './dialog-change-defaults';
 
-type DailySummaryProps = {
-  plan: DailyPlan;
-  tasks: Task[];
-  categories: TaskCategory[];
-};
-
-export default function DailySummary({ plan, tasks, categories }: DailySummaryProps) {
-  const tasksById = new Map(tasks.map((task) => [task.id, task]));
-
-  const taskBlocks = plan.blocks.filter(
-    (block): block is TaskBlock => block.type === 'task' && block.date === plan.date,
-  );
-
-  const rows = categories.map((category) => {
-    const blocks = taskBlocks.filter(
-      (block) => tasksById.get(block.taskId)?.categoryId === category.id,
-    );
-
-    const plannedMinutes = blocks
-      .filter((block) => block.status !== 'skipped')
-      .reduce((total, block) => total + block.durationMinutes, 0);
-
-    const completedMinutes = blocks.reduce(
-      (total, block) => total + block.actualMinutes,
-      0,
-    );
-
-    return {
-      category,
-      plannedMinutes,
-      completedMinutes,
-    };
-  });
-
-  const totalPlanned = rows.reduce((total, row) => total + row.plannedMinutes, 0);
+export default function DailySummary({ summary }: { summary: DailySummaryData }) {
+  const { rows, plannedMinutes: totalPlanned, targetMinutes } = summary;
 
   return (
     <Card>
@@ -65,7 +33,7 @@ export default function DailySummary({ plan, tasks, categories }: DailySummaryPr
 
         <PlannedTargetFooter
           totalPlanned={totalPlanned}
-          targetMinutes={plan.targetMinutes}
+          targetMinutes={targetMinutes}
         />
 
         <div className='space-y-2'>
@@ -78,11 +46,7 @@ export default function DailySummary({ plan, tasks, categories }: DailySummaryPr
 }
 
 type CategorySplitBarProps = {
-  rows: {
-    category: TaskCategory;
-    plannedMinutes: number;
-    completedMinutes: number;
-  }[];
+  rows: CategorySummary[];
   totalPlanned: number;
 };
 

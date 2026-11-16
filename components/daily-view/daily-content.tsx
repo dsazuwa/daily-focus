@@ -1,3 +1,4 @@
+import type { DailySummaryData } from '@/lib/daily-summary';
 import type { DailyPlan, ScheduleBlock, Task, TaskCategory } from '@/lib/types';
 import BreakRow from './break-row';
 import DailySummary from './daily-summary';
@@ -6,11 +7,12 @@ import TaskCard from './task-card';
 
 type DailyContentProps = {
   plan: DailyPlan;
+  summary: DailySummaryData;
   tasks: Task[];
   categories: TaskCategory[];
 };
 
-export default function DailyContent({ plan, tasks, categories }: DailyContentProps) {
+export default function DailyContent({ plan, tasks, categories, summary }: DailyContentProps) {
   const taskMap = new Map(tasks.map((task) => [task.id, task]));
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 
@@ -38,7 +40,7 @@ export default function DailyContent({ plan, tasks, categories }: DailyContentPr
       </div>
 
       <div className='space-y-uniform md:col-span-5'>
-        <DailySummary plan={plan} tasks={tasks} categories={categories} />
+        <DailySummary summary={summary} />
 
         <MotivationCard />
       </div>

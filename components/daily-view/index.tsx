@@ -1,3 +1,4 @@
+import { getDailySummary } from '@/lib/daily-summary';
 import { categories, dailyPlan, tasks } from '@/lib/mock';
 
 import DailyContent from './daily-content';
@@ -9,13 +10,14 @@ export default function DailyView() {
   const [year, month, day] = dailyPlan.date.split('-').map(Number);
   const selectedDate = new Date(year, month - 1, day);
   const today = new Date();
+  const summary = getDailySummary(dailyPlan, tasks, categories);
 
   return (
     <>
       <DayBar selectedDate={selectedDate} />
       <WeekBar selectedDate={selectedDate} today={today} />
-      <ProgressCard plan={dailyPlan} />
-      <DailyContent plan={dailyPlan} tasks={tasks} categories={categories} />
+      <ProgressCard summary={summary} />
+      <DailyContent plan={dailyPlan} tasks={tasks} categories={categories} summary={summary} />
     </>
   );
 }
