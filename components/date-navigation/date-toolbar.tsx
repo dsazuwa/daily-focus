@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import ChevronLeft from 'lucide-react/icons/chevron-left';
 import ChevronRight from 'lucide-react/icons/chevron-right';
 
@@ -5,8 +6,7 @@ import SaveStatus from '@/components/save-status';
 import { Button } from '@/components/ui/button';
 
 type DateToolbarProps = {
-  dateTime: string;
-  label: string;
+  children: ReactNode;
   period: 'day' | 'month';
   onPrevious?: () => void;
   onNext?: () => void;
@@ -14,8 +14,7 @@ type DateToolbarProps = {
 };
 
 export default function DateToolbar({
-  dateTime,
-  label,
+  children,
   period,
   onPrevious,
   onNext,
@@ -39,13 +38,9 @@ export default function DateToolbar({
             <ChevronLeft aria-hidden='true' />
           </Button>
 
-          <time
-            dateTime={dateTime}
-            className='flex items-center justify-center gap-1 self-stretch px-1 text-center text-xs font-medium tabular-nums select-none max-sm:flex-1 sm:min-w-48 sm:text-sm'
-            aria-live='polite'
-          >
-            {label}
-          </time>
+          <div className='flex min-w-0 justify-center max-sm:flex-1 sm:min-w-54'>
+            {children}
+          </div>
 
           <Button
             type='button'
@@ -68,6 +63,7 @@ export default function DateToolbar({
           {period === 'day' ? 'Today' : 'This month'}
         </Button>
       </div>
+
       <SaveStatus />
     </div>
   );

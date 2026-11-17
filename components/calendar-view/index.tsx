@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 
-import DateToolbar from '@/components/date-toolbar';
+import DateToolbar from '@/components/date-navigation/date-toolbar';
+import MonthPicker from '@/components/date-navigation/month-picker';
 import { getDailySummary } from '@/lib/daily-summary';
-import { formatMonth, getDateKey } from '@/lib/dates';
+import { getDateKey } from '@/lib/dates';
 import { calendarPlans } from '@/lib/mock';
 import MonthStats from './month-stats';
 import CalendarPanel from './calendar-panel';
@@ -12,7 +13,7 @@ import CalendarLegend from './calendar-legend';
 
 export default function CalendarView() {
   const [today] = useState(() => getDateKey(new Date()));
-  const [month, setMonth] = useState('2026-11');
+  const [month, setMonth] = useState(today.slice(0, 7));
 
   const summaries = calendarPlans
     .filter((plan) => plan.date.startsWith(`${month}-`))
@@ -42,13 +43,13 @@ export default function CalendarView() {
   return (
     <>
       <DateToolbar
-        dateTime={month}
-        label={formatMonth(month)}
         period='month'
         onPrevious={() => changeMonth(-1)}
         onNext={() => changeMonth(1)}
         onReset={() => setMonth(today.slice(0, 7))}
-      />
+      >
+        <MonthPicker month={month} onSelect={setMonth} />
+      </DateToolbar>
 
       <MonthStats
         completedMinutes={completedMinutes}

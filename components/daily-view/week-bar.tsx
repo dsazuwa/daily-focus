@@ -5,9 +5,11 @@ import { cn } from '@/lib/utils';
 export default function WeekBar({
   selectedDate,
   today,
+  onSelectDate,
 }: {
   selectedDate: string;
   today: string;
+  onSelectDate: (date: string) => void;
 }) {
   const days = getWeekDays(selectedDate, today);
 
@@ -20,6 +22,7 @@ export default function WeekBar({
         <Button
           key={dateKey}
           type='button'
+          onClick={() => onSelectDate(dateKey)}
           variant={isSelected ? 'default' : 'outline'}
           aria-current={isSelected ? 'date' : undefined}
           className={cn(
