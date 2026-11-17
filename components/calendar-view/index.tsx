@@ -7,6 +7,8 @@ import { getDailySummary } from '@/lib/daily-summary';
 import { formatMonth, getDateKey } from '@/lib/dates';
 import { calendarPlans } from '@/lib/mock';
 import MonthStats from './month-stats';
+import CalendarPanel from './calendar-panel';
+import CalendarLegend from './calendar-legend';
 
 export default function CalendarView() {
   const [today] = useState(() => getDateKey(new Date()));
@@ -52,6 +54,15 @@ export default function CalendarView() {
         completedMinutes={completedMinutes}
         daysPlanned={daysPlanned}
         goalsMet={goalsMet}
+      />
+
+      <CalendarLegend />
+
+      <CalendarPanel
+        month={month}
+        plans={calendarPlans}
+        today={today}
+        initialSelectedDate='2026-11-15'
       />
     </>
   );
