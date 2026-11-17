@@ -1,9 +1,9 @@
-import { getDateKey } from '@/lib/dates';
+import DateToolbar from '@/components/date-toolbar';
+import { formatDate, getDateKey } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { categories, dailyPlan, tasks } from '@/lib/mock';
 
 import DailyContent from './daily-content';
-import DayBar from './day-bar';
 import DayStats from './day-stats';
 import WeekBar from './week-bar';
 
@@ -14,7 +14,12 @@ export default function DailyView() {
 
   return (
     <>
-      <DayBar selectedDate={selectedDate} />
+      <DateToolbar
+        dateTime={selectedDate}
+        label={formatDate(selectedDate)}
+        period='day'
+      />
+
       <WeekBar selectedDate={selectedDate} today={today} />
       <DayStats summary={summary} />
       <DailyContent
