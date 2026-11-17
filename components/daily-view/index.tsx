@@ -4,7 +4,7 @@ import { categories, dailyPlan, tasks } from '@/lib/mock';
 
 import DailyContent from './daily-content';
 import DayBar from './day-bar';
-import ProgressCard from './progress-card';
+import DayStats from './day-stats';
 import WeekBar from './week-bar';
 
 export default function DailyView() {
@@ -16,7 +16,7 @@ export default function DailyView() {
     <>
       <DayBar selectedDate={selectedDate} />
       <WeekBar selectedDate={selectedDate} today={today} />
-      <ProgressCard summary={summary} />
+      <DayStats summary={summary} />
       <DailyContent
         plan={dailyPlan}
         tasks={tasks}

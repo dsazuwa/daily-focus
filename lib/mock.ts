@@ -87,3 +87,26 @@ export const dailyPlan: DailyPlan = {
     taskBlock('block-5', 'task-5', '15:30', 120),
   ],
 };
+
+// Example history matching the calendar preview, including a future planned day.
+export const calendarPlans: DailyPlan[] = [
+  { date: '2026-11-11', completedMinutes: 90 },
+  { date: '2026-11-12', completedMinutes: 180 },
+  { date: '2026-11-15', completedMinutes: 480 },
+  { date: '2026-11-20', completedMinutes: 0 },
+].map(({ date: planDate, completedMinutes }) => ({
+  date: planDate,
+  targetMinutes: 480,
+  blocks: [
+    {
+      id: `calendar-${planDate}`,
+      type: 'task',
+      taskId: 'task-1',
+      date: planDate,
+      startTime: '08:00',
+      durationMinutes: 480,
+      actualMinutes: completedMinutes,
+      status: completedMinutes >= 480 ? 'completed' : 'planned',
+    },
+  ],
+}));
