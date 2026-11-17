@@ -11,6 +11,7 @@ type DateToolbarProps = {
   onPrevious?: () => void;
   onNext?: () => void;
   onReset?: () => void;
+  previousDisabled?: boolean;
 };
 
 export default function DateToolbar({
@@ -19,6 +20,7 @@ export default function DateToolbar({
   onPrevious,
   onNext,
   onReset,
+  previousDisabled = false,
 }: DateToolbarProps) {
   return (
     <div className='flex flex-wrap items-center justify-between gap-2'>
@@ -32,8 +34,10 @@ export default function DateToolbar({
             type='button'
             variant='ghost'
             size='icon-xs'
+            className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
             aria-label={`Previous ${period}`}
             onClick={onPrevious}
+            disabled={previousDisabled}
           >
             <ChevronLeft aria-hidden='true' />
           </Button>
@@ -46,6 +50,7 @@ export default function DateToolbar({
             type='button'
             variant='ghost'
             size='icon-xs'
+            className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
             aria-label={`Next ${period}`}
             onClick={onNext}
           >

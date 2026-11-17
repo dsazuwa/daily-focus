@@ -14,6 +14,7 @@ type CalendarDayProps = {
   isSelected: boolean;
   className?: string;
   onSelect: (date: string) => void;
+  disabled?: boolean;
 };
 
 export default function CalendarDay({
@@ -24,6 +25,7 @@ export default function CalendarDay({
   isSelected,
   className,
   onSelect,
+  disabled = false,
 }: CalendarDayProps) {
   const summary = plan ? getDailySummary(plan, [], []) : undefined;
   const goalMet = Boolean(
@@ -47,6 +49,7 @@ export default function CalendarDay({
   return (
     <button
       type='button'
+      disabled={disabled}
       aria-label={label}
       aria-current={isToday ? 'date' : undefined}
       aria-pressed={isSelected}
@@ -54,6 +57,7 @@ export default function CalendarDay({
       className={cn(
         'hover:bg-accent/50 focus-visible:outline-ring relative flex min-h-24 min-w-0 flex-col gap-3 p-1.5 text-left transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 sm:min-h-36 sm:p-4',
         className,
+        disabled && 'pointer-events-none opacity-50',
         outsideMonth && 'bg-muted text-muted-foreground',
         isSelected && 'bg-primary/5 ring-primary ring-2 ring-inset',
       )}

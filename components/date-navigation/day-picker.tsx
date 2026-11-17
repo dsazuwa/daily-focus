@@ -17,10 +17,12 @@ export default function DayPicker({
   selectedDate,
   today,
   onSelect,
+  minDate,
 }: {
   selectedDate: string;
   today: string;
   onSelect: (date: string) => void;
+  minDate: string;
 }) {
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState(selectedDate.slice(0, 7));
@@ -45,18 +47,20 @@ export default function DayPicker({
         <Button
           variant='ghost'
           size='icon-xs'
+          className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Previous month'
-          disabled={month <= '2026-01'}
+          disabled={month <= minDate.slice(0, 7)}
           onClick={() => changeMonth(-1)}
         >
           <ChevronLeft aria-hidden='true' />
         </Button>
 
-        <MonthPicker month={month} onSelect={setMonth} />
+        <MonthPicker month={month} onSelect={setMonth} minDate={minDate} />
 
         <Button
           variant='ghost'
           size='icon-xs'
+          className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Next month'
           disabled={month >= '9999-11'}
           onClick={() => changeMonth(1)}
@@ -86,7 +90,7 @@ export default function DayPicker({
               !date.startsWith(month) && 'text-muted-foreground',
               date === today && 'ring-primary ring-1 ring-inset',
             )}
-            disabled={date < '2026-01-01'}
+            disabled={date < minDate}
             aria-label={formatDate(date)}
             aria-pressed={date === selectedDate}
             aria-current={date === today ? 'date' : undefined}

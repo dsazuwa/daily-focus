@@ -6,10 +6,12 @@ export default function WeekBar({
   selectedDate,
   today,
   onSelectDate,
+  minDate,
 }: {
   selectedDate: string;
   today: string;
   onSelectDate: (date: string) => void;
+  minDate: string;
 }) {
   const days = getWeekDays(selectedDate, today);
 
@@ -23,6 +25,7 @@ export default function WeekBar({
           key={dateKey}
           type='button'
           onClick={() => onSelectDate(dateKey)}
+          disabled={dateKey < minDate}
           variant={isSelected ? 'default' : 'outline'}
           aria-current={isSelected ? 'date' : undefined}
           className={cn(

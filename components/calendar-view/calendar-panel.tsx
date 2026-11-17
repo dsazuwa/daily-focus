@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
-import { formatMonth, getMonthDays, WEEKDAY_LABELS } from '@/lib/dates';
+import {
+  clampDate,
+  formatMonth,
+  getMonthDays,
+  WEEKDAY_LABELS,
+} from '@/lib/dates';
 import type { DailyPlan } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import CalendarDay from './calendar-day';
@@ -9,6 +14,7 @@ type CalendarPanelProps = {
   month: string;
   plans: DailyPlan[];
   today: string;
+  minDate: string;
   initialSelectedDate?: string;
   onSelectDate?: (date: string) => void;
   isLoading?: boolean;
@@ -18,6 +24,7 @@ export default function CalendarPanel({
   month,
   plans,
   today,
+  minDate,
   initialSelectedDate = today,
   onSelectDate,
   isLoading = false,
@@ -32,7 +39,10 @@ export default function CalendarPanel({
       aria-busy={isLoading}
       className='bg-card overflow-hidden border'
     >
-      <div className='bg-primary/10 grid grid-cols-7 border-b' aria-hidden='true'>
+      <div
+        className='bg-primary/10 grid grid-cols-7 border-b'
+        aria-hidden='true'
+      >
         {WEEKDAY_LABELS.map((day) => (
           <span
             key={day}
@@ -51,15 +61,17 @@ export default function CalendarPanel({
           <CalendarDay
             key={date}
             date={date}
-            plan={plansByDate.get(date)}
+            plan={date >= minDate ? plansByDate.get(date) : undefined}
             outsideMonth={!date.startsWith(month)}
             isToday={date === today}
-            isSelected={date === selectedDate}
+            isSelected={date === clampDate(selectedDate, minDate)}
+            disabled={date < minDate}
             className={cn(
               index % 7 !== 6 && 'border-r',
               index < days.length - 7 && 'border-b',
             )}
             onSelect={(date) => {
+              if (date < minDate) return;
               setSelectedDate(date);
               onSelectDate?.(date);
             }}

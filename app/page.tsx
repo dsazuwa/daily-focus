@@ -1,11 +1,16 @@
 import CalendarDays from 'lucide-react/icons/calendar-days';
 import ListTodo from 'lucide-react/icons/list-todo';
+import { connection } from 'next/server';
 
 import CalendarView from '@/components/calendar-view';
 import DailyView from '@/components/daily-view';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getDateKey } from '@/lib/dates';
 
-export default function Home() {
+export default async function Home() {
+  await connection();
+  const today = getDateKey(new Date());
+  
   return (
     <main className='flex flex-1 flex-col'>
       <div className='gap-uniform pt-uniform container mx-auto flex h-full flex-1 flex-col px-4'>
@@ -37,7 +42,7 @@ export default function Home() {
             value='daily-view'
             className='border-border py-uniform-half gap-uniform-half flex flex-col border-t border-solid'
           >
-            <DailyView />
+            <DailyView selectedDate={today} today={today} />
           </TabsContent>
 
           <TabsContent

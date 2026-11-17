@@ -19,15 +19,19 @@ const months = Array.from({ length: 12 }, (_, index) => {
 export default function MonthPicker({
   month,
   onSelect,
+  minDate,
 }: {
   month: string;
   onSelect: (month: string) => void;
+  minDate: string;
 }) {
   const [open, setOpen] = useState(false);
   const [year, setYear] = useState(month.slice(0, 4));
   const numericYear = Number(year);
+  const minMonth = minDate.slice(0, 7);
+  const minYear = Number(minDate.slice(0, 4));
   const validYear =
-    /^\d{4}$/.test(year) && numericYear >= 2026 && numericYear <= 9999;
+    /^\d{4}$/.test(year) && numericYear >= minYear && numericYear <= 9999;
 
   return (
     <DatePickerPopover
@@ -43,8 +47,9 @@ export default function MonthPicker({
         <Button
           variant='ghost'
           size='icon-xs'
+          className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Previous year'
-          disabled={!validYear || numericYear <= 2026}
+          disabled={!validYear || numericYear <= minYear}
           onClick={() => setYear(String(numericYear - 1))}
         >
           <ChevronLeft aria-hidden='true' />
@@ -53,7 +58,7 @@ export default function MonthPicker({
         <Input
           type='number'
           aria-label='Year'
-          min={2026}
+          min={minYear}
           max={9999}
           value={year}
           onChange={(event) => setYear(event.target.value)}
@@ -63,6 +68,7 @@ export default function MonthPicker({
         <Button
           variant='ghost'
           size='icon-xs'
+          className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Next year'
           disabled={!validYear || numericYear >= 9999}
           onClick={() => setYear(String(numericYear + 1))}
@@ -79,7 +85,7 @@ export default function MonthPicker({
               key={value}
               variant={date === month ? 'default' : 'ghost'}
               size='sm'
-              disabled={!validYear}
+              disabled={!validYear || date < minMonth}
               aria-label={`${name} ${year}`}
               aria-pressed={date === month}
               onClick={() => {
