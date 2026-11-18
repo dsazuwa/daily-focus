@@ -1,12 +1,23 @@
-export function formatDuration(minutes: number) {
-  const hours = Math.floor(minutes / 60);
-  const remainder = minutes % 60;
+const QUARTER_FRACTIONS: Record<number, string> = {
+  15: '¼',
+  30: '½',
+  45: '¾',
+};
 
-  return (
-    [hours > 0 ? `${hours}h` : '', remainder > 0 ? `${remainder}m` : '']
-      .filter(Boolean)
-      .join(' ') || '0m'
-  );
+export function formatDuration(minutes: number, includeUnit = true): string {
+  const totalMinutes = Math.round(minutes);
+  if (totalMinutes <= 0) return includeUnit ? '0h' : '0';
+
+  const hours = Math.floor(totalMinutes / 60);
+  const remainder = totalMinutes % 60;
+  const suffix = includeUnit ? 'h' : '';
+  const fraction = QUARTER_FRACTIONS[remainder] ?? '';
+
+  if (hours === 0 && fraction) return `${fraction}${suffix}`;
+
+  if (hours > 0) return `${hours}${fraction}${suffix}`;
+
+  return `${remainder}m`; // Fallback only if non-15m data ever enters the database
 }
 
 /** Format an end time in the planner's clock, including any day rollover. */

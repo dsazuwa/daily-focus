@@ -71,8 +71,10 @@ export default function CalendarDay({
         >
           {Number(date.slice(-2))}
         </span>
+
         {showSummary && <DayIndicator goalMet={goalMet} />}
       </span>
+
       {!outsideMonth && summary && <DayProgress summary={summary} />}
     </button>
   );
@@ -94,11 +96,6 @@ function DayProgress({ summary }: { summary: DailySummaryData }) {
     <span className='mt-auto flex w-full flex-col gap-1.5'>
       <span className='text-xxs font-semibold tabular-nums sm:text-xs md:text-sm'>
         {formatDuration(summary.completedMinutes)}
-
-        <span className='text-muted-foreground hidden font-normal sm:inline'>
-          {' / '}
-          {formatDuration(summary.targetMinutes)}
-        </span>
       </span>
 
       <span className='text-muted-foreground hidden text-xs sm:block'>
