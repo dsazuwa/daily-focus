@@ -67,10 +67,6 @@ function ProgressRing({
           {clampedProgress}
           <span className='text-sm'>%</span>
         </strong>
-
-        {goalText && (
-          <span className='text-xxs mt-1 md:text-xs'>{`of ${goalText} goal`}</span>
-        )}
       </div>
     </div>
   );

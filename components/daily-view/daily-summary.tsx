@@ -6,11 +6,9 @@ import type { TaskCategory } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { CategoryIcon } from './category-icon';
 
-export default function DailySummary({
-  summary,
-}: {
-  summary: DailySummaryData;
-}) {
+type DailySummaryProps = { summary: DailySummaryData };
+
+export default function DailySummary({ summary }: DailySummaryProps) {
   const { rows, plannedMinutes: totalPlanned, targetMinutes } = summary;
 
   return (

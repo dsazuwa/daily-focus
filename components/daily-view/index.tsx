@@ -63,7 +63,9 @@ export default function DailyView({
         onSelectDate={selectDate}
         minDate={startDate}
       />
+
       <DayStats summary={summary} />
+
       <DailyContent
         plan={plan}
         tasks={tasks}
