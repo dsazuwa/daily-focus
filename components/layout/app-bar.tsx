@@ -3,7 +3,7 @@ import { User } from 'lucide-react';
 import Logo from '@/components/logo';
 import { ChangeDefaultsDialog } from '@/components/setings/change-defaults';
 import { Button } from '@/components/ui/button';
-import ThemeToggle from '@/components/ui/theme-toggle';
+import ThemeToggle from './theme-toggle';
 
 export default function AppBar() {
   return (
