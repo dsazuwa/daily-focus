@@ -26,10 +26,10 @@ export default function DailySummary({
         </p>
       </CardHeader>
 
-      <CardContent className='space-y-uniform-half'>
+      <CardContent className='space-y-uniform'>
         <CategorySplitBar rows={rows} totalPlanned={totalPlanned} />
 
-        <div className='space-y-uniform-half'>
+        <div className='space-y-uniform'>
           {rows.map((row) => (
             <CategoryBreakdownRow
               key={row.category.id}
@@ -141,7 +141,7 @@ function PlannedTargetFooter({
   const isBalanced = difference === 0;
 
   return (
-    <div className='py-uniform-half mb-0 space-y-2 border-t'>
+    <div className='py-uniform mb-0 space-y-2 border-t'>
       <div className='flex items-center justify-between gap-3'>
         <span className='text-muted-foreground text-sm'>Total planned</span>
 
@@ -160,7 +160,7 @@ function PlannedTargetFooter({
 
       {!isBalanced && (
         <p className='text-muted-foreground text-xs'>
-          {formatDuration(Math.abs(difference))}
+          {formatDuration(Math.abs(difference))}{' '}
           {difference > 0 ? 'left to schedule.' : 'above your daily target.'}
         </p>
       )}

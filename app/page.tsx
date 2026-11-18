@@ -10,7 +10,7 @@ import { getDateKey } from '@/lib/dates';
 export default async function Home() {
   await connection();
   const today = getDateKey(new Date());
-  
+
   return (
     <main className='flex flex-1 flex-col'>
       <div className='gap-uniform pt-uniform container mx-auto flex h-full flex-1 flex-col px-4'>
@@ -24,10 +24,7 @@ export default async function Home() {
           <p className='text-body'>Eligendi quo assumenda at dignissimos</p>
         </div>
 
-        <Tabs
-          defaultValue='daily-view'
-          className='gap-uniform-half w-full flex-1'
-        >
+        <Tabs defaultValue='daily-view' className='gap-uniform w-full flex-1'>
           <TabsList>
             <TabsTrigger value='daily-view'>
               <ListTodo /> Daily
@@ -40,14 +37,14 @@ export default async function Home() {
 
           <TabsContent
             value='daily-view'
-            className='border-border py-uniform-half gap-uniform-half flex flex-col border-t border-solid'
+            className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
           >
             <DailyView selectedDate={today} today={today} />
           </TabsContent>
 
           <TabsContent
             value='calendar-view'
-            className='border-border py-uniform-half gap-uniform-half flex flex-col border-t border-solid'
+            className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
           >
             <CalendarView />
           </TabsContent>

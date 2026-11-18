@@ -4,11 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@source inline(
-  'bg-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}/10'
+@source inline('bg-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}/10'
 );
-@source inline(
-  '{text,fill}-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}'
+@source inline('{text,fill}-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}'
 );
 
 @theme inline {
@@ -55,8 +53,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  --spacing-uniform: clamp(2rem, 5vw, 4.5rem);
-  --spacing-uniform-half: clamp(1rem, 2.5vw, 2.25rem);
+  --spacing-uniform: clamp(1.25rem, 1rem + 1vw, 1.5rem);
 
   --color-task-sage: var(--task-sage);
   --color-task-sky: var(--task-sky);
@@ -162,6 +159,7 @@
 }
 
 @layer base {
+
   button:not(:disabled),
   [role='button']:not([aria-disabled='true']) {
     cursor: pointer;
