@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 
-import AppBar from '@/components/layout/app-bar';
-import Footer from '@/components/layout/footer';
 import {
   ebGaramond,
   geistMono,
@@ -33,11 +31,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     >
       <body className='flex min-h-full flex-col'>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <AppBar />
-
           {children}
-
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

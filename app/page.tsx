@@ -1,55 +1,21 @@
-import CalendarDays from 'lucide-react/icons/calendar-days';
-import ListTodo from 'lucide-react/icons/list-todo';
+import { cookies } from 'next/headers';
 import { connection } from 'next/server';
 
-import CalendarView from '@/components/calendar-view';
-import DailyView from '@/components/daily-view';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import HomePage from '@/components/pages/home';
+import LoginPage from '@/components/pages/login';
 import { getDateKey } from '@/lib/dates';
+import { createClient } from '@/lib/supabase/server';
 
 export default async function Home() {
   await connection();
-  const today = getDateKey(new Date());
 
-  return (
-    <main className='flex flex-1 flex-col'>
-      <div className='gap-uniform pt-uniform container mx-auto flex h-full flex-1 flex-col px-4'>
-        <div className='space-y-1'>
-          <p className='text-eyebrow'>laboris culpa excepturi</p>
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-          <h1 className='text-heading'>
-            Est nam dolor magna blanditiis dolor<span>.</span>
-          </h1>
+  if (!user) return <LoginPage />;
 
-          <p className='text-body'>Eligendi quo assumenda at dignissimos</p>
-        </div>
-
-        <Tabs defaultValue='daily-view' className='gap-uniform w-full flex-1'>
-          <TabsList>
-            <TabsTrigger value='daily-view'>
-              <ListTodo /> Daily
-            </TabsTrigger>
-
-            <TabsTrigger value='calendar-view'>
-              <CalendarDays /> Calendar
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent
-            value='daily-view'
-            className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
-          >
-            <DailyView selectedDate={today} today={today} />
-          </TabsContent>
-
-          <TabsContent
-            value='calendar-view'
-            className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
-          >
-            <CalendarView />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </main>
-  );
+  return <HomePage today={getDateKey(new Date())} />;
 }
