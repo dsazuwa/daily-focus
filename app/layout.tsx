@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 
+import { Toaster } from '@/components/ui/toast';
 import {
   ebGaramond,
   geistMono,
@@ -31,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     >
       <body className='flex min-h-full flex-col'>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          {children}
+          <Toaster>{children}</Toaster>
         </ThemeProvider>
       </body>
     </html>

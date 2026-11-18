@@ -1,8 +1,6 @@
-import { User } from 'lucide-react';
-
 import Logo from '@/components/logo';
 import { ChangeDefaultsDialog } from '@/components/setings/change-defaults';
-import { Button } from '@/components/ui/button';
+import LogoutButton from './logout-button';
 import ThemeToggle from './theme-toggle';
 
 export default function AppBar() {
@@ -18,9 +16,7 @@ export default function AppBar() {
 
           <ChangeDefaultsDialog />
 
-          <Button variant='ghost' aria-label='User'>
-            <User aria-hidden='true' />
-          </Button>
+          <LogoutButton />
         </div>
       </div>
     </header>
