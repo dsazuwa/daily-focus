@@ -1,6 +1,7 @@
-import { Settings2, User } from 'lucide-react';
+import { User } from 'lucide-react';
 
 import Logo from '@/components/logo';
+import { ChangeDefaultsDialog } from '@/components/setings/change-defaults';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ui/theme-toggle';
 
@@ -15,9 +16,7 @@ export default function AppBar() {
         <div className='flex items-center gap-1'>
           <ThemeToggle />
 
-          <Button variant='ghost' aria-label='Settings'>
-            <Settings2 aria-hidden='true' />
-          </Button>
+          <ChangeDefaultsDialog />
 
           <Button variant='ghost' aria-label='User'>
             <User aria-hidden='true' />

@@ -7,10 +7,9 @@ export function ChangeDefaultsDialog() {
     <Button
       type='button'
       variant='ghost'
-      className='text-muted-foreground w-full flex-wrap gap-2 text-xs'
+      aria-label='Change default settings'
     >
-      <Settings2 className='size-3' aria-hidden='true' />
-      Change my defaults
+      <Settings2 className='size-3' aria-hidden='true' /> 
     </Button>
   );
 }

@@ -1,11 +1,10 @@
+import AdjustSplitDialog from '@/components/setings/adjust-split';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { CategorySummary, DailySummaryData } from '@/lib/daily-summary';
-import type { TaskCategory } from '@/lib/types';
 import { formatDuration } from '@/lib/time';
+import type { TaskCategory } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { CategoryIcon } from './category-icon';
-import AdjustSplitDialog from './dialog-adjust-split';
-import { ChangeDefaultsDialog } from './dialog-change-defaults';
 
 export default function DailySummary({
   summary,
@@ -45,10 +44,7 @@ export default function DailySummary({
           targetMinutes={targetMinutes}
         />
 
-        <div className='space-y-2'>
-          <AdjustSplitDialog />
-          <ChangeDefaultsDialog />
-        </div>
+        <AdjustSplitDialog />
       </CardContent>
     </Card>
   );
