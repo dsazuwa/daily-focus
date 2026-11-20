@@ -39,7 +39,7 @@ export default function CalendarView({
   ).length;
 
   const goalsMet = summaries.filter(
-    (summary) => summary.completedMinutes >= 480,
+    (summary) => summary.completedMinutes >= summary.targetMinutes,
   ).length;
 
   const changeMonth = (offset: number) => {

@@ -34,7 +34,7 @@ export default function MonthStats({
 
         <Separator orientation='vertical' />
 
-        <SummaryStat label='8h goals met' value={goalsMet} />
+        <SummaryStat label='goals met' value={goalsMet} />
       </CardContent>
     </SummaryCard>
   );
