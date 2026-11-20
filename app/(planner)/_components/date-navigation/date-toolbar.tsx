@@ -13,6 +13,7 @@ type DateToolbarProps = {
   onReset?: () => void;
   previousDisabled?: boolean;
   nextDisabled?: boolean;
+  resetDisabled?: boolean;
 };
 
 export default function DateToolbar({
@@ -23,6 +24,7 @@ export default function DateToolbar({
   onReset,
   previousDisabled = false,
   nextDisabled = false,
+  resetDisabled = false,
 }: DateToolbarProps) {
   return (
     <div className='flex flex-wrap items-center justify-between gap-2'>
@@ -67,6 +69,7 @@ export default function DateToolbar({
           size='sm'
           className='text-xxs'
           onClick={onReset}
+          disabled={resetDisabled}
         >
           {period === 'day' ? 'Today' : 'This month'}
         </Button>

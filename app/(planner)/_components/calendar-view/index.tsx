@@ -52,6 +52,7 @@ export default function CalendarView({
         nextDisabled={month === '9999-12'}
         onNext={() => changeMonth(1)}
         onReset={() => onSelectMonth(today.slice(0, 7))}
+        resetDisabled={month === today.slice(0, 7)}
       >
         <MonthPicker
           month={month}

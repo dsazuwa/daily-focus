@@ -38,6 +38,7 @@ export default function DailyView({
         nextDisabled={selectedDate === '9999-12-31'}
         onNext={() => onSelectDate(addDays(selectedDate, 1))}
         onReset={() => onSelectDate(today)}
+        resetDisabled={selectedDate === today}
       >
         <DayPicker
           selectedDate={selectedDate}
