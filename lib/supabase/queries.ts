@@ -90,7 +90,7 @@ export async function getPlanSummaryByMonth(
     goalsMet: data.goals_met,
     plannedMinutes: data.planned_minutes,
     completedMinutes: data.completed_minutes,
-    days: data.days.map((day) => ({
+    daySummaries: data.days.map((day) => ({
       date: day.date,
       targetMinutes: day.target_minutes,
       plannedMinutes: day.planned_minutes,

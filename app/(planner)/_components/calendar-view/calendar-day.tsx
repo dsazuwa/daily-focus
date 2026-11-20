@@ -1,14 +1,13 @@
 import Check from 'lucide-react/icons/check';
 
-import { getDailySummary, type DailySummaryData } from '@/lib/daily-summary';
 import { formatDate } from '@/lib/dates';
 import { formatDuration } from '@/lib/time';
-import type { DailyPlan } from '@/lib/types';
+import type { CalendarDaySummary } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 type CalendarDayProps = {
   date: string;
-  plan?: DailyPlan;
+  summary?: CalendarDaySummary;
   outsideMonth: boolean;
   isToday: boolean;
   isLastOpened: boolean;
@@ -19,7 +18,7 @@ type CalendarDayProps = {
 
 export default function CalendarDay({
   date,
-  plan,
+  summary,
   outsideMonth,
   isToday,
   isLastOpened,
@@ -27,7 +26,6 @@ export default function CalendarDay({
   onSelect,
   disabled = false,
 }: CalendarDayProps) {
-  const summary = plan ? getDailySummary(plan, [], []) : undefined;
   const goalMet = Boolean(
     summary &&
     summary.targetMinutes > 0 &&
@@ -91,7 +89,12 @@ function DayIndicator({ goalMet }: { goalMet: boolean }) {
   );
 }
 
-function DayProgress({ summary }: { summary: DailySummaryData }) {
+function DayProgress({ summary }: { summary: CalendarDaySummary }) {
+  const progressPercentage = Math.min(
+    100,
+    Math.round((summary.completedMinutes / summary.targetMinutes) * 100),
+  );
+
   return (
     <span className='mt-auto flex w-full flex-col gap-1.5'>
       <span className='text-xxs font-semibold tabular-nums sm:text-xs md:text-sm'>
@@ -108,7 +111,7 @@ function DayProgress({ summary }: { summary: DailySummaryData }) {
       >
         <span
           className='bg-primary block h-full'
-          style={{ width: `${summary.progressPercentage}%` }}
+          style={{ width: `${progressPercentage}%` }}
         />
       </span>
     </span>

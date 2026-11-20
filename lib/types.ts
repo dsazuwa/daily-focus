@@ -45,7 +45,7 @@ export type PlanSummaryByMonth = {
   goalsMet: number;
   plannedMinutes: number;
   completedMinutes: number;
-  days: CalendarDaySummary[];
+  daySummaries: CalendarDaySummary[];
 };
 
 export type Task = {

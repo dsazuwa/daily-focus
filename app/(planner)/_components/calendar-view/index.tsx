@@ -1,8 +1,8 @@
 import DateToolbar from '../date-navigation/date-toolbar';
 import MonthPicker from '../date-navigation/month-picker';
-import { getDailySummary } from '@/lib/daily-summary';
+import { Button } from '@/components/ui/button';
 import { MIN_DATE, parseDateKey } from '@/lib/dates';
-import { calendarPlans } from '@/lib/mock';
+import type { PlanSummaryByMonth } from '@/lib/types';
 import MonthStats from './month-stats';
 import CalendarPanel from './calendar-panel';
 import CalendarLegend from './calendar-legend';
@@ -11,34 +11,19 @@ export default function CalendarView({
   month,
   today,
   lastOpenedDay,
+  summary,
   onSelectMonth,
   onSelectDate,
+  onRetry,
 }: {
   month: string;
   today: string;
   lastOpenedDay: string | undefined;
+  summary: PlanSummaryByMonth | undefined;
   onSelectMonth: (month: string) => void;
   onSelectDate: (date: string) => void;
+  onRetry: () => void;
 }) {
-  const summaries = calendarPlans
-    .filter(
-      (plan) => plan.date >= MIN_DATE && plan.date.startsWith(`${month}-`),
-    )
-    .map((plan) => getDailySummary(plan, [], []));
-
-  const completedMinutes = summaries.reduce(
-    (total, summary) => total + summary.completedMinutes,
-    0,
-  );
-
-  const daysPlanned = summaries.filter(
-    (summary) => summary.plannedMinutes > 0,
-  ).length;
-
-  const goalsMet = summaries.filter(
-    (summary) => summary.completedMinutes >= summary.targetMinutes,
-  ).length;
-
   const changeMonth = (offset: number) => {
     const date = parseDateKey(`${month}-01`);
     date.setUTCMonth(date.getUTCMonth() + offset);
@@ -63,22 +48,36 @@ export default function CalendarView({
         />
       </DateToolbar>
 
-      <MonthStats
-        completedMinutes={completedMinutes}
-        daysPlanned={daysPlanned}
-        goalsMet={goalsMet}
-      />
+      {summary ? (
+        <>
+          <MonthStats
+            completedMinutes={summary.completedMinutes}
+            daysPlanned={summary.daysPlanned}
+            goalsMet={summary.goalsMet}
+          />
 
-      <CalendarLegend />
+          <CalendarLegend />
 
-      <CalendarPanel
-        month={month}
-        plans={calendarPlans}
-        today={today}
-        lastOpenedDay={lastOpenedDay}
-        minDate={MIN_DATE}
-        onSelectDate={onSelectDate}
-      />
+          <CalendarPanel
+            month={month}
+            daySummaries={summary.daySummaries}
+            today={today}
+            lastOpenedDay={lastOpenedDay}
+            minDate={MIN_DATE}
+            onSelectDate={onSelectDate}
+          />
+        </>
+      ) : (
+        <div className='flex items-center gap-3'>
+          <p role='alert' className='text-destructive'>
+            Unable to load the selected month.
+          </p>
+
+          <Button type='button' variant='outline' size='sm' onClick={onRetry}>
+            Retry
+          </Button>
+        </div>
+      )}
     </>
   );
 }

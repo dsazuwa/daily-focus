@@ -1,27 +1,27 @@
 import { formatMonth, getMonthDays, WEEKDAY_LABELS } from '@/lib/dates';
-import type { DailyPlan } from '@/lib/types';
+import type { CalendarDaySummary } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import CalendarDay from './calendar-day';
 
 type CalendarPanelProps = {
-  month: string;
-  plans: DailyPlan[];
   today: string;
+  month: string;
+  daySummaries: CalendarDaySummary[];
   lastOpenedDay: string | undefined;
   minDate: string;
   onSelectDate: (date: string) => void;
 };
 
 export default function CalendarPanel({
-  month,
-  plans,
   today,
+  month,
+  daySummaries,
   lastOpenedDay,
   minDate,
   onSelectDate,
 }: CalendarPanelProps) {
-  const days = getMonthDays(month);
-  const plansByDate = new Map(plans.map((plan) => [plan.date, plan]));
+  const dates = getMonthDays(month);
+  const summariesByDate = new Map(daySummaries.map((day) => [day.date, day]));
 
   return (
     <div
@@ -46,11 +46,11 @@ export default function CalendarPanel({
         className='grid grid-cols-7'
         aria-label={`${formatMonth(month)} days`}
       >
-        {days.map((date, index) => (
+        {dates.map((date, index) => (
           <CalendarDay
             key={date}
             date={date}
-            plan={date >= minDate ? plansByDate.get(date) : undefined}
+            summary={summariesByDate.get(date)}
             outsideMonth={!date.startsWith(month)}
             isToday={date === today}
             isLastOpened={
@@ -59,7 +59,7 @@ export default function CalendarPanel({
             disabled={date < minDate}
             className={cn(
               index % 7 !== 6 && 'border-r',
-              index < days.length - 7 && 'border-b',
+              index < dates.length - 7 && 'border-b',
             )}
             onSelect={onSelectDate}
           />

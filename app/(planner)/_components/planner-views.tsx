@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { PlanSummaryByMonth } from '@/lib/types';
 import CalendarView from './calendar-view';
 import DailyView from './daily-view';
 
@@ -13,10 +14,12 @@ export default function PlannerViews({
   today,
   selectedDate,
   selectedMonth,
+  calendarSummary,
 }: {
   today: string;
   selectedDate: string;
   selectedMonth: string | undefined;
+  calendarSummary: PlanSummaryByMonth | undefined;
 }) {
   const router = useRouter();
   const currentMonth = today.slice(0, 7);
@@ -67,13 +70,17 @@ export default function PlannerViews({
         value='calendar-view'
         className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
       >
-        <CalendarView
-          month={selectedMonth ?? currentMonth}
-          today={today}
-          lastOpenedDay={lastOpenedDay}
-          onSelectMonth={selectMonth}
-          onSelectDate={selectDate}
-        />
+        {selectedMonth && (
+          <CalendarView
+            month={selectedMonth}
+            today={today}
+            lastOpenedDay={lastOpenedDay}
+            summary={calendarSummary}
+            onSelectMonth={selectMonth}
+            onSelectDate={selectDate}
+            onRetry={() => router.refresh()}
+          />
+        )}
       </TabsContent>
     </Tabs>
   );

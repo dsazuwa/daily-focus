@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 import PlannerViews from './_components/planner-views';
 import { getDateKey, isDateKey, isMonthKey } from '@/lib/dates';
+import { getPlanSummaryByMonth } from '@/lib/supabase/queries';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function Home({ searchParams }: PageProps<'/'>) {
@@ -24,11 +25,17 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
     redirect(`/?month=${today.slice(0, 7)}`);
   }
 
+  const selectedMonth = typeof month === 'string' ? month : undefined;
+  const calendarResult = selectedMonth
+    ? await getPlanSummaryByMonth(supabase, selectedMonth)
+    : undefined;
+
   return (
     <PlannerViews
       today={today}
       selectedDate={date ?? today}
-      selectedMonth={typeof month === 'string' ? month : undefined}
+      selectedMonth={selectedMonth}
+      calendarSummary={calendarResult?.data}
     />
   );
 }
