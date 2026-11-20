@@ -9,12 +9,7 @@ const formatHours = (minutes: number) =>
   `${Number((minutes / 60).toFixed(1))}h`;
 
 export default function DayStats({ summary }: { summary: DailySummaryData }) {
-  const {
-    completedMinutes,
-    remainingMinutes,
-    targetMinutes,
-    progressPercentage,
-  } = summary;
+  const { completedMinutes, remainingMinutes, progressPercentage } = summary;
 
   return (
     <SummaryCard
@@ -34,22 +29,13 @@ export default function DayStats({ summary }: { summary: DailySummaryData }) {
           />
         </div>
 
-        <ProgressRing
-          progress={progressPercentage}
-          goalText={formatHours(targetMinutes)}
-        />
+        <ProgressRing progress={progressPercentage} />
       </CardContent>
     </SummaryCard>
   );
 }
 
-function ProgressRing({
-  progress,
-  goalText,
-}: {
-  progress: number;
-  goalText?: string;
-}) {
+function ProgressRing({ progress }: { progress: number }) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
 
   return (
