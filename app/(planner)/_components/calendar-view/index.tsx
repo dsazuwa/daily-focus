@@ -1,31 +1,26 @@
-'use client';
-
-import { useState } from 'react';
-
 import DateToolbar from '../date-navigation/date-toolbar';
 import MonthPicker from '../date-navigation/month-picker';
 import { getDailySummary } from '@/lib/daily-summary';
-import { clampDate, DEFAULT_START_DATE, getDateKey } from '@/lib/dates';
+import { MIN_DATE, parseDateKey } from '@/lib/dates';
 import { calendarPlans } from '@/lib/mock';
 import MonthStats from './month-stats';
 import CalendarPanel from './calendar-panel';
 import CalendarLegend from './calendar-legend';
 
 export default function CalendarView({
-  startDate = DEFAULT_START_DATE,
+  month,
+  today,
+  onSelectMonth,
+  onSelectDate,
 }: {
-  startDate?: string;
+  month: string;
+  today: string;
+  onSelectMonth: (month: string) => void;
+  onSelectDate: (date: string) => void;
 }) {
-  const [today] = useState(() => getDateKey(new Date()));
-  const minMonth = startDate.slice(0, 7);
-  const [selectedMonth, setSelectedMonth] = useState(today.slice(0, 7));
-  const month = clampDate(selectedMonth, minMonth);
-  const selectMonth = (month: string) =>
-    setSelectedMonth(clampDate(month, minMonth));
-
   const summaries = calendarPlans
     .filter(
-      (plan) => plan.date >= startDate && plan.date.startsWith(`${month}-`),
+      (plan) => plan.date >= MIN_DATE && plan.date.startsWith(`${month}-`),
     )
     .map((plan) => getDailySummary(plan, [], []));
 
@@ -43,21 +38,26 @@ export default function CalendarView({
   ).length;
 
   const changeMonth = (offset: number) => {
-    const date = new Date(`${month}-01T00:00:00Z`);
+    const date = parseDateKey(`${month}-01`);
     date.setUTCMonth(date.getUTCMonth() + offset);
-    selectMonth(date.toISOString().slice(0, 7));
+    onSelectMonth(date.toISOString().slice(0, 7));
   };
 
   return (
     <>
       <DateToolbar
         period='month'
-        previousDisabled={month <= minMonth}
+        previousDisabled={month === MIN_DATE.slice(0, 7)}
         onPrevious={() => changeMonth(-1)}
+        nextDisabled={month === '9999-12'}
         onNext={() => changeMonth(1)}
-        onReset={() => selectMonth(today.slice(0, 7))}
+        onReset={() => onSelectMonth(today.slice(0, 7))}
       >
-        <MonthPicker month={month} onSelect={selectMonth} minDate={startDate} />
+        <MonthPicker
+          month={month}
+          onSelect={onSelectMonth}
+          minDate={MIN_DATE}
+        />
       </DateToolbar>
 
       <MonthStats
@@ -72,7 +72,8 @@ export default function CalendarView({
         month={month}
         plans={calendarPlans}
         today={today}
-        minDate={startDate}
+        minDate={MIN_DATE}
+        onSelectDate={onSelectDate}
       />
     </>
   );

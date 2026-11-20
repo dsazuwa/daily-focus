@@ -62,7 +62,7 @@ export default function DayPicker({
           size='icon-xs'
           className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Next month'
-          disabled={month >= '9999-11'}
+          disabled={month >= '9999-12'}
           onClick={() => changeMonth(1)}
         >
           <ChevronRight aria-hidden='true' />

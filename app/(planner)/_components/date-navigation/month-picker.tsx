@@ -50,7 +50,7 @@ export default function MonthPicker({
           className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Previous year'
           disabled={!validYear || numericYear <= minYear}
-          onClick={() => setYear(String(numericYear - 1))}
+          onClick={() => setYear(String(numericYear - 1).padStart(4, '0'))}
         >
           <ChevronLeft aria-hidden='true' />
         </Button>
@@ -71,7 +71,7 @@ export default function MonthPicker({
           className='disabled:border-border disabled:bg-muted disabled:text-muted-foreground/30 disabled:opacity-100'
           aria-label='Next year'
           disabled={!validYear || numericYear >= 9999}
-          onClick={() => setYear(String(numericYear + 1))}
+          onClick={() => setYear(String(numericYear + 1).padStart(4, '0'))}
         >
           <ChevronRight aria-hidden='true' />
         </Button>

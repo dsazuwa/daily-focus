@@ -1,14 +1,6 @@
-'use client';
-
-import { useState } from 'react';
 import DayPicker from '../date-navigation/day-picker';
 import DateToolbar from '../date-navigation/date-toolbar';
-import {
-  addDays,
-  clampDate,
-  DEFAULT_START_DATE,
-  getDateKey,
-} from '@/lib/dates';
+import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { calendarPlans, categories, dailyPlan, tasks } from '@/lib/mock';
 import type { DailyPlan } from '@/lib/types';
@@ -18,17 +10,14 @@ import DayStats from './day-stats';
 import WeekBar from './week-bar';
 
 export default function DailyView({
-  selectedDate: initialSelectedDate = dailyPlan.date,
-  today = getDateKey(new Date()),
-  startDate = DEFAULT_START_DATE,
+  selectedDate,
+  today,
+  onSelectDate,
 }: {
-  selectedDate?: string;
-  today?: string;
-  startDate?: string;
-} = {}) {
-  const [date, setDate] = useState(initialSelectedDate);
-  const selectedDate = clampDate(date, startDate);
-  const selectDate = (date: string) => setDate(clampDate(date, startDate));
+  selectedDate: string;
+  today: string;
+  onSelectDate: (date: string) => void;
+}) {
   const plan: DailyPlan = (dailyPlan.date === selectedDate
     ? dailyPlan
     : undefined) ??
@@ -44,24 +33,25 @@ export default function DailyView({
     <>
       <DateToolbar
         period='day'
-        previousDisabled={selectedDate <= startDate}
-        onPrevious={() => selectDate(addDays(selectedDate, -1))}
-        onNext={() => selectDate(addDays(selectedDate, 1))}
-        onReset={() => selectDate(today)}
+        previousDisabled={selectedDate <= MIN_DATE}
+        onPrevious={() => onSelectDate(addDays(selectedDate, -1))}
+        nextDisabled={selectedDate === '9999-12-31'}
+        onNext={() => onSelectDate(addDays(selectedDate, 1))}
+        onReset={() => onSelectDate(today)}
       >
         <DayPicker
           selectedDate={selectedDate}
           today={today}
-          onSelect={selectDate}
-          minDate={startDate}
+          onSelect={onSelectDate}
+          minDate={MIN_DATE}
         />
       </DateToolbar>
 
       <WeekBar
         selectedDate={selectedDate}
         today={today}
-        onSelectDate={selectDate}
-        minDate={startDate}
+        onSelectDate={onSelectDate}
+        minDate={MIN_DATE}
       />
 
       <DayStats summary={summary} />

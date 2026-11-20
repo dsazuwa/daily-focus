@@ -1,8 +1,7 @@
 export const PLANNER_TIME_ZONE = 'Africa/Lagos';
 export const PLANNER_LOCALE = 'en-GB';
 export const WEEK_START = 1; // Monday, using JavaScript weekday numbering.
-// Temporary until the account's start date is available.
-export const DEFAULT_START_DATE = '2026-01-01';
+export const MIN_DATE = '0001-01-01';
 
 /** Clamp ISO date keys (or month keys) to the earliest allowed value. */
 export function clampDate(value: string, minimum: string): string {
@@ -26,7 +25,7 @@ export function getDateKey(date: Date, timeZone = PLANNER_TIME_ZONE): string {
 
 /** UTC is used only as a calendar arithmetic carrier, not a planner instant. */
 export function parseDateKey(key: string): Date {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(key))
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(key) || key < MIN_DATE)
     throw new RangeError(`Invalid date key: ${key}`);
 
   const date = new Date(`${key}T00:00:00Z`);
@@ -66,18 +65,18 @@ export function formatMonth(month: string): string {
 
 export function getWeekDays(selectedDate: string, today: string) {
   const offset = (parseDateKey(selectedDate).getUTCDay() - WEEK_START + 7) % 7;
-  const firstDay = addDays(selectedDate, -offset);
 
-  return Array.from({ length: 7 }, (_, index) => {
-    const dateKey = addDays(firstDay, index);
-    return {
+  return Array.from({ length: 7 }, (_, index) =>
+    addDays(selectedDate, index - offset),
+  )
+    .filter((date) => isSupportedDateKey(date))
+    .map((dateKey) => ({
       dateKey,
       dayName: formatDate(dateKey, { weekday: 'short' }),
       dayNumber: parseDateKey(dateKey).getUTCDate(),
       isSelected: dateKey === selectedDate,
       isToday: dateKey === today,
-    };
-  });
+    }));
 }
 
 export function getMonthDays(month: string): string[] {
@@ -93,7 +92,11 @@ export function getMonthDays(month: string): string[] {
 
   return Array.from({ length: cellCount }, (_, index) =>
     addDays(firstDay, index - offset),
-  );
+  ).filter((date) => isSupportedDateKey(date));
+}
+
+function isSupportedDateKey(date: string) {
+  return /^\d{4}-/.test(date) && date >= MIN_DATE;
 }
 
 export const WEEKDAY_LABELS = getWeekDays('2026-11-16', '2026-11-16').map(
