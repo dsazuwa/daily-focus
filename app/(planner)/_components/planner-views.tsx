@@ -1,12 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import CalendarDays from 'lucide-react/icons/calendar-days';
 import ListTodo from 'lucide-react/icons/list-todo';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CalendarView from './calendar-view';
 import DailyView from './daily-view';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PlannerViews({
   today,
@@ -19,6 +20,12 @@ export default function PlannerViews({
 }) {
   const router = useRouter();
   const currentMonth = today.slice(0, 7);
+  const [lastOpenedDay, setLastOpenedDay] = useState(
+    selectedMonth ? undefined : selectedDate,
+  );
+
+  if (!selectedMonth && selectedDate !== lastOpenedDay)
+    setLastOpenedDay(selectedDate);
 
   const selectDate = (date: string) =>
     router.push(date === today ? '/' : `/?date=${date}`, { scroll: false });
@@ -63,6 +70,7 @@ export default function PlannerViews({
         <CalendarView
           month={selectedMonth ?? currentMonth}
           today={today}
+          lastOpenedDay={lastOpenedDay}
           onSelectMonth={selectMonth}
           onSelectDate={selectDate}
         />

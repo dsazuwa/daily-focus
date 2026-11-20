@@ -11,7 +11,7 @@ type CalendarDayProps = {
   plan?: DailyPlan;
   outsideMonth: boolean;
   isToday: boolean;
-  isSelected: boolean;
+  isLastOpened: boolean;
   className?: string;
   onSelect: (date: string) => void;
   disabled?: boolean;
@@ -22,7 +22,7 @@ export default function CalendarDay({
   plan,
   outsideMonth,
   isToday,
-  isSelected,
+  isLastOpened,
   className,
   onSelect,
   disabled = false,
@@ -37,6 +37,7 @@ export default function CalendarDay({
   const showSummary = !outsideMonth && Boolean(summary);
   const label = [
     `Open ${formatDate(date)}`,
+    ...(isLastOpened ? ['last opened day'] : []),
     ...(summary
       ? [
           `${formatDuration(summary.completedMinutes)} completed`,
@@ -52,14 +53,13 @@ export default function CalendarDay({
       disabled={disabled}
       aria-label={label}
       aria-current={isToday ? 'date' : undefined}
-      aria-pressed={isSelected}
       onClick={() => onSelect(date)}
       className={cn(
         'hover:bg-accent/50 focus-visible:outline-ring relative flex min-h-24 min-w-0 flex-col gap-3 p-1.5 text-left transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 sm:min-h-36 sm:p-4',
         className,
         disabled && 'pointer-events-none opacity-50',
         outsideMonth && 'bg-muted text-muted-foreground',
-        isSelected && 'bg-primary/5 ring-primary ring-2 ring-inset',
+        isLastOpened && 'bg-primary/5 ring-primary ring-2 ring-inset',
       )}
     >
       <span className='flex w-full items-center justify-between gap-1'>

@@ -3,11 +3,6 @@ export const PLANNER_LOCALE = 'en-GB';
 export const WEEK_START = 1; // Monday, using JavaScript weekday numbering.
 export const MIN_DATE = '0001-01-01';
 
-/** Clamp ISO date keys (or month keys) to the earliest allowed value. */
-export function clampDate(value: string, minimum: string): string {
-  return value < minimum ? minimum : value;
-}
-
 /** Convert an instant to a date key in the planner's timezone. */
 export function getDateKey(date: Date, timeZone = PLANNER_TIME_ZONE): string {
   const parts = new Intl.DateTimeFormat('en-GB', {

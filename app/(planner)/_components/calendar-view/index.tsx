@@ -10,11 +10,13 @@ import CalendarLegend from './calendar-legend';
 export default function CalendarView({
   month,
   today,
+  lastOpenedDay,
   onSelectMonth,
   onSelectDate,
 }: {
   month: string;
   today: string;
+  lastOpenedDay: string | undefined;
   onSelectMonth: (month: string) => void;
   onSelectDate: (date: string) => void;
 }) {
@@ -73,6 +75,7 @@ export default function CalendarView({
         month={month}
         plans={calendarPlans}
         today={today}
+        lastOpenedDay={lastOpenedDay}
         minDate={MIN_DATE}
         onSelectDate={onSelectDate}
       />

@@ -1,11 +1,4 @@
-import { useState } from 'react';
-
-import {
-  clampDate,
-  formatMonth,
-  getMonthDays,
-  WEEKDAY_LABELS,
-} from '@/lib/dates';
+import { formatMonth, getMonthDays, WEEKDAY_LABELS } from '@/lib/dates';
 import type { DailyPlan } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import CalendarDay from './calendar-day';
@@ -14,29 +7,25 @@ type CalendarPanelProps = {
   month: string;
   plans: DailyPlan[];
   today: string;
+  lastOpenedDay: string | undefined;
   minDate: string;
-  initialSelectedDate?: string;
-  onSelectDate?: (date: string) => void;
-  isLoading?: boolean;
+  onSelectDate: (date: string) => void;
 };
 
 export default function CalendarPanel({
   month,
   plans,
   today,
+  lastOpenedDay,
   minDate,
-  initialSelectedDate = today,
   onSelectDate,
-  isLoading = false,
 }: CalendarPanelProps) {
-  const [selectedDate, setSelectedDate] = useState(initialSelectedDate);
   const days = getMonthDays(month);
   const plansByDate = new Map(plans.map((plan) => [plan.date, plan]));
 
   return (
-    <section
+    <div
       aria-label={`${formatMonth(month)} calendar`}
-      aria-busy={isLoading}
       className='bg-card overflow-hidden border'
     >
       <div
@@ -64,20 +53,18 @@ export default function CalendarPanel({
             plan={date >= minDate ? plansByDate.get(date) : undefined}
             outsideMonth={!date.startsWith(month)}
             isToday={date === today}
-            isSelected={date === clampDate(selectedDate, minDate)}
+            isLastOpened={
+              date === lastOpenedDay && date.startsWith(`${month}-`)
+            }
             disabled={date < minDate}
             className={cn(
               index % 7 !== 6 && 'border-r',
               index < days.length - 7 && 'border-b',
             )}
-            onSelect={(date) => {
-              if (date < minDate) return;
-              setSelectedDate(date);
-              onSelectDate?.(date);
-            }}
+            onSelect={onSelectDate}
           />
         ))}
       </div>
-    </section>
+    </div>
   );
 }
