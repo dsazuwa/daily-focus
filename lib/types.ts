@@ -17,6 +17,22 @@ export type TaskCategory = {
   icon: string; // Lucide icon name saved with the category
 };
 
+export type PlannerDefaults = {
+  timezone: string;
+  defaultStartTime: string;
+  targetMinutes: number;
+  categories: Array<TaskCategory & { minutes: number }>;
+};
+
+export type DailyPlanSnapshot = {
+  id: string;
+  date: string;
+  timezone: string;
+  startTime: string;
+  targetMinutes: number;
+  categories: PlannerDefaults['categories'];
+};
+
 export type Task = {
   id: string;
   categoryId: TaskCategory['id'];
