@@ -1,4 +1,4 @@
-import SummaryCard, { SummaryStat } from '@/components/summary-card';
+import SummaryCard, { SummaryStat } from '../summary-card';
 import { CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { formatDuration } from '@/lib/time';

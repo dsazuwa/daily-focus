@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import ChevronLeft from 'lucide-react/icons/chevron-left';
 import ChevronRight from 'lucide-react/icons/chevron-right';
 
-import SaveStatus from '@/components/save-status';
+import SaveStatus from './save-status';
 import { Button } from '@/components/ui/button';
 
 type DateToolbarProps = {

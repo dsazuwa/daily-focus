@@ -1,4 +1,4 @@
-import AdjustSplitDialog from '@/components/setings/adjust-split';
+import AdjustSplitDialog from '../settings/adjust-split';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { CategorySummary, DailySummaryData } from '@/lib/daily-summary';
 import { formatDuration } from '@/lib/time';

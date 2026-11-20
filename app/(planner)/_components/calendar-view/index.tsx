@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import DateToolbar from '@/components/date-navigation/date-toolbar';
-import MonthPicker from '@/components/date-navigation/month-picker';
+import DateToolbar from '../date-navigation/date-toolbar';
+import MonthPicker from '../date-navigation/month-picker';
 import { getDailySummary } from '@/lib/daily-summary';
 import { clampDate, DEFAULT_START_DATE, getDateKey } from '@/lib/dates';
 import { calendarPlans } from '@/lib/mock';

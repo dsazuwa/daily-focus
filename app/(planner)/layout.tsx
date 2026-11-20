@@ -1,5 +1,5 @@
-import AppBar from '@/components/layout/app-bar';
-import Footer from '@/components/layout/footer';
+import AppBar from './_components/layout/app-bar';
+import Footer from './_components/layout/footer';
 
 export default function PlannerLayout({ children }: LayoutProps<'/'>) {
   return (

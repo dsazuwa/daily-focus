@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import PlannerViews from '@/app/(planner)/planner-views';
+import PlannerViews from './_components/planner-views';
 import { getDateKey } from '@/lib/dates';
 import { createClient } from '@/lib/supabase/server';
 

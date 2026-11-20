@@ -1,8 +1,8 @@
 import CalendarDays from 'lucide-react/icons/calendar-days';
 import ListTodo from 'lucide-react/icons/list-todo';
 
-import CalendarView from '@/components/calendar-view';
-import DailyView from '@/components/daily-view';
+import CalendarView from './calendar-view';
+import DailyView from './daily-view';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function PlannerViews({ today }: { today: string }) {

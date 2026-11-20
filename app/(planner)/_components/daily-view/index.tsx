@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import DayPicker from '@/components/date-navigation/day-picker';
-import DateToolbar from '@/components/date-navigation/date-toolbar';
+import DayPicker from '../date-navigation/day-picker';
+import DateToolbar from '../date-navigation/date-toolbar';
 import {
   addDays,
   clampDate,
