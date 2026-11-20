@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-import { parseDateKey } from '@/lib/dates';
+import { isDateKey } from '@/lib/dates';
 import { getDailyPlan } from '@/lib/supabase/queries';
 import { createClient } from '@/lib/supabase/server';
 import type { DailyPlanSnapshot } from '@/lib/types';
@@ -12,14 +12,8 @@ export async function getDailyPlanAction(
 ): Promise<
   { data: DailyPlanSnapshot | undefined; error?: never } | { error: string }
 > {
-  try {
-    if (typeof date !== 'string' || date.startsWith('0000-'))
-      return { error: 'Enter a valid date in YYYY-MM-DD format.' };
-
-    parseDateKey(date);
-  } catch {
+  if (!isDateKey(date))
     return { error: 'Enter a valid date in YYYY-MM-DD format.' };
-  }
 
   const supabase = createClient(await cookies());
   const { data: auth, error: authError } = await supabase.auth.getUser();

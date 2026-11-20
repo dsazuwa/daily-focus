@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import PlannerViews from './_components/planner-views';
-import { getDateKey, parseDateKey } from '@/lib/dates';
+import { getDateKey, isDateKey, isMonthKey } from '@/lib/dates';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function Home({ searchParams }: PageProps<'/'>) {
@@ -18,12 +18,9 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
   const today = getDateKey(new Date());
 
   if (date !== undefined) {
-    if (typeof date !== 'string' || !isDateKey(date)) redirect('/');
+    if (!isDateKey(date)) redirect('/');
     if (month !== undefined) redirect(`/?date=${date}`);
-  } else if (
-    month !== undefined &&
-    (typeof month !== 'string' || !isDateKey(`${month}-01`))
-  ) {
+  } else if (month !== undefined && !isMonthKey(month)) {
     redirect(`/?month=${today.slice(0, 7)}`);
   }
 
@@ -34,13 +31,4 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
       selectedMonth={typeof month === 'string' ? month : undefined}
     />
   );
-}
-
-function isDateKey(key: string) {
-  try {
-    parseDateKey(key);
-    return true;
-  } catch {
-    return false;
-  }
 }

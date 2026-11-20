@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 
+import { isMonthKey } from '@/lib/dates';
 import { getPlanSummaryByMonth } from '@/lib/supabase/queries';
 import { createClient } from '@/lib/supabase/server';
 import type { PlanSummaryByMonth } from '@/lib/types';
@@ -9,12 +10,7 @@ import type { PlanSummaryByMonth } from '@/lib/types';
 export async function getPlanSummaryByMonthAction(
   month: string,
 ): Promise<{ data: PlanSummaryByMonth; error?: never } | { error: string }> {
-  if (
-    typeof month !== 'string' ||
-    month.length !== 7 ||
-    !/^\d{4}-(0[1-9]|1[0-2])$/.test(month) ||
-    month.startsWith('0000-')
-  )
+  if (!isMonthKey(month))
     return { error: 'Enter a valid month in YYYY-MM format.' };
 
   const supabase = createClient(await cookies());

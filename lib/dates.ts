@@ -36,6 +36,21 @@ export function parseDateKey(key: string): Date {
   return date;
 }
 
+export function isDateKey(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+
+  try {
+    parseDateKey(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function isMonthKey(value: unknown): value is string {
+  return typeof value === 'string' && isDateKey(`${value}-01`);
+}
+
 export function addDays(key: string, amount: number): string {
   const date = parseDateKey(key);
   date.setUTCDate(date.getUTCDate() + amount);
