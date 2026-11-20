@@ -1,5 +1,24 @@
 import type { createClient } from '@/lib/supabase/server';
-import type { DailyPlanSnapshot, PlannerDefaults } from '@/lib/types';
+import type {
+  DailyPlanSnapshot,
+  PlannerDefaults,
+  PlanSummaryByMonth,
+} from '@/lib/types';
+
+type CalendarDaySummaryRow = {
+  date: string;
+  target_minutes: number;
+  planned_minutes: number;
+  completed_minutes: number;
+};
+
+type PlanSummaryByMonthRow = {
+  days_planned: number;
+  goals_met: number;
+  planned_minutes: number;
+  completed_minutes: number;
+  days: CalendarDaySummaryRow[];
+};
 
 type DailyPlanRow = Omit<DailyPlanSnapshot, 'startTime' | 'targetMinutes'> & {
   start_time: string;
@@ -31,7 +50,7 @@ export async function getPlannerDefaults(
     targetMinutes: target_minutes,
   };
 
-  return { data: defaults, error };
+  return { data: defaults, error: undefined };
 }
 
 export async function getDailyPlan(
@@ -52,5 +71,32 @@ export async function getDailyPlan(
     targetMinutes: target_minutes,
   };
 
-  return { data: plan, error };
+  return { data: plan, error: undefined };
+}
+
+export async function getPlanSummaryByMonth(
+  supabase: ReturnType<typeof createClient>,
+  month: string,
+) {
+  const { data, error } = await supabase
+    .schema('daily_focus')
+    .rpc('get_plan_summary_by_month', { p_month: `${month}-01` })
+    .single<PlanSummaryByMonthRow>();
+
+  if (error) return { data: undefined, error };
+
+  const summary: PlanSummaryByMonth = {
+    daysPlanned: data.days_planned,
+    goalsMet: data.goals_met,
+    plannedMinutes: data.planned_minutes,
+    completedMinutes: data.completed_minutes,
+    days: data.days.map((day) => ({
+      date: day.date,
+      targetMinutes: day.target_minutes,
+      plannedMinutes: day.planned_minutes,
+      completedMinutes: day.completed_minutes,
+    })),
+  };
+
+  return { data: summary, error: undefined };
 }

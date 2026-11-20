@@ -33,6 +33,21 @@ export type DailyPlanSnapshot = {
   categories: PlannerDefaults['categories'];
 };
 
+export type CalendarDaySummary = {
+  date: string;
+  targetMinutes: number;
+  plannedMinutes: number;
+  completedMinutes: number;
+};
+
+export type PlanSummaryByMonth = {
+  daysPlanned: number;
+  goalsMet: number;
+  plannedMinutes: number;
+  completedMinutes: number;
+  days: CalendarDaySummary[];
+};
+
 export type Task = {
   id: string;
   categoryId: TaskCategory['id'];
