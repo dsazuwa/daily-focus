@@ -1,14 +1,14 @@
 'use client';
 
-import { useActionState } from 'react';
 import { ArrowUpRight, Sun } from 'lucide-react';
+import { useActionState } from 'react';
 
+import { loginWithPassword } from '@/app/actions/login';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { loginWithPassword } from '@/app/actions/login';
 
-export default function LoginPage() {
+export default function LoginForm() {
   const [state, login, pending] = useActionState(loginWithPassword, {
     error: undefined,
   });

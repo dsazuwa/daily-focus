@@ -1,21 +1,18 @@
 import { cookies } from 'next/headers';
-import { connection } from 'next/server';
+import { redirect } from 'next/navigation';
 
-import HomePage from '@/components/pages/home';
-import LoginPage from '@/components/pages/login';
+import PlannerViews from '@/app/(planner)/planner-views';
 import { getDateKey } from '@/lib/dates';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function Home() {
-  await connection();
-
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return <LoginPage />;
+  if (!user) redirect('/login');
 
-  return <HomePage today={getDateKey(new Date())} />;
+  return <PlannerViews today={getDateKey(new Date())} />;
 }

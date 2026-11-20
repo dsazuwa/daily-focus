@@ -17,5 +17,5 @@ export async function logout(): Promise<{ error?: string }> {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/');
+  redirect('/login');
 }
