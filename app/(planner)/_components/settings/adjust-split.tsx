@@ -1,20 +1,94 @@
 'use client';
 
-import { ArrowUpRight, SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Clock,
+  SlidersHorizontal,
+} from 'lucide-react';
+import { useId, useState, type SubmitEvent } from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from '@/components/ui/input-group';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
+import type { DailySummaryData } from '@/lib/daily-summary';
+import { PLANNER_TIME_ZONE } from '@/lib/dates';
+import { categories } from '@/lib/mock';
 
-export default function AdjustSplitDialog() {
+import { TotalAllocation } from './total-allocation';
+import { CategoryIcon } from '../daily-view/category-icon';
+import { Separator } from '@/components/ui/separator';
+
+const mockDefaultSplit = categories.map((category) => ({
+  ...category,
+  hours: category.id === 'project' ? '2' : '3',
+}));
+
+export default function AdjustSplitDialog({
+  summary,
+  initialStartTime = '08:00',
+}: {
+  summary: DailySummaryData;
+  initialStartTime?: string;
+}) {
   const [open, setOpen] = useState(false);
+  const [split, setSplit] = useState(mockDefaultSplit);
+  const [startTime, setStartTime] = useState(initialStartTime);
+  const initialTargetHours = String(summary.targetMinutes / 60);
+  const [targetHours, setTargetHours] = useState(initialTargetHours);
+  const [feedback, setFeedback] = useState<'unbalanced' | 'ready'>();
+  const formId = useId();
+  const allocatedHours = split.reduce(
+    (total, category) => total + Number(category.hours),
+    0,
+  );
+  const balanced =
+    split.length > 0 &&
+    targetHours !== '' &&
+    allocatedHours === Number(targetHours);
+
+  function changeOpen(nextOpen: boolean) {
+    if (nextOpen) {
+      setSplit(
+        summary.plannedMinutes > 0
+          ? summary.rows.map(({ category, plannedMinutes }) => ({
+              ...category,
+              hours: String(plannedMinutes / 60),
+            }))
+          : mockDefaultSplit,
+      );
+      setStartTime(initialStartTime);
+      setTargetHours(initialTargetHours);
+      setFeedback(undefined);
+    }
+
+    setOpen(nextOpen);
+  }
+
+  function submitForm(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setFeedback(balanced ? 'ready' : 'unbalanced');
+  }
 
   return (
     <ResponsiveDialog
       open={open}
-      onOpenChange={setOpen}
-      title='Adjust daily split'
-      description='Customize how your daily targets are split.'
+      onOpenChange={changeOpen}
+      title="Adjust today's plan"
+      description="Set today's target and choose how to spend it. Rebuilding replaces today's blocks, notes, and progress."
       trigger={
         <Button
           type='button'
@@ -22,12 +96,175 @@ export default function AdjustSplitDialog() {
           className='w-full flex-wrap gap-2 text-xs'
         >
           <SlidersHorizontal className='size-3.5' aria-hidden='true' />
-          Adjust daily split
+          Adjust today&apos;s plan
           <ArrowUpRight className='size-3.5' aria-hidden='true' />
         </Button>
       }
+      footer={
+        <>
+          <Button
+            type='button'
+            variant='outline'
+            onClick={() => changeOpen(false)}
+          >
+            Cancel
+          </Button>
+
+          <Button type='submit' form={formId}>
+            Build day plan
+            <ArrowRight aria-hidden='true' />
+          </Button>
+        </>
+      }
     >
-      <div></div>
+      <form id={formId} className='grid gap-6' onSubmit={submitForm}>
+        <Field className='gap-2'>
+          <div className='flex items-center justify-between gap-2'>
+            <FieldLabel htmlFor={`${formId}-start`}>
+              Start your day at
+            </FieldLabel>
+
+            <span className='text-muted-foreground text-xs'>
+              {PLANNER_TIME_ZONE}
+            </span>
+          </div>
+
+          <div className='relative'>
+            <Input
+              id={`${formId}-start`}
+              name='start'
+              type='time'
+              className='relative pr-8 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:top-1/2 [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:m-0 [&::-webkit-calendar-picker-indicator]:size-3.5 [&::-webkit-calendar-picker-indicator]:-translate-y-1/2 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:p-0 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-datetime-edit]:p-0'
+              value={startTime}
+              onChange={(event) => {
+                setStartTime(event.target.value);
+                setFeedback(undefined);
+              }}
+              required
+            />
+
+            <Clock
+              aria-hidden='true'
+              className='text-muted-foreground pointer-events-none absolute top-1/2 right-3 hidden size-3.5 -translate-y-1/2 supports-[selector(::-webkit-calendar-picker-indicator)]:block'
+            />
+          </div>
+        </Field>
+
+        <Field className='gap-2'>
+          <FieldLabel htmlFor={`${formId}-target-hours`}>
+            Target hours
+          </FieldLabel>
+
+          <Input
+            id={`${formId}-target-hours`}
+            name='targetHours'
+            type='number'
+            inputMode='decimal'
+            min={0.25}
+            max={24}
+            step={0.25}
+            value={targetHours}
+            onChange={(event) => {
+              setTargetHours(event.target.value);
+              setFeedback(undefined);
+            }}
+            required
+          />
+        </Field>
+
+        <Separator />
+
+        <FieldSet className='min-w-0 gap-4'>
+          <FieldLegend className='mb-1'>Categories &amp; hours</FieldLegend>
+
+          <p className='text-muted-foreground text-sm'>
+            Choose how much time to spend on each category.
+          </p>
+
+          <Button
+            type='button'
+            variant='outline'
+            className='text-xxs w-full self-start'
+            onClick={() => {
+              setSplit(mockDefaultSplit);
+              setFeedback(undefined);
+            }}
+          >
+            Use my default categories &amp; split
+          </Button>
+
+          <div className='grid gap-3'>
+            {split.map((category) => {
+              const inputId = `${formId}-${category.id}`;
+
+              return (
+                <Field
+                  key={category.id}
+                  orientation='horizontal'
+                  className='justify-between'
+                >
+                  <FieldLabel
+                    htmlFor={inputId}
+                    className='tracking-normal normal-case'
+                  >
+                    <CategoryIcon
+                      name={category.icon}
+                      className='size-4 shrink-0'
+                      style={{ color: `var(--task-${category.color})` }}
+                      aria-hidden='true'
+                    />
+                    {category.name}
+                  </FieldLabel>
+
+                  <InputGroup className='w-24 shrink-0'>
+                    <InputGroupInput
+                      id={inputId}
+                      type='number'
+                      inputMode='decimal'
+                      min={0}
+                      max={targetHours || undefined}
+                      step={0.25}
+                      value={category.hours}
+                      onChange={(event) => {
+                        const hours = event.target.value;
+                        setSplit((current) =>
+                          current.map((item) =>
+                            item.id === category.id ? { ...item, hours } : item,
+                          ),
+                        );
+                        setFeedback(undefined);
+                      }}
+                      required
+                    />
+
+                    <InputGroupAddon align='inline-end' className='py-0 pr-2'>
+                      <InputGroupText>hrs</InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </Field>
+              );
+            })}
+          </div>
+
+          <TotalAllocation
+            allocatedHours={allocatedHours}
+            targetHours={targetHours}
+            balanced={balanced}
+          />
+        </FieldSet>
+
+        {feedback === 'unbalanced' && (
+          <FieldError>
+            Allocate the full daily target across the categories.
+          </FieldError>
+        )}
+
+        {feedback === 'ready' && (
+          <p role='status' className='text-muted-foreground text-sm'>
+            Your split matches the target. Day plan generation is still pending.
+          </p>
+        )}
+      </form>
     </ResponsiveDialog>
   );
 }

@@ -96,7 +96,7 @@ export function IconPicker({
           />
         }
       >
-        <Icon aria-hidden='true' className='stroke-3'  />
+        <Icon aria-hidden='true' strokeWidth={3} />
       </PopoverTrigger>
 
       <PopoverContent align='start' className='grid w-auto grid-cols-4 gap-1'>
@@ -117,7 +117,7 @@ export function IconPicker({
                 setIconPickerOpen(false);
               }}
             >
-              <OptionIcon aria-hidden='true' />
+              <OptionIcon aria-hidden='true' strokeWidth={3} />
             </Button>
           );
         })}

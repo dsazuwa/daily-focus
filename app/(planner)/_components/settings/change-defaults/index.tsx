@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Clock, Inbox, Plus, Settings2 } from 'lucide-react';
+import { Clock, Inbox, Plus, Settings2 } from 'lucide-react';
 import { useId, useState, type SubmitEvent } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
+import { TotalAllocation } from '../total-allocation';
 import { CategoryField, type CategoryDraft } from './category-field';
 import { TimezoneField, useBrowserTimezone } from './timezone-field';
 
@@ -269,19 +270,11 @@ export function ChangeDefaultsDialog() {
             <span className='text-muted-foreground'>{categories.length}/8</span>
           </Button>
 
-          <FieldLegend
-            className='mb-0 flex items-center justify-between gap-2'
-            aria-live='polite'
-          >
-            <span>Total allocated</span>
-
-            <span className='flex items-center gap-2 lowercase'>
-              {allocatedHours} / {targetHours || '—'} hrs
-              {allocationMatches && (
-                <Check className='size-4' aria-hidden='true' />
-              )}
-            </span>
-          </FieldLegend>
+          <TotalAllocation
+            allocatedHours={allocatedHours}
+            targetHours={targetHours}
+            balanced={allocationMatches}
+          />
         </FieldSet>
 
         <FieldError>{error}</FieldError>

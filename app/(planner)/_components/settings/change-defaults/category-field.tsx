@@ -85,9 +85,8 @@ export function CategoryField({
         />
       </div>
 
-      <InputGroup className='border-input dark:bg-input/30 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-ring/30 has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40 h-9 shadow-xs transition-colors has-[[data-slot=input-group-control]:focus-visible]:ring-2'>
+      <InputGroup>
         <InputGroupInput
-          className='h-full shadow-none'
           aria-label={`Category ${index + 1} hours`}
           type='number'
           inputMode='decimal'

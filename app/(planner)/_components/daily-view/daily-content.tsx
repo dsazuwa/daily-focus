@@ -45,7 +45,11 @@ export default function DailyContent({
       </div>
 
       <div className='space-y-uniform md:col-span-5'>
-        <DailySummary summary={summary} />
+        <DailySummary
+          key={plan.date}
+          summary={summary}
+          startTime={sortedBlocks[0]?.startTime}
+        />
 
         <MotivationCard />
       </div>

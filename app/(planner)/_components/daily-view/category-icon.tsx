@@ -13,8 +13,21 @@ type CategoryIconProps = LucideProps & {
   name: TaskCategory['icon'];
 };
 
-export function CategoryIcon({ name, ...props }: CategoryIconProps) {
-  if (!supportedIcons.has(name)) return <BookOpen {...props} />;
+export function CategoryIcon({
+  name,
+  strokeWidth = 3,
+  ...props
+}: CategoryIconProps) {
+  if (!supportedIcons.has(name)) {
+    return <BookOpen strokeWidth={strokeWidth} {...props} />;
+  }
 
-  return <DynamicIcon key={name} name={name as IconName} {...props} />;
+  return (
+    <DynamicIcon
+      key={name}
+      name={name as IconName}
+      strokeWidth={strokeWidth}
+      {...props}
+    />
+  );
 }
