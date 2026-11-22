@@ -5,12 +5,13 @@ import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <Button
       variant='ghost'
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      aria-label='Toggle light and dark mode'
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
       <svg
         xmlns='http://www.w3.org/2000/svg'
@@ -19,7 +20,6 @@ export default function ThemeToggle() {
         id='Light-Dark-Mode--Streamline-Sharp-Remix'
         className='transition-transform duration-300 dark:rotate-180'
         aria-hidden='true'
-        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       >
         <desc>Light Dark Mode Streamline Icon: https://streamlinehq.com</desc>
         <g id='light-dark-mode--light-dark-mode-setting-camera-picture-photo-image-brightness'>
