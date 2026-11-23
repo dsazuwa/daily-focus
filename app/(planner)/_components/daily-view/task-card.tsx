@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import type { Task, TaskBlock, TaskCategory } from '@/lib/types';
 import { formatDuration, getEndTime } from '@/lib/time';
 import { cn } from '@/lib/utils';
-import { CategoryIcon } from './category-icon';
+import { CategoryIcon } from '../category-icon';
 
 type TaskCardProps = {
   task: Task;
@@ -91,7 +91,6 @@ export default function TaskCard({
           variant='ghost'
           size='icon-sm'
           aria-label={`Edit ${task.title}`}
-          // onClick={() => onEdit?.(block.id)}
           className='text-muted-foreground hover:text-foreground shrink-0'
         >
           <Pencil className='size-3.5 md:size-4.5' aria-hidden='true' />

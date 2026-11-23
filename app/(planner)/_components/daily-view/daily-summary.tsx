@@ -4,7 +4,7 @@ import type { CategorySummary, DailySummaryData } from '@/lib/daily-summary';
 import { formatDuration } from '@/lib/time';
 import type { TaskCategory } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { CategoryIcon } from './category-icon';
+import { CategoryIcon } from '../category-icon';
 
 type DailySummaryProps = { summary: DailySummaryData; startTime?: string };
 

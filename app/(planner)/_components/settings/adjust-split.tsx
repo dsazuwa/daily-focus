@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Clock,
-  SlidersHorizontal,
-} from 'lucide-react';
+import { ArrowRight, ArrowUpRight, SlidersHorizontal } from 'lucide-react';
 import { useId, useState, type SubmitEvent } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -24,13 +19,13 @@ import {
   InputGroupText,
 } from '@/components/ui/input-group';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
+import { Separator } from '@/components/ui/separator';
+import TimeInput from '@/components/ui/time-input';
 import type { DailySummaryData } from '@/lib/daily-summary';
 import { PLANNER_TIME_ZONE } from '@/lib/dates';
 import { categories } from '@/lib/mock';
-
+import { CategoryIcon } from '../category-icon';
 import { TotalAllocation } from './total-allocation';
-import { CategoryIcon } from '../daily-view/category-icon';
-import { Separator } from '@/components/ui/separator';
 
 const mockDefaultSplit = categories.map((category) => ({
   ...category,
@@ -129,25 +124,16 @@ export default function AdjustSplitDialog({
             </span>
           </div>
 
-          <div className='relative'>
-            <Input
-              id={`${formId}-start`}
-              name='start'
-              type='time'
-              className='relative pr-8 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:top-1/2 [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:m-0 [&::-webkit-calendar-picker-indicator]:size-3.5 [&::-webkit-calendar-picker-indicator]:-translate-y-1/2 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:p-0 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-datetime-edit]:p-0'
-              value={startTime}
-              onChange={(event) => {
-                setStartTime(event.target.value);
-                setFeedback(undefined);
-              }}
-              required
-            />
-
-            <Clock
-              aria-hidden='true'
-              className='text-muted-foreground pointer-events-none absolute top-1/2 right-3 hidden size-3.5 -translate-y-1/2 supports-[selector(::-webkit-calendar-picker-indicator)]:block'
-            />
-          </div>
+          <TimeInput
+            id={`${formId}-start`}
+            name='start'
+            value={startTime}
+            onChange={(event) => {
+              setStartTime(event.target.value);
+              setFeedback(undefined);
+            }}
+            required
+          />
         </Field>
 
         <Field className='gap-2'>

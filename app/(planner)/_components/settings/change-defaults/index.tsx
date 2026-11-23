@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, Inbox, Plus, Settings2 } from 'lucide-react';
+import { Inbox, Plus, Settings2 } from 'lucide-react';
 import { useId, useState, type SubmitEvent } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
+import TimeInput from '@/components/ui/time-input';
 import { TotalAllocation } from '../total-allocation';
 import { CategoryField, type CategoryDraft } from './category-field';
 import { TimezoneField, useBrowserTimezone } from './timezone-field';
@@ -158,24 +159,15 @@ export function ChangeDefaultsDialog() {
             Default start time
           </FieldLabel>
 
-          <div className='relative'>
-            <Input
-              id={`${fieldId}-start-time`}
-              name='defaultStartTime'
-              type='time'
-              className='relative pr-8 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:top-1/2 [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:m-0 [&::-webkit-calendar-picker-indicator]:size-3.5 [&::-webkit-calendar-picker-indicator]:-translate-y-1/2 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:p-0 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-datetime-edit]:p-0'
-              value={defaultStartTime}
-              onChange={(event) =>
-                updateDraft({ defaultStartTime: event.target.value })
-              }
-              required
-            />
-
-            <Clock
-              aria-hidden='true'
-              className='text-muted-foreground pointer-events-none absolute top-1/2 right-3 hidden size-3.5 -translate-y-1/2 supports-[selector(::-webkit-calendar-picker-indicator)]:block'
-            />
-          </div>
+          <TimeInput
+            id={`${fieldId}-start-time`}
+            name='defaultStartTime'
+            value={defaultStartTime}
+            onChange={(event) =>
+              updateDraft({ defaultStartTime: event.target.value })
+            }
+            required
+          />
         </Field>
 
         <TimezoneField
