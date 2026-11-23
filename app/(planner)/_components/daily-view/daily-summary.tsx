@@ -15,15 +15,9 @@ export default function DailySummary({
   const { rows, plannedMinutes: totalPlanned, targetMinutes } = summary;
 
   return (
-    <Card>
-      <CardHeader className='gap-1'>
-        <h2 className='font-heading text-xl tracking-tight'>
-          Nunc feugiat mi a tellus
-        </h2>
-
-        <p className='text-muted-foreground text-sm'>
-          Donec lacus nunc, viverra nec.
-        </p>
+    <Card className='gap-uniform'>
+      <CardHeader className='text-section-title'>
+        Where your time goes
       </CardHeader>
 
       <CardContent className='space-y-uniform'>
@@ -138,29 +132,20 @@ function PlannedTargetFooter({
   const isBalanced = difference === 0;
 
   return (
-    <div className='py-uniform mb-0 space-y-2 border-t'>
-      <div className='flex items-center justify-between gap-3'>
-        <span className='text-muted-foreground text-sm'>Total planned</span>
+    <div className='py-uniform mb-0 flex items-center justify-between gap-2 border-t'>
+      <span className='text-muted-foreground text-sm'>Total planned</span>
 
-        <span
-          className={cn(
-            'text-sm font-medium tabular-nums',
-            !isBalanced && 'text-amber-700 dark:text-amber-300',
-          )}
-        >
-          {formatDuration(totalPlanned)}
-          <span className='text-muted-foreground ml-1 font-normal'>
-            / {formatDuration(targetMinutes)}
-          </span>
+      <span
+        className={cn(
+          'text-sm font-medium tabular-nums',
+          !isBalanced && 'text-amber-700 dark:text-amber-300',
+        )}
+      >
+        {formatDuration(totalPlanned)}
+        <span className='text-muted-foreground ml-1 font-normal'>
+          / {formatDuration(targetMinutes)}
         </span>
-      </div>
-
-      {!isBalanced && (
-        <p className='text-muted-foreground text-xs'>
-          {formatDuration(Math.abs(difference))}{' '}
-          {difference > 0 ? 'left to schedule.' : 'above your daily target.'}
-        </p>
-      )}
+      </span>
     </div>
   );
 }

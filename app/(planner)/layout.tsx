@@ -9,13 +9,13 @@ export default function PlannerLayout({ children }: LayoutProps<'/'>) {
       <main className='flex flex-1 flex-col'>
         <div className='gap-uniform pt-uniform container mx-auto flex h-full flex-1 flex-col px-4'>
           <div className='space-y-1'>
-            <p className='text-eyebrow'>laboris culpa excepturi</p>
-
             <h1 className='text-heading'>
-              Est nam dolor magna blanditiis dolor<span>.</span>
+              Plan Your Progress<span>.</span>
             </h1>
 
-            <p className='text-body'>Eligendi quo assumenda at dignissimos</p>
+            <p className='text-body'>
+              Map out your priorities and where your hours actually go.
+            </p>
           </div>
 
           {children}

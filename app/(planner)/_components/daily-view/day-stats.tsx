@@ -13,8 +13,8 @@ export default function DayStats({ summary }: { summary: DailySummaryData }) {
 
   return (
     <SummaryCard
-      title='Duis aute irure dolor in reprehenderit in voluptate.'
-      description='Ut enim ad minim veniam, quis nostrud exercitation'
+      title='How’s your day going?'
+      description='See how much of your goal you’ve reached so far.'
     >
       <CardContent className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:gap-(--card-spacing) md:pl-0'>
         <div className='inline-flex gap-4 max-sm:flex-wrap md:gap-[calc(var(--card-spacing)/2)]'>
@@ -22,7 +22,9 @@ export default function DayStats({ summary }: { summary: DailySummaryData }) {
             label='Completed'
             value={formatHours(completedMinutes)}
           />
+
           <Separator orientation='vertical' />
+
           <SummaryStat
             label='Remaining'
             value={formatHours(remainingMinutes)}

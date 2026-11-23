@@ -74,7 +74,7 @@ function PopoverDescription({
     <PopoverPrimitive.Description
       data-slot="popover-description"
       className={cn(
-        "mt-0.5 text-sm leading-relaxed text-muted-foreground",
+        "mt-0.5 text-section-description text-muted-foreground",
         className
       )}
       {...props}

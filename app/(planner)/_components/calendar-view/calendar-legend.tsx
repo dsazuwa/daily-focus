@@ -17,7 +17,7 @@ export default function CalendarLegend() {
       </span>
 
       <span className='w-full sm:ml-auto sm:w-auto' role='status'>
-        Select a date to open its day plan.
+        Select a date to open its plan.
       </span>
     </div>
   );

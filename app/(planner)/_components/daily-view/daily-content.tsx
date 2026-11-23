@@ -34,9 +34,9 @@ export default function DailyContent({
       <div className='space-y-3 md:col-span-7'>
         <div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-center'>
           <div className='space-y-1'>
-            <h2 className='font-heading tracking-tight'>Your schedule</h2>
+            <h2 className='text-section-title'>Your schedule</h2>
 
-            <p className='text-muted-foreground text-xs'>
+            <p className='text-section-description'>
               Breaks don&apos;t count toward your goal
             </p>
           </div>

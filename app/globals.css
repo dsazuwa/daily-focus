@@ -192,6 +192,14 @@
   @apply text-xs leading-relaxed sm:text-sm md:text-base;
 }
 
+@utility text-section-title {
+  @apply font-heading text-lg leading-relaxed;
+}
+
+@utility text-section-description {
+  @apply text-muted-foreground text-sm leading-relaxed;
+}
+
 @utility text-stat {
   @apply text-lg leading-none font-bold md:text-xl;
 }

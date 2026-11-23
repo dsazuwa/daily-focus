@@ -11,13 +11,12 @@ export default function MotivationCard() {
           ✳
         </span>
 
-        <h3 className='font-heading text-lg tracking-tight'>
-          Nulla cursus ante dapibus.
+        <h3 className='text-section-title'>
+          Consistency over perfection
         </h3>
 
-        <p className='text-muted-foreground text-sm leading-relaxed'>
-          Sed cursus ante dapibus diam. Sed nisi nulla quis sem at nibh
-          elementum imperdiet.
+        <p className='text-section-description'>
+          The plan can change, what matters is that you keep showing up
         </p>
 
         <span className='bg-border block h-px w-8' aria-hidden='true' />

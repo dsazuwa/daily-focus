@@ -14,8 +14,8 @@ export default function MonthStats({
 }) {
   return (
     <SummaryCard
-      title='Quisque tempus, tellus vitae cursus.'
-      description='Donec varius sem vel justo, at posuere neque facilisis.'
+      title="How's your month shaping up?"
+      description='Look back at the days you planned and the time you put in.'
     >
       <CardContent
         className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:flex-1 md:gap-[calc(var(--card-spacing)/2)] md:pl-0'
