@@ -4,8 +4,14 @@ import DayPicker from '../date-navigation/day-picker';
 import DateToolbar from '../date-navigation/date-toolbar';
 import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
-import { calendarPlans, categories, dailyPlan, tasks } from '@/lib/mock';
+import {
+  calendarPlans,
+  categories as mockCategories,
+  dailyPlan,
+  tasks,
+} from '@/lib/mock';
 import type { DailyPlan, Task, TaskBlock } from '@/lib/types';
+import { usePlannerDefaults } from '../planner-defaults-provider';
 
 import type { BlockDraft } from './add-block-dialog';
 import DailyContent from './daily-content';
@@ -25,14 +31,19 @@ export default function DailyView({
     Array<{ task: Task; block: TaskBlock }>
   >([]);
 
-  const initialPlan: DailyPlan = (dailyPlan.date === selectedDate
-    ? dailyPlan
-    : undefined) ??
-    calendarPlans.find((plan) => plan.date === selectedDate) ?? {
-      date: selectedDate,
-      targetMinutes: 480,
-      blocks: [],
-    };
+  const { error: defaultsError, ...result } = usePlannerDefaults();
+  const defaults = 'data' in result ? result.data : undefined;
+  const mockPlan =
+    (dailyPlan.date === selectedDate ? dailyPlan : undefined) ??
+    calendarPlans.find((plan) => plan.date === selectedDate);
+  const categories = mockPlan
+    ? mockCategories
+    : (defaults?.categories ?? mockCategories);
+  const initialPlan: DailyPlan = mockPlan ?? {
+    date: selectedDate,
+    targetMinutes: defaults?.targetMinutes ?? 480,
+    blocks: [],
+  };
 
   const dayAdditions = addedBlocks.filter(
     ({ block }) => block.date === selectedDate,
@@ -102,6 +113,12 @@ export default function DailyView({
         minDate={MIN_DATE}
       />
 
+      {!mockPlan && defaultsError && (
+        <p role='status' className='text-destructive text-sm'>
+          {defaultsError}
+        </p>
+      )}
+
       <DayStats summary={summary} />
 
       <DailyContent
@@ -109,6 +126,10 @@ export default function DailyView({
         tasks={dayTasks}
         categories={categories}
         summary={summary}
+        timezone={mockPlan ? undefined : defaults?.timezone}
+        defaultStartTime={
+          mockPlan ? undefined : defaults?.defaultStartTime.slice(0, 5)
+        }
         onAddBlock={addBlock}
       />
     </>

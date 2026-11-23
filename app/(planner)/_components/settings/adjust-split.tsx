@@ -25,6 +25,7 @@ import type { DailySummaryData } from '@/lib/daily-summary';
 import { PLANNER_TIME_ZONE } from '@/lib/dates';
 import { categories } from '@/lib/mock';
 import { CategoryIcon } from '../category-icon';
+import { usePlannerDefaults } from '../planner-defaults-provider';
 import { TotalAllocation } from './total-allocation';
 
 const mockDefaultSplit = categories.map((category) => ({
@@ -35,12 +36,23 @@ const mockDefaultSplit = categories.map((category) => ({
 export default function AdjustSplitDialog({
   summary,
   initialStartTime = '08:00',
+  timezone = PLANNER_TIME_ZONE,
 }: {
   summary: DailySummaryData;
   initialStartTime?: string;
+  timezone?: string;
 }) {
+  const result = usePlannerDefaults();
+  const defaults = 'data' in result ? result.data : undefined;
+  const defaultSplit = defaults
+    ? defaults.categories.map(({ minutes, ...category }) => ({
+        ...category,
+        hours: String(minutes / 60),
+      }))
+    : mockDefaultSplit;
+
   const [open, setOpen] = useState(false);
-  const [split, setSplit] = useState(mockDefaultSplit);
+  const [split, setSplit] = useState(defaultSplit);
   const [startTime, setStartTime] = useState(initialStartTime);
   const initialTargetHours = String(summary.targetMinutes / 60);
   const [targetHours, setTargetHours] = useState(initialTargetHours);
@@ -63,7 +75,7 @@ export default function AdjustSplitDialog({
               ...category,
               hours: String(plannedMinutes / 60),
             }))
-          : mockDefaultSplit,
+          : defaultSplit,
       );
       setStartTime(initialStartTime);
       setTargetHours(initialTargetHours);
@@ -119,9 +131,7 @@ export default function AdjustSplitDialog({
               Start your day at
             </FieldLabel>
 
-            <span className='text-muted-foreground text-xs'>
-              {PLANNER_TIME_ZONE}
-            </span>
+            <span className='text-muted-foreground text-xs'>{timezone}</span>
           </div>
 
           <TimeInput
@@ -172,7 +182,8 @@ export default function AdjustSplitDialog({
             variant='outline'
             className='text-xxs w-full self-start'
             onClick={() => {
-              setSplit(mockDefaultSplit);
+              setSplit(defaultSplit);
+              if (defaults) setTargetHours(String(defaults.targetMinutes / 60));
               setFeedback(undefined);
             }}
           >

@@ -6,11 +6,16 @@ import type { TaskCategory } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { CategoryIcon } from '../category-icon';
 
-type DailySummaryProps = { summary: DailySummaryData; startTime?: string };
+type DailySummaryProps = {
+  summary: DailySummaryData;
+  startTime?: string;
+  timezone: string;
+};
 
 export default function DailySummary({
   summary,
   startTime,
+  timezone,
 }: DailySummaryProps) {
   const { rows, plannedMinutes: totalPlanned, targetMinutes } = summary;
 
@@ -39,7 +44,11 @@ export default function DailySummary({
           targetMinutes={targetMinutes}
         />
 
-        <AdjustSplitDialog summary={summary} initialStartTime={startTime} />
+        <AdjustSplitDialog
+          summary={summary}
+          initialStartTime={startTime}
+          timezone={timezone}
+        />
       </CardContent>
     </Card>
   );

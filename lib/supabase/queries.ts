@@ -53,6 +53,18 @@ export async function getPlannerDefaults(
   return { data: defaults, error: undefined };
 }
 
+export function changePlannerDefaults(
+  supabase: ReturnType<typeof createClient>,
+  defaults: PlannerDefaults,
+) {
+  return supabase.schema('daily_focus').rpc('change_planner_defaults', {
+    p_timezone: defaults.timezone,
+    p_start_time: defaults.defaultStartTime,
+    p_target_minutes: defaults.targetMinutes,
+    p_categories: defaults.categories,
+  });
+}
+
 export async function getDailyPlan(
   supabase: ReturnType<typeof createClient>,
   date: string,

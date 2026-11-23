@@ -74,7 +74,7 @@ export function IconPicker({
 }: {
   label: string;
   color?: TaskColor;
-  icon: PlannerIcon;
+  icon: string;
   onChange: (icon: PlannerIcon) => void;
 }) {
   const [iconPickerOpen, setIconPickerOpen] = useState(false);

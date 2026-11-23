@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select';
 import type { TaskColor } from '@/lib/types';
 
-import { IconPicker, type PlannerIcon } from './icon-picker';
+import { IconPicker } from './icon-picker';
 
 const colors: Record<TaskColor, string> = {
   sage: 'Sage',
@@ -37,7 +37,7 @@ export type CategoryDraft = {
   name: string;
   hours: string;
   color: TaskColor;
-  icon: PlannerIcon;
+  icon: string;
 };
 
 export function CategoryField({

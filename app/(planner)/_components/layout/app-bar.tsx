@@ -1,5 +1,5 @@
 import Logo from './logo';
-import { ChangeDefaultsDialog } from '../settings/change-defaults';
+import ChangeDefaultsDialog from '../settings/change-defaults';
 import LogoutButton from './logout-button';
 import ThemeToggle from './theme-toggle';
 

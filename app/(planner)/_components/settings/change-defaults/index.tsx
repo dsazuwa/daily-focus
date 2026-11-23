@@ -3,6 +3,7 @@
 import { Inbox, Plus, Settings2 } from 'lucide-react';
 import { useId, useState, type SubmitEvent } from 'react';
 
+import { changePlannerDefaultsAction } from '@/app/actions/planner-defaults';
 import { Button } from '@/components/ui/button';
 import {
   Field,
@@ -15,39 +16,36 @@ import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
 import TimeInput from '@/components/ui/time-input';
+import { usePlannerDefaults } from '../../planner-defaults-provider';
 import { TotalAllocation } from '../total-allocation';
 import { CategoryField, type CategoryDraft } from './category-field';
+import {
+  toDefaultsDraft,
+  validateDefaultsDraft,
+  type DefaultsDraft,
+} from './defaults-draft';
 import { TimezoneField, useBrowserTimezone } from './timezone-field';
 
-type DefaultsDraft = {
-  categories: CategoryDraft[];
-  defaultStartTime: string;
-  timezone: string;
-  targetHours: string;
-};
+export default function ChangeDefaultsDialog() {
+  const defaultsResult = usePlannerDefaults();
+  const defaults = 'data' in defaultsResult ? defaultsResult.data : undefined;
 
-const initialDefaults: DefaultsDraft = {
-  categories: [],
-  defaultStartTime: '08:00',
-  timezone: '',
-  targetHours: '8',
-};
-
-export function ChangeDefaultsDialog() {
+  const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState(false);
-  const [saved, setSaved] = useState(initialDefaults);
-  const [draft, setDraft] = useState(initialDefaults);
-  const [error, setError] = useState('');
-  const [timezoneReferenceTime, setTimezoneReferenceTime] = useState(
-    () => new Date(),
-  );
+  const [form, setForm] = useState(() => ({
+    draft: toDefaultsDraft(),
+    error: '',
+    timezoneReferenceTime: new Date(),
+  }));
 
+  const { draft, error, timezoneReferenceTime } = form;
   const fieldId = useId();
   const formId = `${fieldId}-form`;
 
   const browserTimezone = useBrowserTimezone();
   const { categories, defaultStartTime, targetHours } = draft;
   const timezone = draft.timezone || browserTimezone;
+
   const allocatedHours = categories.reduce(
     (total, category) => total + Number(category.hours),
     0,
@@ -56,18 +54,29 @@ export function ChangeDefaultsDialog() {
     targetHours !== '' && allocatedHours === Number(targetHours);
 
   function changeOpen(nextOpen: boolean) {
+    if (saving) return;
+
     if (nextOpen) {
-      setDraft(saved);
-      setError('');
-      setTimezoneReferenceTime(new Date());
+      setForm({
+        draft: toDefaultsDraft(defaults),
+        error: '',
+        timezoneReferenceTime: new Date(),
+      });
     }
 
     setOpen(nextOpen);
   }
 
   function updateDraft(changes: Partial<DefaultsDraft>) {
-    setDraft((current) => ({ ...current, ...changes }));
-    setError('');
+    setForm((current) => ({
+      ...current,
+      draft: { ...current.draft, ...changes },
+      error: '',
+    }));
+  }
+
+  function showFormError(error: string) {
+    setForm((current) => ({ ...current, error }));
   }
 
   function updateCategory(
@@ -91,33 +100,34 @@ export function ChangeDefaultsDialog() {
     updateDraft({ categories: reordered });
   }
 
-  function submitForm(event: SubmitEvent<HTMLFormElement>) {
+  async function submitForm(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (categories.length === 0) {
-      setError('Add at least one category.');
+    if (saving || defaultsResult.error) return;
+
+    const validation = validateDefaultsDraft({ ...draft, timezone });
+    if (!('data' in validation)) {
+      showFormError(validation.error);
       return;
     }
 
-    if (categories.some(({ name }) => !name.trim())) {
-      setError('Enter a name for every category.');
-      return;
-    }
+    setSaving(true);
+    showFormError('');
 
-    if (!allocationMatches) {
-      setError('Allocate the full daily target across your categories.');
-      return;
-    }
+    try {
+      const result = await changePlannerDefaultsAction(validation.data);
 
-    setSaved({
-      ...draft,
-      timezone,
-      categories: categories.map((category) => ({
-        ...category,
-        name: category.name.trim(),
-      })),
-    });
-    changeOpen(false);
+      if (result.error) {
+        showFormError(result.error);
+        return;
+      }
+
+      setOpen(false);
+    } catch {
+      showFormError('Unable to save planner defaults.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -142,18 +152,29 @@ export function ChangeDefaultsDialog() {
           <Button
             type='button'
             variant='outline'
+            disabled={saving}
             onClick={() => changeOpen(false)}
           >
             Cancel
           </Button>
 
-          <Button type='submit' form={formId}>
-            Save defaults
+          <Button
+            type='submit'
+            form={formId}
+            disabled={saving || Boolean(defaultsResult.error)}
+          >
+            {saving ? 'Saving…' : 'Save defaults'}
           </Button>
         </>
       }
     >
-      <form id={formId} className='grid gap-6' onSubmit={submitForm}>
+      <form
+        id={formId}
+        className='grid gap-6'
+        aria-busy={saving}
+        inert={saving}
+        onSubmit={submitForm}
+      >
         <Field className='gap-2'>
           <FieldLabel htmlFor={`${fieldId}-start-time`}>
             Default start time
@@ -269,7 +290,7 @@ export function ChangeDefaultsDialog() {
           />
         </FieldSet>
 
-        <FieldError>{error}</FieldError>
+        <FieldError>{defaultsResult.error || error}</FieldError>
       </form>
     </ResponsiveDialog>
   );

@@ -12,6 +12,8 @@ type DailyContentProps = {
   summary: DailySummaryData;
   tasks: Task[];
   categories: TaskCategory[];
+  timezone?: string;
+  defaultStartTime?: string;
   onAddBlock: (block: BlockDraft) => void;
 };
 
@@ -20,6 +22,8 @@ export default function DailyContent({
   tasks,
   categories,
   summary,
+  timezone = PLANNER_TIME_ZONE,
+  defaultStartTime,
   onAddBlock,
 }: DailyContentProps) {
   const taskMap = new Map(tasks.map((task) => [task.id, task]));
@@ -44,7 +48,8 @@ export default function DailyContent({
           <AddBlockDialog
             key={plan.date}
             categories={categories}
-            timezone={PLANNER_TIME_ZONE}
+            timezone={timezone}
+            defaultStartTime={defaultStartTime}
             onAddBlock={onAddBlock}
           />
         </div>
@@ -69,7 +74,8 @@ export default function DailyContent({
         <DailySummary
           key={plan.date}
           summary={summary}
-          startTime={sortedBlocks[0]?.startTime}
+          startTime={sortedBlocks[0]?.startTime ?? defaultStartTime}
+          timezone={timezone}
         />
 
         <MotivationCard />

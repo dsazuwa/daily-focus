@@ -1,9 +1,15 @@
+import { getPlannerDefaultsAction } from '@/app/actions/planner-defaults';
+
 import AppBar from './_components/layout/app-bar';
 import Footer from './_components/layout/footer';
 
-export default function PlannerLayout({ children }: LayoutProps<'/'>) {
+import { PlannerDefaultsProvider } from './_components/planner-defaults-provider';
+
+export default async function PlannerLayout({ children }: LayoutProps<'/'>) {
+  const defaultsResult = await getPlannerDefaultsAction();
+
   return (
-    <>
+    <PlannerDefaultsProvider result={defaultsResult}>
       <AppBar />
 
       <main className='flex flex-1 flex-col'>
@@ -23,6 +29,6 @@ export default function PlannerLayout({ children }: LayoutProps<'/'>) {
       </main>
 
       <Footer />
-    </>
+    </PlannerDefaultsProvider>
   );
 }

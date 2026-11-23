@@ -42,10 +42,12 @@ export type BlockDraft = {
 export function AddBlockDialog({
   categories,
   timezone,
+  defaultStartTime = '22:00',
   onAddBlock,
 }: {
   categories: readonly TaskCategory[];
   timezone: string;
+  defaultStartTime?: string;
   onAddBlock: (block: BlockDraft) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -179,7 +181,7 @@ export function AddBlockDialog({
             <TimeInput
               id={`${formId}-start`}
               name='start'
-              defaultValue='22:00'
+              defaultValue={defaultStartTime}
               required
             />
           </Field>
