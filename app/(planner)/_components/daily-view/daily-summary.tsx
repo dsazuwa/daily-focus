@@ -44,11 +44,13 @@ export default function DailySummary({
           targetMinutes={targetMinutes}
         />
 
-        <AdjustSplitDialog
-          summary={summary}
-          initialStartTime={startTime}
-          timezone={timezone}
-        />
+        {targetMinutes !== undefined && (
+          <AdjustSplitDialog
+            summary={summary}
+            initialStartTime={startTime}
+            timezone={timezone}
+          />
+        )}
       </CardContent>
     </Card>
   );
@@ -135,10 +137,10 @@ function PlannedTargetFooter({
   targetMinutes,
 }: {
   totalPlanned: number;
-  targetMinutes: number;
+  targetMinutes: number | undefined;
 }) {
-  const difference = targetMinutes - totalPlanned;
-  const isBalanced = difference === 0;
+  const isUnbalanced =
+    targetMinutes !== undefined && targetMinutes !== totalPlanned;
 
   return (
     <div className='py-uniform mb-0 flex items-center justify-between gap-2 border-t'>
@@ -147,13 +149,15 @@ function PlannedTargetFooter({
       <span
         className={cn(
           'text-sm font-medium tabular-nums',
-          !isBalanced && 'text-amber-700 dark:text-amber-300',
+          isUnbalanced && 'text-amber-700 dark:text-amber-300',
         )}
       >
         {formatDuration(totalPlanned)}
-        <span className='text-muted-foreground ml-1 font-normal'>
-          / {formatDuration(targetMinutes)}
-        </span>
+        {targetMinutes !== undefined && (
+          <span className='text-muted-foreground ml-1 font-normal'>
+            / {formatDuration(targetMinutes)}
+          </span>
+        )}
       </span>
     </div>
   );

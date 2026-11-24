@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { getDailySchedule } from '@/lib/supabase/queries';
 import type { PlanSummaryByMonth } from '@/lib/types';
 import CalendarView from './calendar-view';
 import DailyView from './daily-view';
@@ -15,10 +16,12 @@ export default function PlannerViews({
   selectedDate,
   selectedMonth,
   calendarSummary,
+  dailySchedule,
 }: {
   today: string;
   selectedDate: string;
   selectedMonth: string | undefined;
+  dailySchedule: Awaited<ReturnType<typeof getDailySchedule>> | undefined;
   calendarSummary: PlanSummaryByMonth | undefined;
 }) {
   const router = useRouter();
@@ -59,11 +62,16 @@ export default function PlannerViews({
         value='daily-view'
         className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
       >
-        <DailyView
-          selectedDate={selectedDate}
-          today={today}
-          onSelectDate={selectDate}
-        />
+        {dailySchedule && (
+          <DailyView
+            selectedDate={selectedDate}
+            today={today}
+            schedule={dailySchedule.data}
+            scheduleError={dailySchedule.error}
+            onSelectDate={selectDate}
+            onRetry={() => router.refresh()}
+          />
+        )}
       </TabsContent>
 
       <TabsContent

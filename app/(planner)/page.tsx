@@ -3,7 +3,10 @@ import { redirect } from 'next/navigation';
 
 import PlannerViews from './_components/planner-views';
 import { getDateKey, isDateKey, isMonthKey } from '@/lib/dates';
-import { getPlanSummaryByMonth } from '@/lib/supabase/queries';
+import {
+  getDailySchedule,
+  getPlanSummaryByMonth,
+} from '@/lib/supabase/queries';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function Home({ searchParams }: PageProps<'/'>) {
@@ -26,6 +29,12 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
   }
 
   const selectedMonth = typeof month === 'string' ? month : undefined;
+  const selectedDate = date ?? today;
+
+  const dailySchedule = selectedMonth
+    ? undefined
+    : await getDailySchedule(supabase, selectedDate);
+
   const calendarResult = selectedMonth
     ? await getPlanSummaryByMonth(supabase, selectedMonth)
     : undefined;
@@ -33,7 +42,8 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
   return (
     <PlannerViews
       today={today}
-      selectedDate={date ?? today}
+      selectedDate={selectedDate}
+      dailySchedule={dailySchedule}
       selectedMonth={selectedMonth}
       calendarSummary={calendarResult?.data}
     />

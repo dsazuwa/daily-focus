@@ -4,13 +4,8 @@ import DayPicker from '../date-navigation/day-picker';
 import DateToolbar from '../date-navigation/date-toolbar';
 import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
-import {
-  calendarPlans,
-  categories as mockCategories,
-  dailyPlan,
-  tasks,
-} from '@/lib/mock';
-import type { DailyPlan, Task, TaskBlock } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import type { DailyPlanSnapshot, ScheduleBlock, TaskBlock } from '@/lib/types';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 
 import type { BlockDraft } from './add-block-dialog';
@@ -22,40 +17,37 @@ export default function DailyView({
   selectedDate,
   today,
   onSelectDate,
+  onRetry,
+  schedule,
+  scheduleError,
 }: {
   selectedDate: string;
   today: string;
+  schedule: { plan: DailyPlanSnapshot; blocks: ScheduleBlock[] } | undefined;
+  scheduleError: string | undefined;
+  onRetry: () => void;
   onSelectDate: (date: string) => void;
 }) {
-  const [addedBlocks, setAddedBlocks] = useState<
-    Array<{ task: Task; block: TaskBlock }>
-  >([]);
+  const [addedBlocks, setAddedBlocks] = useState<TaskBlock[]>([]);
 
   const { error: defaultsError, ...result } = usePlannerDefaults();
   const defaults = 'data' in result ? result.data : undefined;
-  const mockPlan =
-    (dailyPlan.date === selectedDate ? dailyPlan : undefined) ??
-    calendarPlans.find((plan) => plan.date === selectedDate);
-  const categories = mockPlan
-    ? mockCategories
-    : (defaults?.categories ?? mockCategories);
-  const initialPlan: DailyPlan = mockPlan ?? {
-    date: selectedDate,
-    targetMinutes: defaults?.targetMinutes ?? 480,
-    blocks: [],
-  };
-
-  const dayAdditions = addedBlocks.filter(
-    ({ block }) => block.date === selectedDate,
-  );
-
+  const savedPlan = schedule?.plan;
+  const categories = savedPlan?.categories ?? defaults?.categories ?? [];
+  const categoryIds = new Set(categories.map(({ id }) => id));
   const plan = {
-    ...initialPlan,
-    blocks: [...initialPlan.blocks, ...dayAdditions.map(({ block }) => block)],
+    date: selectedDate,
+    targetMinutes: savedPlan?.targetMinutes ?? defaults?.targetMinutes,
+    blocks: [
+      ...(schedule?.blocks ?? []),
+      ...addedBlocks.filter(
+        (block) =>
+          block.date === selectedDate && categoryIds.has(block.categoryId),
+      ),
+    ],
   };
-
-  const dayTasks = [...tasks, ...dayAdditions.map(({ task }) => task)];
-  const summary = getDailySummary(plan, dayTasks, categories);
+  const summary = getDailySummary(plan, categories);
+  const startTime = savedPlan?.startTime ?? defaults?.defaultStartTime;
 
   function addBlock({
     title,
@@ -64,18 +56,11 @@ export default function DailyView({
     durationMinutes,
     notes,
   }: BlockDraft) {
-    const task: Task = {
-      id: crypto.randomUUID(),
-      title,
-      categoryId,
-      notes,
-      status: 'todo',
-      estimatedMinutes: durationMinutes,
-      createdAt: new Date().toISOString(),
-    };
     const block: TaskBlock = {
       id: crypto.randomUUID(),
-      taskId: task.id,
+      categoryId,
+      title,
+      notes,
       date: selectedDate,
       startTime,
       durationMinutes,
@@ -84,7 +69,7 @@ export default function DailyView({
       actualMinutes: 0,
     };
 
-    setAddedBlocks((current) => [...current, { task, block }]);
+    setAddedBlocks((current) => [...current, block]);
   }
 
   return (
@@ -113,25 +98,36 @@ export default function DailyView({
         minDate={MIN_DATE}
       />
 
-      {!mockPlan && defaultsError && (
-        <p role='status' className='text-destructive text-sm'>
-          {defaultsError}
-        </p>
+      {scheduleError ? (
+        <div className='space-y-2'>
+          <p role='status' className='text-destructive text-sm'>
+            {scheduleError}
+          </p>
+
+          <Button variant='outline' onClick={onRetry}>
+            Try again
+          </Button>
+        </div>
+      ) : (
+        <>
+          {!savedPlan && defaultsError && (
+            <p role='status' className='text-destructive text-sm'>
+              {defaultsError}
+            </p>
+          )}
+
+          <DayStats summary={summary} />
+
+          <DailyContent
+            plan={plan}
+            categories={categories}
+            summary={summary}
+            timezone={savedPlan?.timezone ?? defaults?.timezone}
+            defaultStartTime={startTime?.slice(0, 5)}
+            onAddBlock={addBlock}
+          />
+        </>
       )}
-
-      <DayStats summary={summary} />
-
-      <DailyContent
-        plan={plan}
-        tasks={dayTasks}
-        categories={categories}
-        summary={summary}
-        timezone={mockPlan ? undefined : defaults?.timezone}
-        defaultStartTime={
-          mockPlan ? undefined : defaults?.defaultStartTime.slice(0, 5)
-        }
-        onAddBlock={addBlock}
-      />
     </>
   );
 }

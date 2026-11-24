@@ -1,7 +1,8 @@
-import type { DailyPlan, Task, TaskCategory } from './types';
+import type { DailyPlan, PlannerDefaults, TaskCategory } from './types';
 
 export type CategorySummary = {
   category: TaskCategory;
+  allocatedMinutes: number;
   plannedMinutes: number;
   completedMinutes: number;
 };
@@ -10,19 +11,18 @@ export type DailySummaryData = {
   rows: CategorySummary[];
   plannedMinutes: number;
   completedMinutes: number;
-  targetMinutes: number;
+  targetMinutes: number | undefined;
   remainingMinutes: number;
   progressPercentage: number;
 };
 
 export function getDailySummary(
   plan: DailyPlan,
-  tasks: readonly Task[],
-  categories: readonly TaskCategory[],
+  categories: PlannerDefaults['categories'],
 ): DailySummaryData {
-  const tasksById = new Map(tasks.map((task) => [task.id, task]));
   const rows: CategorySummary[] = categories.map((category) => ({
     category,
+    allocatedMinutes: category.minutes,
     plannedMinutes: 0,
     completedMinutes: 0,
   }));
@@ -38,28 +38,26 @@ export function getDailySummary(
     plannedMinutes += planned;
     completedMinutes += block.actualMinutes;
 
-    const task = tasksById.get(block.taskId);
-    const row = task ? rowsById.get(task.categoryId) : undefined;
+    const row = rowsById.get(block.categoryId);
     if (row) {
       row.plannedMinutes += planned;
       row.completedMinutes += block.actualMinutes;
     }
   }
 
+  const targetMinutes = plan.targetMinutes ?? 0;
+
   return {
     rows,
     plannedMinutes,
     completedMinutes,
     targetMinutes: plan.targetMinutes,
-    remainingMinutes: Math.max(0, plan.targetMinutes - completedMinutes),
+    remainingMinutes: Math.max(0, targetMinutes - completedMinutes),
     progressPercentage:
-      plan.targetMinutes > 0
+      targetMinutes > 0
         ? Math.min(
             100,
-            Math.max(
-              0,
-              Math.round((completedMinutes / plan.targetMinutes) * 100),
-            ),
+            Math.max(0, Math.round((completedMinutes / targetMinutes) * 100)),
           )
         : 0,
   };

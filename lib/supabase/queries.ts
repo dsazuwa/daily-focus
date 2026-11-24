@@ -3,6 +3,7 @@ import type {
   DailyPlanSnapshot,
   PlannerDefaults,
   PlanSummaryByMonth,
+  ScheduleBlock,
 } from '@/lib/types';
 
 type CalendarDaySummaryRow = {
@@ -20,9 +21,26 @@ type PlanSummaryByMonthRow = {
   days: CalendarDaySummaryRow[];
 };
 
-type DailyPlanRow = Omit<DailyPlanSnapshot, 'startTime' | 'targetMinutes'> & {
+type ScheduleBlockRow = {
+  id: string;
+  type: ScheduleBlock['type'];
+  title: string;
+  notes: string;
+  category_id: string | null;
+  task_id: string | null;
+  start_time: string;
+  duration_minutes: number;
+  actual_minutes: number;
+  status: ScheduleBlock['status'];
+};
+
+type DailyScheduleRow = Omit<
+  DailyPlanSnapshot,
+  'startTime' | 'targetMinutes'
+> & {
   start_time: string;
   target_minutes: number;
+  blocks: ScheduleBlockRow[];
 };
 
 type PlannerDefaultsRow = {
@@ -65,25 +83,53 @@ export function changePlannerDefaults(
   });
 }
 
-export async function getDailyPlan(
+export async function getDailySchedule(
   supabase: ReturnType<typeof createClient>,
   date: string,
 ) {
   const { data, error } = await supabase
     .schema('daily_focus')
-    .rpc('get_daily_plan', { p_date: date })
-    .maybeSingle<DailyPlanRow>();
+    .rpc('get_daily_schedule', { p_date: date })
+    .maybeSingle<DailyScheduleRow>();
 
-  if (!data) return { data: undefined, error };
+  if (error) return { error: 'Unable to load this day’s schedule.' };
+  if (!data) return { data: undefined };
 
-  const { start_time, target_minutes, ...snapshot } = data;
+  const { start_time, target_minutes, blocks: blockRows, ...snapshot } = data;
   const plan: DailyPlanSnapshot = {
     ...snapshot,
     startTime: start_time,
     targetMinutes: target_minutes,
   };
 
-  return { data: plan, error: undefined };
+  const blocks: ScheduleBlock[] = [];
+  for (const row of blockRows) {
+    const block = {
+      id: row.id,
+      date: plan.date,
+      title: row.title,
+      startTime: row.start_time.slice(0, 5),
+      durationMinutes: row.duration_minutes,
+      status: row.status,
+    };
+
+    if (row.type === 'break') {
+      blocks.push({ ...block, type: 'break' });
+    } else {
+      if (!row.category_id)
+        return { error: 'Unable to load this day’s schedule.' };
+      blocks.push({
+        ...block,
+        type: 'task',
+        categoryId: row.category_id,
+        taskId: row.task_id ?? undefined,
+        notes: row.notes,
+        actualMinutes: row.actual_minutes,
+      });
+    }
+  }
+
+  return { data: { plan, blocks } };
 }
 
 export async function getPlanSummaryByMonth(

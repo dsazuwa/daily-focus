@@ -23,15 +23,9 @@ import { Separator } from '@/components/ui/separator';
 import TimeInput from '@/components/ui/time-input';
 import type { DailySummaryData } from '@/lib/daily-summary';
 import { PLANNER_TIME_ZONE } from '@/lib/dates';
-import { categories } from '@/lib/mock';
 import { CategoryIcon } from '../category-icon';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 import { TotalAllocation } from './total-allocation';
-
-const mockDefaultSplit = categories.map((category) => ({
-  ...category,
-  hours: category.id === 'project' ? '2' : '3',
-}));
 
 export default function AdjustSplitDialog({
   summary,
@@ -49,12 +43,15 @@ export default function AdjustSplitDialog({
         ...category,
         hours: String(minutes / 60),
       }))
-    : mockDefaultSplit;
+    : [];
 
   const [open, setOpen] = useState(false);
   const [split, setSplit] = useState(defaultSplit);
   const [startTime, setStartTime] = useState(initialStartTime);
-  const initialTargetHours = String(summary.targetMinutes / 60);
+  const initialTargetHours =
+    summary.targetMinutes === undefined
+      ? ''
+      : String(summary.targetMinutes / 60);
   const [targetHours, setTargetHours] = useState(initialTargetHours);
   const [feedback, setFeedback] = useState<'unbalanced' | 'ready'>();
   const formId = useId();
@@ -70,12 +67,10 @@ export default function AdjustSplitDialog({
   function changeOpen(nextOpen: boolean) {
     if (nextOpen) {
       setSplit(
-        summary.plannedMinutes > 0
-          ? summary.rows.map(({ category, plannedMinutes }) => ({
-              ...category,
-              hours: String(plannedMinutes / 60),
-            }))
-          : defaultSplit,
+        summary.rows.map(({ category, allocatedMinutes }) => ({
+          ...category,
+          hours: String(allocatedMinutes / 60),
+        })),
       );
       setStartTime(initialStartTime);
       setTargetHours(initialTargetHours);
@@ -181,6 +176,7 @@ export default function AdjustSplitDialog({
             type='button'
             variant='outline'
             className='text-xxs w-full self-start'
+            disabled={!defaults}
             onClick={() => {
               setSplit(defaultSplit);
               if (defaults) setTargetHours(String(defaults.targetMinutes / 60));

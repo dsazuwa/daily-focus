@@ -7,20 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { Task, TaskBlock, TaskCategory } from '@/lib/types';
+import type { TaskBlock, TaskCategory } from '@/lib/types';
 import { formatDuration, getEndTime } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import { CategoryIcon } from '../category-icon';
 
 type TaskCardProps = {
-  task: Task;
   block: TaskBlock;
   category: TaskCategory;
   timezone?: string;
 };
 
 export default function TaskCard({
-  task,
   block,
   category,
   timezone = 'WAT',
@@ -43,7 +41,7 @@ export default function TaskCard({
     >
       <CardContent className='flex items-center gap-3 sm:gap-4'>
         <Checkbox
-          aria-label={`Complete: ${task.title}`}
+          aria-label={`Complete: ${block.title}`}
           checked={isCompleted}
           // onCheckedChange={(checked) => onCompletedChange?.(block.id, checked === true)}
           className='mt-1 size-3.5 rounded-full sm:mt-0 md:size-4.5'
@@ -75,7 +73,7 @@ export default function TaskCard({
               isCompleted && 'line-through',
             )}
           >
-            {task.title}
+            {block.title}
           </h3>
 
           <div className='text-muted-foreground flex items-center gap-1.5 text-xs tabular-nums'>
@@ -90,7 +88,7 @@ export default function TaskCard({
           type='button'
           variant='ghost'
           size='icon-sm'
-          aria-label={`Edit ${task.title}`}
+          aria-label={`Edit ${block.title}`}
           className='text-muted-foreground hover:text-foreground shrink-0'
         >
           <Pencil className='size-3.5 md:size-4.5' aria-hidden='true' />

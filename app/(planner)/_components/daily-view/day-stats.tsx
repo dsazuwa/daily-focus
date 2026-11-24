@@ -13,8 +13,8 @@ export default function DayStats({ summary }: { summary: DailySummaryData }) {
 
   return (
     <SummaryCard
-      title='How’s your day going?'
-      description='See how much of your goal you’ve reached so far.'
+      title="How's your day going?"
+      description="See how much of your goal you've reached so far."
     >
       <CardContent className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:gap-(--card-spacing) md:pl-0'>
         <div className='inline-flex gap-4 max-sm:flex-wrap md:gap-[calc(var(--card-spacing)/2)]'>
@@ -27,11 +27,17 @@ export default function DayStats({ summary }: { summary: DailySummaryData }) {
 
           <SummaryStat
             label='Remaining'
-            value={formatHours(remainingMinutes)}
+            value={
+              summary.targetMinutes === undefined
+                ? '-'
+                : formatHours(remainingMinutes)
+            }
           />
         </div>
 
-        <ProgressRing progress={progressPercentage} />
+        <ProgressRing
+          progress={summary.targetMinutes == undefined ? 0 : progressPercentage}
+        />
       </CardContent>
     </SummaryCard>
   );

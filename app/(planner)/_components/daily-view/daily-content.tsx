@@ -1,6 +1,6 @@
 import type { DailySummaryData } from '@/lib/daily-summary';
 import { PLANNER_TIME_ZONE } from '@/lib/dates';
-import type { DailyPlan, ScheduleBlock, Task, TaskCategory } from '@/lib/types';
+import type { DailyPlan, ScheduleBlock, TaskCategory } from '@/lib/types';
 import { AddBlockDialog, type BlockDraft } from './add-block-dialog';
 import BreakRow from './break-row';
 import DailySummary from './daily-summary';
@@ -10,7 +10,6 @@ import TaskCard from './task-card';
 type DailyContentProps = {
   plan: DailyPlan;
   summary: DailySummaryData;
-  tasks: Task[];
   categories: TaskCategory[];
   timezone?: string;
   defaultStartTime?: string;
@@ -19,14 +18,12 @@ type DailyContentProps = {
 
 export default function DailyContent({
   plan,
-  tasks,
   categories,
   summary,
   timezone = PLANNER_TIME_ZONE,
   defaultStartTime,
   onAddBlock,
 }: DailyContentProps) {
-  const taskMap = new Map(tasks.map((task) => [task.id, task]));
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 
   const sortedBlocks = plan.blocks
@@ -45,13 +42,15 @@ export default function DailyContent({
             </p>
           </div>
 
-          <AddBlockDialog
-            key={plan.date}
-            categories={categories}
-            timezone={timezone}
-            defaultStartTime={defaultStartTime}
-            onAddBlock={onAddBlock}
-          />
+          {categories.length > 0 && (
+            <AddBlockDialog
+              key={plan.date}
+              categories={categories}
+              timezone={timezone}
+              defaultStartTime={defaultStartTime}
+              onAddBlock={onAddBlock}
+            />
+          )}
         </div>
 
         {sortedBlocks.length === 0 ? (
@@ -63,7 +62,7 @@ export default function DailyContent({
             <PlanBlockItem
               key={block.id}
               block={block}
-              taskMap={taskMap}
+              timezone={timezone}
               categoryMap={categoryMap}
             />
           ))
@@ -74,7 +73,7 @@ export default function DailyContent({
         <DailySummary
           key={plan.date}
           summary={summary}
-          startTime={sortedBlocks[0]?.startTime ?? defaultStartTime}
+          startTime={defaultStartTime}
           timezone={timezone}
         />
 
@@ -86,24 +85,23 @@ export default function DailyContent({
 
 function PlanBlockItem({
   block,
-  taskMap,
+  timezone,
   categoryMap,
 }: {
   block: ScheduleBlock;
-  taskMap: Map<string, Task>;
+  timezone: string;
   categoryMap: Map<string, TaskCategory>;
 }) {
   if (block.type === 'break') return <BreakRow block={block} />;
 
-  const task = block.taskId ? taskMap.get(block.taskId) : undefined;
-  const category = task ? categoryMap.get(task.categoryId) : undefined;
+  const category = categoryMap.get(block.categoryId);
 
-  if (!task || !category)
+  if (!category)
     return (
       <p className='text-destructive text-sm'>
-        Missing task or category for block {block.id}.
+        Missing category for block {block.id}.
       </p>
     );
 
-  return <TaskCard task={task} block={block} category={category} />;
+  return <TaskCard block={block} category={category} timezone={timezone} />;
 }

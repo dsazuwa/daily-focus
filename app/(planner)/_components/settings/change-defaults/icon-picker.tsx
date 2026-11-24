@@ -64,7 +64,7 @@ const iconOptions = [
   { value: 'plane', label: 'Travel', Icon: Plane },
 ] as const;
 
-export type PlannerIcon = (typeof iconOptions)[number]['value'];
+type PlannerIcon = (typeof iconOptions)[number]['value'];
 
 export function IconPicker({
   label,
