@@ -1,15 +1,14 @@
+import Coffee from 'lucide-react/icons/coffee';
 import type { ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailySummaryData } from '@/lib/daily-summary';
-import { getMinutesSinceMidnight } from '@/lib/time';
+import { formatDuration, getMinutesSinceMidnight } from '@/lib/time';
 import type { DailyPlan, Task, TaskCategory } from '@/lib/types';
 import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
 import { AddTaskDialog, type TaskDraft } from './add-task-dialog';
-import BreakRow from './break-row';
 import DailySummary from './daily-summary';
-import MotivationCard from './motivation-card';
 import TaskCard from './task-card';
 
 type DailyContentProps = {
@@ -145,4 +144,41 @@ function ScheduleTaskItem({
     );
 
   return <TaskCard task={task} category={category} timezone={timezone} />;
+}
+
+function BreakRow({ durationMinutes }: { durationMinutes: number }) {
+  return (
+    <div className='text-muted-foreground flex items-center gap-2 py-1 text-xs'>
+      <span className='bg-border h-px flex-1' aria-hidden='true' />
+
+      <Coffee className='size-3 shrink-0' aria-hidden='true' />
+
+      <span className='shrink-0'>{formatDuration(durationMinutes)} break</span>
+
+      <span className='bg-border h-px flex-1' aria-hidden='true' />
+    </div>
+  );
+}
+
+function MotivationCard() {
+  return (
+    <Card size='sm' className='bg-transparent py-0 shadow-none ring-0'>
+      <CardContent className='space-y-3 max-md:px-0'>
+        <span
+          className='text-primary block text-3xl leading-none'
+          aria-hidden='true'
+        >
+          ✳
+        </span>
+
+        <h3 className='text-section-title'>Consistency over perfection</h3>
+
+        <p className='text-section-description'>
+          The plan can change, what matters is that you keep showing up
+        </p>
+
+        <span className='bg-border block h-px w-8' aria-hidden='true' />
+      </CardContent>
+    </Card>
+  );
 }
