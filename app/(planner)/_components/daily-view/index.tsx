@@ -33,6 +33,8 @@ export default function DailyView({
   const { error: defaultsError, ...result } = usePlannerDefaults();
   const defaults = 'data' in result ? result.data : undefined;
   const savedPlan = schedule?.plan;
+  const loadError = scheduleError ?? (savedPlan ? undefined : defaultsError);
+  const needsSetup = !loadError && !savedPlan && !defaults;
   const categories = savedPlan?.categories ?? defaults?.categories ?? [];
   const categoryIds = new Set(categories.map(({ id }) => id));
   const plan = {
@@ -98,10 +100,10 @@ export default function DailyView({
         minDate={MIN_DATE}
       />
 
-      {scheduleError ? (
+      {loadError ? (
         <div className='space-y-2'>
           <p role='status' className='text-destructive text-sm'>
-            {scheduleError}
+            {loadError}
           </p>
 
           <Button variant='outline' onClick={onRetry}>
@@ -110,18 +112,13 @@ export default function DailyView({
         </div>
       ) : (
         <>
-          {!savedPlan && defaultsError && (
-            <p role='status' className='text-destructive text-sm'>
-              {defaultsError}
-            </p>
-          )}
-
           <DayStats summary={summary} />
 
           <DailyContent
             plan={plan}
             categories={categories}
             summary={summary}
+            needsSetup={needsSetup}
             timezone={savedPlan?.timezone ?? defaults?.timezone}
             defaultStartTime={startTime?.slice(0, 5)}
             onAddBlock={addBlock}

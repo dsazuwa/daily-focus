@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
 import TimeInput from '@/components/ui/time-input';
-import { usePlannerDefaults } from '../../planner-defaults-provider';
+import { usePlannerDefaultsDialog } from '../../planner-defaults-provider';
 import { TotalAllocation } from '../total-allocation';
 import { CategoryField, type CategoryDraft } from './category-field';
 import {
@@ -27,16 +27,29 @@ import {
 import { TimezoneField, useBrowserTimezone } from './timezone-field';
 
 export default function ChangeDefaultsDialog() {
-  const defaultsResult = usePlannerDefaults();
+  const {
+    result: defaultsResult,
+    dialogOpen,
+    dialogOpenedAt,
+    setDialogOpen,
+  } = usePlannerDefaultsDialog();
   const defaults = 'data' in defaultsResult ? defaultsResult.data : undefined;
 
   const [saving, setSaving] = useState(false);
-  const [open, setOpen] = useState(false);
   const [form, setForm] = useState(() => ({
-    draft: toDefaultsDraft(),
+    draft: toDefaultsDraft(defaults),
     error: '',
-    timezoneReferenceTime: new Date(),
+    timezoneReferenceTime: dialogOpenedAt ?? new Date(),
   }));
+
+  // Start a fresh draft for each opening, including openings from Daily View.
+  if (dialogOpenedAt && dialogOpenedAt !== form.timezoneReferenceTime) {
+    setForm({
+      draft: toDefaultsDraft(defaults),
+      error: '',
+      timezoneReferenceTime: dialogOpenedAt,
+    });
+  }
 
   const { draft, error, timezoneReferenceTime } = form;
   const fieldId = useId();
@@ -54,17 +67,7 @@ export default function ChangeDefaultsDialog() {
     targetHours !== '' && allocatedHours === Number(targetHours);
 
   function changeOpen(nextOpen: boolean) {
-    if (saving) return;
-
-    if (nextOpen) {
-      setForm({
-        draft: toDefaultsDraft(defaults),
-        error: '',
-        timezoneReferenceTime: new Date(),
-      });
-    }
-
-    setOpen(nextOpen);
+    if (!saving) setDialogOpen(nextOpen);
   }
 
   function updateDraft(changes: Partial<DefaultsDraft>) {
@@ -122,7 +125,7 @@ export default function ChangeDefaultsDialog() {
         return;
       }
 
-      setOpen(false);
+      setDialogOpen(false);
     } catch {
       showFormError('Unable to save planner defaults.');
     } finally {
@@ -132,7 +135,7 @@ export default function ChangeDefaultsDialog() {
 
   return (
     <ResponsiveDialog
-      open={open}
+      open={dialogOpen}
       onOpenChange={changeOpen}
       title='Your day, by default.'
       description='Choose the categories and hours for new daily plans. Previously saved plans keep their categories and progress.'

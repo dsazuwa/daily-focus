@@ -1,6 +1,9 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailySummaryData } from '@/lib/daily-summary';
 import { PLANNER_TIME_ZONE } from '@/lib/dates';
 import type { DailyPlan, ScheduleBlock, TaskCategory } from '@/lib/types';
+import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
 import { AddBlockDialog, type BlockDraft } from './add-block-dialog';
 import BreakRow from './break-row';
 import DailySummary from './daily-summary';
@@ -10,6 +13,7 @@ import TaskCard from './task-card';
 type DailyContentProps = {
   plan: DailyPlan;
   summary: DailySummaryData;
+  needsSetup: boolean;
   categories: TaskCategory[];
   timezone?: string;
   defaultStartTime?: string;
@@ -20,6 +24,7 @@ export default function DailyContent({
   plan,
   categories,
   summary,
+  needsSetup,
   timezone = PLANNER_TIME_ZONE,
   defaultStartTime,
   onAddBlock,
@@ -70,16 +75,42 @@ export default function DailyContent({
       </div>
 
       <div className='space-y-uniform md:col-span-5'>
-        <DailySummary
-          key={plan.date}
-          summary={summary}
-          startTime={defaultStartTime}
-          timezone={timezone}
-        />
+        {needsSetup ? (
+          <PlannerSetupCard />
+        ) : (
+          <DailySummary
+            key={plan.date}
+            summary={summary}
+            startTime={defaultStartTime}
+            timezone={timezone}
+          />
+        )}
 
         <MotivationCard />
       </div>
     </div>
+  );
+}
+
+function PlannerSetupCard() {
+  const { setDialogOpen } = usePlannerDefaultsDialog();
+
+  return (
+    <Card className='gap-uniform'>
+      <CardHeader className='text-section-title'>
+        Looks like you&apos;re new here
+      </CardHeader>
+
+      <CardContent>
+        <Button
+          type='button'
+          className='w-full'
+          onClick={() => setDialogOpen(true)}
+        >
+          Set up your planner
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 
