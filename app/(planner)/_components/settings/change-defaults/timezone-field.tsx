@@ -1,4 +1,4 @@
-import { useId, useMemo, useSyncExternalStore } from 'react';
+import { useId, useMemo } from 'react';
 import { getTimeZones } from '@vvo/tzdb';
 
 import { Button } from '@/components/ui/button';
@@ -62,27 +62,9 @@ function formatTimeZone(value: string, referenceTime: Date) {
       label: offset ? `(${offset}) ${city}` : city,
     };
   } catch (error) {
-    if (error instanceof RangeError) return null;
+    if (error instanceof RangeError) return;
     throw error;
   }
-}
-
-function subscribeToWindowFocus(onFocus: () => void) {
-  window.addEventListener('focus', onFocus);
-  return () => window.removeEventListener('focus', onFocus);
-}
-
-function getBrowserTimezone() {
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  return timezone === 'UTC' ? 'Etc/UTC' : timezone;
-}
-
-export function useBrowserTimezone() {
-  return useSyncExternalStore(
-    subscribeToWindowFocus,
-    getBrowserTimezone,
-    () => '',
-  );
 }
 
 export function TimezoneField({
@@ -102,7 +84,7 @@ export function TimezoneField({
     () =>
       timeZoneNames
         .map((name) => formatTimeZone(name, referenceTime))
-        .filter((option) => option !== null),
+        .filter((option) => option !== undefined),
     [referenceTime],
   );
 
@@ -110,7 +92,7 @@ export function TimezoneField({
     !timezone || timeZones.some(({ value }) => value === timezone)
       ? timeZones
       : [...timeZones, formatTimeZone(timezone, referenceTime)].filter(
-          (option) => option !== null,
+          (option) => option !== undefined,
         );
 
   return (

@@ -1,10 +1,23 @@
-export const PLANNER_TIME_ZONE = 'Africa/Lagos';
+export const BROWSER_TIME_ZONE_COOKIE = 'planner_browser_timezone';
 export const PLANNER_LOCALE = 'en-GB';
 export const WEEK_START = 1; // Monday, using JavaScript weekday numbering.
 export const MIN_DATE = '0001-01-01';
 
+export function isValidTimeZone(
+  timeZone: string | undefined,
+): timeZone is string {
+  if (!timeZone) return false;
+
+  try {
+    new Intl.DateTimeFormat('en-GB', { timeZone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Convert an instant to a date key in the planner's timezone. */
-export function getDateKey(date: Date, timeZone = PLANNER_TIME_ZONE): string {
+export function getDateKey(date: Date, timeZone: string): string {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone,
     year: 'numeric',

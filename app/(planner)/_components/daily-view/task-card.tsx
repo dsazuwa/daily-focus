@@ -18,11 +18,7 @@ type TaskCardProps = {
   timezone?: string;
 };
 
-export default function TaskCard({
-  task,
-  category,
-  timezone = 'WAT',
-}: TaskCardProps) {
+export default function TaskCard({ task, category, timezone }: TaskCardProps) {
   const isCompleted = task.status === 'completed';
   const duration = formatDuration(task.durationMinutes);
   const endTime = getEndTime(task.startTime, task.durationMinutes);
@@ -80,7 +76,9 @@ export default function TaskCard({
             <span>{task.startTime}</span>
             <ArrowRight className='size-3 shrink-0' aria-hidden='true' />
             <span>{endTime}</span>
-            <span className='text-xxs font-medium uppercase'>{timezone}</span>
+            {timezone && (
+              <span className='text-xxs font-medium uppercase'>{timezone}</span>
+            )}
           </div>
         </div>
 

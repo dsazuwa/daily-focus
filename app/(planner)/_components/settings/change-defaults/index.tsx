@@ -15,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
+import { useBrowserTimezone } from '@/hooks/use-browser-timezone';
 import { usePlannerDefaultsDialog } from '../../planner-defaults-provider';
 import { TotalAllocation } from '../total-allocation';
 import { CategoryField, type CategoryDraft } from './category-field';
@@ -23,7 +24,7 @@ import {
   validateDefaultsDraft,
   type DefaultsDraft,
 } from './defaults-draft';
-import { TimezoneField, useBrowserTimezone } from './timezone-field';
+import { TimezoneField } from './timezone-field';
 
 export default function ChangeDefaultsDialog() {
   const {

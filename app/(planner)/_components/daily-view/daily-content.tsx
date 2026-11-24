@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailySummaryData } from '@/lib/daily-summary';
-import { PLANNER_TIME_ZONE } from '@/lib/dates';
 import type { DailyPlan, ScheduleBlock, TaskCategory } from '@/lib/types';
 import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
 import { AddTaskDialog, type TaskDraft } from './add-task-dialog';
@@ -24,7 +23,7 @@ export default function DailyContent({
   categories,
   summary,
   needsSetup,
-  timezone = PLANNER_TIME_ZONE,
+  timezone,
   onAddTask,
 }: DailyContentProps) {
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
@@ -45,7 +44,7 @@ export default function DailyContent({
             </p>
           </div>
 
-          {categories.length > 0 && (
+          {timezone && categories.length > 0 && (
             <AddTaskDialog
               key={plan.date}
               categories={categories}
@@ -112,7 +111,7 @@ function PlanBlockItem({
   categoryMap,
 }: {
   block: ScheduleBlock;
-  timezone: string;
+  timezone?: string;
   categoryMap: Map<string, TaskCategory>;
 }) {
   if (block.type === 'break') return <BreakRow block={block} />;

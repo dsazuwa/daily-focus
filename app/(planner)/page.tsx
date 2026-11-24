@@ -1,8 +1,16 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { getPlannerDefaultsAction } from '@/app/actions/planner-defaults';
+import BrowserTimezoneSync from './_components/browser-timezone-sync';
 import PlannerViews from './_components/planner-views';
-import { getDateKey, isDateKey, isMonthKey } from '@/lib/dates';
+import {
+  BROWSER_TIME_ZONE_COOKIE,
+  getDateKey,
+  isDateKey,
+  isMonthKey,
+  isValidTimeZone,
+} from '@/lib/dates';
 import {
   getDailySchedule,
   getPlanSummaryByMonth,
@@ -19,7 +27,16 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
   if (!user) redirect('/login');
 
   const { date, month } = await searchParams;
-  const today = getDateKey(new Date());
+  const defaultsResult = await getPlannerDefaultsAction();
+  const accountTimezone =
+    'data' in defaultsResult ? defaultsResult.data?.timezone : undefined;
+  const browserTimezone = cookieStore.get(BROWSER_TIME_ZONE_COOKIE)?.value;
+  const hasAccountTimezone = isValidTimeZone(accountTimezone);
+  const browserFallback = isValidTimeZone(browserTimezone)
+    ? browserTimezone
+    : 'UTC';
+  const timezone = hasAccountTimezone ? accountTimezone : browserFallback;
+  const today = getDateKey(new Date(), timezone);
 
   if (date !== undefined) {
     if (!isDateKey(date)) redirect('/');
@@ -40,12 +57,16 @@ export default async function Home({ searchParams }: PageProps<'/'>) {
     : undefined;
 
   return (
-    <PlannerViews
-      today={today}
-      selectedDate={selectedDate}
-      dailySchedule={dailySchedule}
-      selectedMonth={selectedMonth}
-      calendarSummary={calendarResult?.data}
-    />
+    <>
+      {!hasAccountTimezone && <BrowserTimezoneSync />}
+
+      <PlannerViews
+        today={today}
+        selectedDate={selectedDate}
+        dailySchedule={dailySchedule}
+        selectedMonth={selectedMonth}
+        calendarSummary={calendarResult?.data}
+      />
+    </>
   );
 }
