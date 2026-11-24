@@ -3,6 +3,7 @@
 import { Plus } from 'lucide-react';
 import { useId, useState, type SubmitEvent } from 'react';
 
+import { addScheduledTask } from '@/app/actions/schedule';
 import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -31,25 +32,18 @@ const durations = Array.from({ length: (4 * 60) / 15 }, (_, index) => {
   };
 });
 
-export type TaskDraft = {
-  title: string;
-  categoryId: string;
-  startTime: string;
-  durationMinutes: number;
-  notes?: string;
-};
-
 export function AddTaskDialog({
   categories,
   timezone,
-  onAddTask,
+  date,
 }: {
   categories: readonly TaskCategory[];
   timezone: string;
-  onAddTask: (task: TaskDraft) => string | undefined;
+  date: string;
 }) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
   const formId = useId();
 
   const categoryOptions = categories.map(({ id, name }) => ({
@@ -58,12 +52,14 @@ export function AddTaskDialog({
   }));
 
   function changeOpen(nextOpen: boolean) {
+    if (saving) return;
     if (nextOpen) setError('');
     setOpen(nextOpen);
   }
 
-  function submitForm(event: SubmitEvent<HTMLFormElement>) {
+  async function submitForm(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (saving) return;
 
     const data = new FormData(event.currentTarget);
     const title = String(data.get('title') ?? '').trim();
@@ -86,20 +82,30 @@ export function AddTaskDialog({
       return;
     }
 
-    const conflict = onAddTask({
-      title,
-      categoryId,
-      startTime,
-      durationMinutes: Number(duration),
-      notes: notes || undefined,
-    });
+    setSaving(true);
+    setError('');
 
-    if (conflict) {
-      setError(conflict);
-      return;
+    try {
+      const error = await addScheduledTask({
+        date,
+        title,
+        categoryId,
+        startTime,
+        durationMinutes: Number(duration),
+        notes,
+      });
+
+      if (error) {
+        setError(error);
+        return;
+      }
+
+      setOpen(false);
+    } catch {
+      setError('Unable to add this task.');
+    } finally {
+      setSaving(false);
     }
-
-    changeOpen(false);
   }
 
   return (
@@ -107,7 +113,7 @@ export function AddTaskDialog({
       open={open}
       onOpenChange={changeOpen}
       title='Add task'
-      description='Schedule time for a task today.'
+      description='Choose a start time and duration. The task must end by midnight.'
 
       trigger={
         <Button type='button' variant='outline'>
@@ -121,18 +127,25 @@ export function AddTaskDialog({
           <Button
             type='button'
             variant='outline'
+            disabled={saving}
             onClick={() => changeOpen(false)}
           >
             Cancel
           </Button>
 
-          <Button type='submit' form={formId}>
-            Add task
+          <Button type='submit' form={formId} disabled={saving}>
+            {saving ? 'Adding…' : 'Add task'}
           </Button>
         </>
       }
     >
-      <form id={formId} className='grid gap-5' onSubmit={submitForm}>
+      <form
+        id={formId}
+        className='grid gap-5'
+        inert={saving}
+        aria-busy={saving}
+        onSubmit={submitForm}
+      >
         <Field className='gap-2'>
           <FieldLabel htmlFor={`${formId}-title`}>
             What will you focus on?

@@ -28,7 +28,7 @@ export default function CalendarDay({
 }: CalendarDayProps) {
   const targetPlanned = Boolean(
     summary &&
-    summary.targetMinutes > 0 &&
+    summary.targetMinutes !== undefined &&
     summary.plannedMinutes >= summary.targetMinutes,
   );
 
@@ -85,10 +85,12 @@ function DayIndicator({ targetPlanned }: { targetPlanned: boolean }) {
 }
 
 function DayProgress({ summary }: { summary: CalendarDaySummary }) {
-  const progressPercentage = Math.min(
-    100,
-    Math.round((summary.plannedMinutes / summary.targetMinutes) * 100),
-  );
+  const progressPercentage = summary.targetMinutes
+    ? Math.min(
+        100,
+        Math.round((summary.plannedMinutes / summary.targetMinutes) * 100),
+      )
+    : 0;
 
   return (
     <span className='mt-auto flex w-full flex-col gap-1.5'>

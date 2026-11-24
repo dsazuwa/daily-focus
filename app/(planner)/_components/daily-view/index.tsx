@@ -1,15 +1,11 @@
-import { useState } from 'react';
-
 import DayPicker from '../date-navigation/day-picker';
 import DateToolbar from '../date-navigation/date-toolbar';
 import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { Button } from '@/components/ui/button';
-import { getMinutesSinceMidnight } from '@/lib/time';
 import type { DailyPlanSnapshot, Task } from '@/lib/types';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 
-import type { TaskDraft } from './add-task-dialog';
 import DailyContent from './daily-content';
 import DayStats from './day-stats';
 import WeekBar from './week-bar';
@@ -24,62 +20,23 @@ export default function DailyView({
 }: {
   selectedDate: string;
   today: string;
-  schedule: { plan: DailyPlanSnapshot; tasks: Task[] } | undefined;
+  schedule: { plan: DailyPlanSnapshot | undefined; tasks: Task[] } | undefined;
   scheduleError: string | undefined;
   onRetry: () => void;
   onSelectDate: (date: string) => void;
 }) {
-  const [addedTasks, setAddedTasks] = useState<Task[]>([]);
-
   const { error: defaultsError, ...result } = usePlannerDefaults();
   const defaults = 'data' in result ? result.data : undefined;
   const savedPlan = schedule?.plan;
   const loadError = scheduleError ?? (savedPlan ? undefined : defaultsError);
   const needsSetup = !loadError && !savedPlan && !defaults;
   const categories = savedPlan?.categories ?? defaults?.categories ?? [];
-  const categoryIds = new Set(categories.map(({ id }) => id));
   const plan = {
     date: selectedDate,
     targetMinutes: savedPlan?.targetMinutes ?? defaults?.targetMinutes,
-    tasks: [
-      ...(schedule?.tasks ?? []),
-      ...addedTasks.filter(
-        (task) =>
-          task.date === selectedDate && categoryIds.has(task.categoryId),
-      ),
-    ],
+    tasks: schedule?.tasks ?? [],
   };
   const summary = getDailySummary(plan, categories);
-
-  function addTask({
-    title,
-    categoryId,
-    startTime,
-    durationMinutes,
-    notes,
-  }: TaskDraft) {
-    const start = getMinutesSinceMidnight(startTime);
-    const end = start + durationMinutes;
-    const overlaps = plan.tasks.some((task) => {
-      const taskStart = getMinutesSinceMidnight(task.startTime);
-      return start < taskStart + task.durationMinutes && taskStart < end;
-    });
-
-    if (overlaps) return 'That time overlaps another task on this day.';
-
-    const task: Task = {
-      id: crypto.randomUUID(),
-      categoryId,
-      title,
-      notes,
-      date: selectedDate,
-      startTime,
-      durationMinutes,
-      status: 'planned',
-    };
-
-    setAddedTasks((current) => [...current, task]);
-  }
 
   return (
     <>
@@ -127,7 +84,6 @@ export default function DailyView({
             summary={summary}
             needsSetup={needsSetup}
             timezone={savedPlan?.timezone ?? defaults?.timezone}
-            onAddTask={addTask}
           />
         </>
       )}

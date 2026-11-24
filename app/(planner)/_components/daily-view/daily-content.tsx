@@ -4,10 +4,10 @@ import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailySummaryData } from '@/lib/daily-summary';
-import { formatDuration, getMinutesSinceMidnight } from '@/lib/time';
-import type { DailyPlan, Task, TaskCategory } from '@/lib/types';
+import { formatDuration } from '@/lib/time';
+import type { DailyPlan, TaskCategory } from '@/lib/types';
 import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
-import { AddTaskDialog, type TaskDraft } from './add-task-dialog';
+import { AddTaskDialog } from './add-task-dialog';
 import DailySummary from './daily-summary';
 import TaskCard from './task-card';
 
@@ -17,7 +17,6 @@ type DailyContentProps = {
   needsSetup: boolean;
   categories: TaskCategory[];
   timezone?: string;
-  onAddTask: (task: TaskDraft) => string | undefined;
 };
 
 export default function DailyContent({
@@ -26,19 +25,12 @@ export default function DailyContent({
   summary,
   needsSetup,
   timezone,
-  onAddTask,
 }: DailyContentProps) {
-  const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
-
-  const sortedTasks = plan.tasks
-    .filter((task) => task.date === plan.date)
-    .sort((a, b) => a.startTime.localeCompare(b.startTime));
-
   let scheduledUntil: number | undefined;
   const taskRows: ReactNode[] = [];
 
-  for (const task of sortedTasks) {
-    const startMinutes = getMinutesSinceMidnight(task.startTime);
+  for (const task of plan.tasks) {
+    const startMinutes = task.startOffsetMinutes;
 
     const gapMinutes =
       scheduledUntil === undefined ? 0 : startMinutes - scheduledUntil;
@@ -50,11 +42,7 @@ export default function DailyContent({
       <div key={task.id} className='space-y-3'>
         {gapMinutes > 0 && <BreakRow durationMinutes={gapMinutes} />}
 
-        <ScheduleTaskItem
-          task={task}
-          timezone={timezone}
-          categoryMap={categoryMap}
-        />
+        <TaskCard task={task} category={task.category} timezone={timezone} />
       </div>,
     );
   }
@@ -76,7 +64,7 @@ export default function DailyContent({
               key={plan.date}
               categories={categories}
               timezone={timezone}
-              onAddTask={onAddTask}
+              date={plan.date}
             />
           )}
         </div>
@@ -123,27 +111,6 @@ function PlannerSetupCard() {
       </CardContent>
     </Card>
   );
-}
-
-function ScheduleTaskItem({
-  task,
-  timezone,
-  categoryMap,
-}: {
-  task: Task;
-  timezone?: string;
-  categoryMap: Map<string, TaskCategory>;
-}) {
-  const category = categoryMap.get(task.categoryId);
-
-  if (!category)
-    return (
-      <p className='text-destructive text-sm'>
-        Missing category for task {task.id}.
-      </p>
-    );
-
-  return <TaskCard task={task} category={category} timezone={timezone} />;
 }
 
 function BreakRow({ durationMinutes }: { durationMinutes: number }) {

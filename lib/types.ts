@@ -46,11 +46,11 @@ export type PlanSummaryByMonth = {
 
 export type Task = {
   id: string;
-  date: string; // YYYY-MM-DD
-  startTime: string; // HH:mm, in the planner's timezone
+  startTime: string;
+  endTime: string;
+  startOffsetMinutes: number;
   durationMinutes: number;
-  taskId?: string;
-  categoryId: TaskCategory['id'];
+  category: TaskCategory;
   title: string;
   notes?: string;
   status: 'planned' | 'in_progress' | 'completed' | 'skipped';

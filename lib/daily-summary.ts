@@ -28,13 +28,11 @@ export function getDailySummary(
   let completedTasks = 0;
 
   for (const task of plan.tasks) {
-    if (task.date !== plan.date) continue;
-
     const planned = task.status === 'skipped' ? 0 : task.durationMinutes;
     plannedMinutes += planned;
     if (task.status === 'completed') completedTasks += 1;
 
-    const row = rowsById.get(task.categoryId);
+    const row = rowsById.get(task.category.id);
     if (row) {
       row.plannedMinutes += planned;
     }

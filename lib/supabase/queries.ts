@@ -23,15 +23,18 @@ type ScheduledTaskRow = {
   id: string;
   title: string;
   notes: string;
-  category_id: string;
-  task_id: string | null;
+  category: Task['category'];
   start_time: string;
+  end_time: string;
+  start_offset_minutes: number;
   duration_minutes: number;
   status: Task['status'];
 };
 
-type DailyScheduleRow = Omit<DailyPlanSnapshot, 'targetMinutes'> & {
-  target_minutes: number;
+type DailyScheduleRow = {
+  plan:
+    | (Omit<DailyPlanSnapshot, 'targetMinutes'> & { target_minutes: number })
+    | null;
   tasks: ScheduledTaskRow[];
 };
 
@@ -84,21 +87,25 @@ export async function getDailySchedule(
   if (error) return { error: "Unable to load this day's schedule." };
   if (!data) return { data: undefined };
 
-  const { target_minutes, tasks: taskRows, ...snapshot } = data;
-  const plan: DailyPlanSnapshot = {
-    ...snapshot,
-    targetMinutes: target_minutes,
-  };
+  const plan = data.plan
+    ? {
+        id: data.plan.id,
+        date: data.plan.date,
+        timezone: data.plan.timezone,
+        categories: data.plan.categories,
+        targetMinutes: data.plan.target_minutes,
+      }
+    : undefined;
 
-  const tasks: Task[] = taskRows.map((row) => ({
+  const tasks: Task[] = data.tasks.map((row) => ({
     id: row.id,
-    date: plan.date,
     title: row.title,
-    startTime: row.start_time.slice(0, 5),
+    startTime: row.start_time,
+    endTime: row.end_time,
+    startOffsetMinutes: row.start_offset_minutes,
     durationMinutes: row.duration_minutes,
     status: row.status,
-    categoryId: row.category_id,
-    taskId: row.task_id ?? undefined,
+    category: row.category,
     notes: row.notes,
   }));
 

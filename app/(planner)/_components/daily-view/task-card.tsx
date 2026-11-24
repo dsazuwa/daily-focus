@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Task, TaskCategory } from '@/lib/types';
-import { formatDuration, getEndTime } from '@/lib/time';
+import { formatDuration } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import { CategoryIcon } from '../category-icon';
 
@@ -21,7 +21,6 @@ type TaskCardProps = {
 export default function TaskCard({ task, category, timezone }: TaskCardProps) {
   const isCompleted = task.status === 'completed';
   const duration = formatDuration(task.durationMinutes);
-  const endTime = getEndTime(task.startTime, task.durationMinutes);
 
   return (
     <Card
@@ -75,7 +74,7 @@ export default function TaskCard({ task, category, timezone }: TaskCardProps) {
           <div className='text-muted-foreground flex items-center gap-1.5 text-xs tabular-nums'>
             <span>{task.startTime}</span>
             <ArrowRight className='size-3 shrink-0' aria-hidden='true' />
-            <span>{endTime}</span>
+            <span>{task.endTime}</span>
             {timezone && (
               <span className='text-xxs font-medium uppercase'>{timezone}</span>
             )}
