@@ -15,7 +15,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
-import TimeInput from '@/components/ui/time-input';
 import { usePlannerDefaultsDialog } from '../../planner-defaults-provider';
 import { TotalAllocation } from '../total-allocation';
 import { CategoryField, type CategoryDraft } from './category-field';
@@ -56,7 +55,7 @@ export default function ChangeDefaultsDialog() {
   const formId = `${fieldId}-form`;
 
   const browserTimezone = useBrowserTimezone();
-  const { categories, defaultStartTime, targetHours } = draft;
+  const { categories, targetHours } = draft;
   const timezone = draft.timezone || browserTimezone;
 
   const allocatedHours = categories.reduce(
@@ -178,22 +177,6 @@ export default function ChangeDefaultsDialog() {
         inert={saving}
         onSubmit={submitForm}
       >
-        <Field className='gap-2'>
-          <FieldLabel htmlFor={`${fieldId}-start-time`}>
-            Default start time
-          </FieldLabel>
-
-          <TimeInput
-            id={`${fieldId}-start-time`}
-            name='defaultStartTime'
-            value={defaultStartTime}
-            onChange={(event) =>
-              updateDraft({ defaultStartTime: event.target.value })
-            }
-            required
-          />
-        </Field>
-
         <TimezoneField
           timezone={timezone}
           browserTimezone={browserTimezone}

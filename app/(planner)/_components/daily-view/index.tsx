@@ -49,7 +49,6 @@ export default function DailyView({
     ],
   };
   const summary = getDailySummary(plan, categories);
-  const startTime = savedPlan?.startTime ?? defaults?.defaultStartTime;
 
   function addBlock({
     title,
@@ -120,7 +119,6 @@ export default function DailyView({
             summary={summary}
             needsSetup={needsSetup}
             timezone={savedPlan?.timezone ?? defaults?.timezone}
-            defaultStartTime={startTime?.slice(0, 5)}
             onAddBlock={addBlock}
           />
         </>

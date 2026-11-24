@@ -34,18 +34,13 @@ type ScheduleBlockRow = {
   status: ScheduleBlock['status'];
 };
 
-type DailyScheduleRow = Omit<
-  DailyPlanSnapshot,
-  'startTime' | 'targetMinutes'
-> & {
-  start_time: string;
+type DailyScheduleRow = Omit<DailyPlanSnapshot, 'targetMinutes'> & {
   target_minutes: number;
   blocks: ScheduleBlockRow[];
 };
 
 type PlannerDefaultsRow = {
   timezone: string;
-  default_start_time: string;
   target_minutes: number;
   categories: PlannerDefaults['categories'];
 };
@@ -56,15 +51,14 @@ export async function getPlannerDefaults(
   const { data, error } = await supabase
     .schema('daily_focus')
     .rpc('get_planner_defaults')
-    .select('timezone, default_start_time, target_minutes, categories')
+    .select('timezone, target_minutes, categories')
     .maybeSingle<PlannerDefaultsRow>();
 
   if (!data) return { data: undefined, error };
 
-  const { default_start_time, target_minutes, ...snapshot } = data;
+  const { target_minutes, ...snapshot } = data;
   const defaults: PlannerDefaults = {
     ...snapshot,
-    defaultStartTime: default_start_time,
     targetMinutes: target_minutes,
   };
 
@@ -77,7 +71,6 @@ export function changePlannerDefaults(
 ) {
   return supabase.schema('daily_focus').rpc('change_planner_defaults', {
     p_timezone: defaults.timezone,
-    p_start_time: defaults.defaultStartTime,
     p_target_minutes: defaults.targetMinutes,
     p_categories: defaults.categories,
   });
@@ -92,13 +85,12 @@ export async function getDailySchedule(
     .rpc('get_daily_schedule', { p_date: date })
     .maybeSingle<DailyScheduleRow>();
 
-  if (error) return { error: 'Unable to load this day’s schedule.' };
+  if (error) return { error: "Unable to load this day's schedule." };
   if (!data) return { data: undefined };
 
-  const { start_time, target_minutes, blocks: blockRows, ...snapshot } = data;
+  const { target_minutes, blocks: blockRows, ...snapshot } = data;
   const plan: DailyPlanSnapshot = {
     ...snapshot,
-    startTime: start_time,
     targetMinutes: target_minutes,
   };
 
@@ -117,7 +109,7 @@ export async function getDailySchedule(
       blocks.push({ ...block, type: 'break' });
     } else {
       if (!row.category_id)
-        return { error: 'Unable to load this day’s schedule.' };
+        return { error: "Unable to load this day's schedule." };
       blocks.push({
         ...block,
         type: 'task',

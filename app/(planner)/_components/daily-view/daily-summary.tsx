@@ -8,15 +8,9 @@ import { CategoryIcon } from '../category-icon';
 
 type DailySummaryProps = {
   summary: DailySummaryData;
-  startTime?: string;
-  timezone: string;
 };
 
-export default function DailySummary({
-  summary,
-  startTime,
-  timezone,
-}: DailySummaryProps) {
+export default function DailySummary({ summary }: DailySummaryProps) {
   const { rows, plannedMinutes: totalPlanned, targetMinutes } = summary;
 
   return (
@@ -44,13 +38,7 @@ export default function DailySummary({
           targetMinutes={targetMinutes}
         />
 
-        {targetMinutes !== undefined && (
-          <AdjustSplitDialog
-            summary={summary}
-            initialStartTime={startTime}
-            timezone={timezone}
-          />
-        )}
+        {targetMinutes !== undefined && <AdjustSplitDialog summary={summary} />}
       </CardContent>
     </Card>
   );

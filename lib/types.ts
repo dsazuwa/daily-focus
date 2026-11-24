@@ -19,7 +19,6 @@ export type TaskCategory = {
 
 export type PlannerDefaults = {
   timezone: string;
-  defaultStartTime: string;
   targetMinutes: number;
   categories: Array<TaskCategory & { minutes: number }>;
 };
@@ -28,7 +27,6 @@ export type DailyPlanSnapshot = {
   id: string;
   date: string;
   timezone: string;
-  startTime: string;
   targetMinutes: number;
   categories: PlannerDefaults['categories'];
 };

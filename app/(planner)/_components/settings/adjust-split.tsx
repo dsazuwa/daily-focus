@@ -20,21 +20,15 @@ import {
 } from '@/components/ui/input-group';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
-import TimeInput from '@/components/ui/time-input';
 import type { DailySummaryData } from '@/lib/daily-summary';
-import { PLANNER_TIME_ZONE } from '@/lib/dates';
 import { CategoryIcon } from '../category-icon';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 import { TotalAllocation } from './total-allocation';
 
 export default function AdjustSplitDialog({
   summary,
-  initialStartTime = '08:00',
-  timezone = PLANNER_TIME_ZONE,
 }: {
   summary: DailySummaryData;
-  initialStartTime?: string;
-  timezone?: string;
 }) {
   const result = usePlannerDefaults();
   const defaults = 'data' in result ? result.data : undefined;
@@ -47,7 +41,6 @@ export default function AdjustSplitDialog({
 
   const [open, setOpen] = useState(false);
   const [split, setSplit] = useState(defaultSplit);
-  const [startTime, setStartTime] = useState(initialStartTime);
   const initialTargetHours =
     summary.targetMinutes === undefined
       ? ''
@@ -72,7 +65,6 @@ export default function AdjustSplitDialog({
           hours: String(allocatedMinutes / 60),
         })),
       );
-      setStartTime(initialStartTime);
       setTargetHours(initialTargetHours);
       setFeedback(undefined);
     }
@@ -120,27 +112,6 @@ export default function AdjustSplitDialog({
       }
     >
       <form id={formId} className='grid gap-6' onSubmit={submitForm}>
-        <Field className='gap-2'>
-          <div className='flex items-center justify-between gap-2'>
-            <FieldLabel htmlFor={`${formId}-start`}>
-              Start your day at
-            </FieldLabel>
-
-            <span className='text-muted-foreground text-xs'>{timezone}</span>
-          </div>
-
-          <TimeInput
-            id={`${formId}-start`}
-            name='start'
-            value={startTime}
-            onChange={(event) => {
-              setStartTime(event.target.value);
-              setFeedback(undefined);
-            }}
-            required
-          />
-        </Field>
-
         <Field className='gap-2'>
           <FieldLabel htmlFor={`${formId}-target-hours`}>
             Target hours

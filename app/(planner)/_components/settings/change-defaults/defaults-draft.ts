@@ -3,14 +3,12 @@ import type { CategoryDraft } from './category-field';
 
 export type DefaultsDraft = {
   categories: CategoryDraft[];
-  defaultStartTime: string;
   timezone: string;
   targetHours: string;
 };
 
 const emptyDefaultsDraft: DefaultsDraft = {
   categories: [],
-  defaultStartTime: '08:00',
   timezone: '',
   targetHours: '8',
 };
@@ -23,7 +21,6 @@ export function toDefaultsDraft(defaults?: PlannerDefaults): DefaultsDraft {
       ...category,
       hours: String(minutes / 60),
     })),
-    defaultStartTime: defaults.defaultStartTime.slice(0, 5),
     timezone: defaults.timezone,
     targetHours: String(defaults.targetMinutes / 60),
   };
@@ -68,7 +65,6 @@ export function validateDefaultsDraft(
   return {
     data: {
       timezone: draft.timezone,
-      defaultStartTime: draft.defaultStartTime,
       targetMinutes,
       categories,
     },

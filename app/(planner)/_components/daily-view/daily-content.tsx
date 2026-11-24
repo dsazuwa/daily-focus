@@ -16,7 +16,6 @@ type DailyContentProps = {
   needsSetup: boolean;
   categories: TaskCategory[];
   timezone?: string;
-  defaultStartTime?: string;
   onAddBlock: (block: BlockDraft) => void;
 };
 
@@ -26,7 +25,6 @@ export default function DailyContent({
   summary,
   needsSetup,
   timezone = PLANNER_TIME_ZONE,
-  defaultStartTime,
   onAddBlock,
 }: DailyContentProps) {
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
@@ -52,7 +50,6 @@ export default function DailyContent({
               key={plan.date}
               categories={categories}
               timezone={timezone}
-              defaultStartTime={defaultStartTime}
               onAddBlock={onAddBlock}
             />
           )}
@@ -78,12 +75,7 @@ export default function DailyContent({
         {needsSetup ? (
           <PlannerSetupCard />
         ) : (
-          <DailySummary
-            key={plan.date}
-            summary={summary}
-            startTime={defaultStartTime}
-            timezone={timezone}
-          />
+          <DailySummary key={plan.date} summary={summary} />
         )}
 
         <MotivationCard />
