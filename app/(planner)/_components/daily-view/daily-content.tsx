@@ -18,7 +18,7 @@ type DailyContentProps = {
   needsSetup: boolean;
   categories: TaskCategory[];
   timezone?: string;
-  onAddTask: (task: TaskDraft) => void;
+  onAddTask: (task: TaskDraft) => string | undefined;
 };
 
 export default function DailyContent({
@@ -37,10 +37,13 @@ export default function DailyContent({
 
   let scheduledUntil: number | undefined;
   const taskRows: ReactNode[] = [];
+
   for (const task of sortedTasks) {
     const startMinutes = getMinutesSinceMidnight(task.startTime);
+
     const gapMinutes =
       scheduledUntil === undefined ? 0 : startMinutes - scheduledUntil;
+
     const endMinutes = startMinutes + task.durationMinutes;
     scheduledUntil = Math.max(scheduledUntil ?? endMinutes, endMinutes);
 

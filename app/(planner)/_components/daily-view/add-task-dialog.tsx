@@ -46,7 +46,7 @@ export function AddTaskDialog({
 }: {
   categories: readonly TaskCategory[];
   timezone: string;
-  onAddTask: (task: TaskDraft) => void;
+  onAddTask: (task: TaskDraft) => string | undefined;
 }) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
@@ -86,13 +86,18 @@ export function AddTaskDialog({
       return;
     }
 
-    onAddTask({
+    const conflict = onAddTask({
       title,
       categoryId,
       startTime,
       durationMinutes: Number(duration),
       notes: notes || undefined,
     });
+
+    if (conflict) {
+      setError(conflict);
+      return;
+    }
 
     changeOpen(false);
   }

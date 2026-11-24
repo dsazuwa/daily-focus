@@ -5,6 +5,7 @@ import DateToolbar from '../date-navigation/date-toolbar';
 import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { Button } from '@/components/ui/button';
+import { getMinutesSinceMidnight } from '@/lib/time';
 import type { DailyPlanSnapshot, Task } from '@/lib/types';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 
@@ -57,6 +58,15 @@ export default function DailyView({
     durationMinutes,
     notes,
   }: TaskDraft) {
+    const start = getMinutesSinceMidnight(startTime);
+    const end = start + durationMinutes;
+    const overlaps = plan.tasks.some((task) => {
+      const taskStart = getMinutesSinceMidnight(task.startTime);
+      return start < taskStart + task.durationMinutes && taskStart < end;
+    });
+
+    if (overlaps) return 'That time overlaps another task on this day.';
+
     const task: Task = {
       id: crypto.randomUUID(),
       categoryId,
