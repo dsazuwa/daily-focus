@@ -4,15 +4,13 @@ export type CategorySummary = {
   category: TaskCategory;
   allocatedMinutes: number;
   plannedMinutes: number;
-  completedMinutes: number;
 };
 
 export type DailySummaryData = {
   rows: CategorySummary[];
   plannedMinutes: number;
-  completedMinutes: number;
+  completedTasks: number;
   targetMinutes: number | undefined;
-  remainingMinutes: number;
   progressPercentage: number;
 };
 
@@ -24,24 +22,21 @@ export function getDailySummary(
     category,
     allocatedMinutes: category.minutes,
     plannedMinutes: 0,
-    completedMinutes: 0,
   }));
   const rowsById = new Map(rows.map((row) => [row.category.id, row]));
   let plannedMinutes = 0;
-  let completedMinutes = 0;
+  let completedTasks = 0;
 
   for (const task of plan.tasks) {
     if (task.date !== plan.date) continue;
 
-    // Skipping removes planned time, but preserves any time already logged.
     const planned = task.status === 'skipped' ? 0 : task.durationMinutes;
     plannedMinutes += planned;
-    completedMinutes += task.actualMinutes;
+    if (task.status === 'completed') completedTasks += 1;
 
     const row = rowsById.get(task.categoryId);
     if (row) {
       row.plannedMinutes += planned;
-      row.completedMinutes += task.actualMinutes;
     }
   }
 
@@ -50,14 +45,13 @@ export function getDailySummary(
   return {
     rows,
     plannedMinutes,
-    completedMinutes,
+    completedTasks,
     targetMinutes: plan.targetMinutes,
-    remainingMinutes: Math.max(0, targetMinutes - completedMinutes),
     progressPercentage:
       targetMinutes > 0
         ? Math.min(
             100,
-            Math.max(0, Math.round((completedMinutes / targetMinutes) * 100)),
+            Math.max(0, Math.round((plannedMinutes / targetMinutes) * 100)),
           )
         : 0,
   };

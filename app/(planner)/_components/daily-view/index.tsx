@@ -76,7 +76,6 @@ export default function DailyView({
       startTime,
       durationMinutes,
       status: 'planned',
-      actualMinutes: 0,
     };
 
     setAddedTasks((current) => [...current, task]);

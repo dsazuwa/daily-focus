@@ -10,14 +10,12 @@ type CalendarDaySummaryRow = {
   date: string;
   target_minutes: number;
   planned_minutes: number;
-  completed_minutes: number;
 };
 
 type PlanSummaryByMonthRow = {
   days_planned: number;
-  goals_met: number;
+  targets_planned: number;
   planned_minutes: number;
-  completed_minutes: number;
   days: CalendarDaySummaryRow[];
 };
 
@@ -29,7 +27,6 @@ type ScheduledTaskRow = {
   task_id: string | null;
   start_time: string;
   duration_minutes: number;
-  actual_minutes: number;
   status: Task['status'];
 };
 
@@ -103,7 +100,6 @@ export async function getDailySchedule(
     categoryId: row.category_id,
     taskId: row.task_id ?? undefined,
     notes: row.notes,
-    actualMinutes: row.actual_minutes,
   }));
 
   return { data: { plan, tasks } };
@@ -122,14 +118,12 @@ export async function getPlanSummaryByMonth(
 
   const summary: PlanSummaryByMonth = {
     daysPlanned: data.days_planned,
-    goalsMet: data.goals_met,
+    targetsPlanned: data.targets_planned,
     plannedMinutes: data.planned_minutes,
-    completedMinutes: data.completed_minutes,
     daySummaries: data.days.map((day) => ({
       date: day.date,
       targetMinutes: day.target_minutes,
       plannedMinutes: day.planned_minutes,
-      completedMinutes: day.completed_minutes,
     })),
   };
 

@@ -4,18 +4,18 @@ import { Separator } from '@/components/ui/separator';
 import { formatDuration } from '@/lib/time';
 
 export default function MonthStats({
-  completedMinutes,
+  plannedMinutes,
   daysPlanned,
-  goalsMet,
+  targetsPlanned,
 }: {
-  completedMinutes: number;
+  plannedMinutes: number;
   daysPlanned: number;
-  goalsMet: number;
+  targetsPlanned: number;
 }) {
   return (
     <SummaryCard
       title="How's your month shaping up?"
-      description='Look back at the days you planned and the time you put in.'
+      description='See how many days you planned and how much time you set aside.'
     >
       <CardContent
         className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:flex-1 md:gap-[calc(var(--card-spacing)/2)] md:pl-0'
@@ -26,15 +26,13 @@ export default function MonthStats({
         <Separator orientation='vertical' />
 
         <SummaryStat
-          label='completed'
-          value={
-            completedMinutes === 0 ? '0h' : formatDuration(completedMinutes)
-          }
+          label='time planned'
+          value={formatDuration(plannedMinutes)}
         />
 
         <Separator orientation='vertical' />
 
-        <SummaryStat label='goals met' value={goalsMet} />
+        <SummaryStat label='targets planned' value={targetsPlanned} />
       </CardContent>
     </SummaryCard>
   );

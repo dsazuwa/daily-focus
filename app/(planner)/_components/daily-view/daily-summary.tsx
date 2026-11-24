@@ -28,7 +28,6 @@ export default function DailySummary({ summary }: DailySummaryProps) {
               key={row.category.id}
               category={row.category}
               plannedMinutes={row.plannedMinutes}
-              completedMinutes={row.completedMinutes}
             />
           ))}
         </div>
@@ -84,11 +83,9 @@ function CategorySplitBar({ rows, totalPlanned }: CategorySplitBarProps) {
 function CategoryBreakdownRow({
   category,
   plannedMinutes,
-  completedMinutes,
 }: {
   category: TaskCategory;
   plannedMinutes: number;
-  completedMinutes: number;
 }) {
   return (
     <div className='flex items-center gap-3'>
@@ -107,10 +104,6 @@ function CategoryBreakdownRow({
 
       <div className='min-w-0 flex-1 space-y-0.5'>
         <p className='text-sm font-medium wrap-break-word'>{category.name}</p>
-
-        <p className='text-muted-foreground text-xs tabular-nums'>
-          {formatDuration(completedMinutes)} completed
-        </p>
       </div>
 
       <span className='shrink-0 text-sm font-medium tabular-nums'>

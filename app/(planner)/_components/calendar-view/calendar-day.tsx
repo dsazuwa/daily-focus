@@ -26,23 +26,18 @@ export default function CalendarDay({
   onSelect,
   disabled = false,
 }: CalendarDayProps) {
-  const goalMet = Boolean(
+  const targetPlanned = Boolean(
     summary &&
     summary.targetMinutes > 0 &&
-    summary.completedMinutes >= summary.targetMinutes,
+    summary.plannedMinutes >= summary.targetMinutes,
   );
 
   const showSummary = !outsideMonth && Boolean(summary);
   const label = [
     `Open ${formatDate(date)}`,
     ...(isLastOpened ? ['last opened day'] : []),
-    ...(summary
-      ? [
-          `${formatDuration(summary.completedMinutes)} completed`,
-          `${formatDuration(summary.plannedMinutes)} planned`,
-        ]
-      : []),
-    ...(goalMet ? ['goal met'] : []),
+    ...(summary ? [`${formatDuration(summary.plannedMinutes)} planned`] : []),
+    ...(targetPlanned ? ['daily target planned'] : []),
   ].join(', ');
 
   return (
@@ -70,7 +65,7 @@ export default function CalendarDay({
           {Number(date.slice(-2))}
         </span>
 
-        {showSummary && <DayIndicator goalMet={goalMet} />}
+        {showSummary && <DayIndicator targetPlanned={targetPlanned} />}
       </span>
 
       {!outsideMonth && summary && <DayProgress summary={summary} />}
@@ -78,8 +73,8 @@ export default function CalendarDay({
   );
 }
 
-function DayIndicator({ goalMet }: { goalMet: boolean }) {
-  return goalMet ? (
+function DayIndicator({ targetPlanned }: { targetPlanned: boolean }) {
+  return targetPlanned ? (
     <Check className='text-primary size-3 shrink-0' aria-hidden='true' />
   ) : (
     <span
@@ -92,16 +87,12 @@ function DayIndicator({ goalMet }: { goalMet: boolean }) {
 function DayProgress({ summary }: { summary: CalendarDaySummary }) {
   const progressPercentage = Math.min(
     100,
-    Math.round((summary.completedMinutes / summary.targetMinutes) * 100),
+    Math.round((summary.plannedMinutes / summary.targetMinutes) * 100),
   );
 
   return (
     <span className='mt-auto flex w-full flex-col gap-1.5'>
       <span className='text-xxs font-semibold tabular-nums sm:text-xs md:text-sm'>
-        {formatDuration(summary.completedMinutes)}
-      </span>
-
-      <span className='text-muted-foreground hidden text-xs sm:block'>
         {formatDuration(summary.plannedMinutes)} planned
       </span>
 

@@ -35,14 +35,12 @@ export type CalendarDaySummary = {
   date: string;
   targetMinutes: number;
   plannedMinutes: number;
-  completedMinutes: number;
 };
 
 export type PlanSummaryByMonth = {
   daysPlanned: number;
-  goalsMet: number;
+  targetsPlanned: number;
   plannedMinutes: number;
-  completedMinutes: number;
   daySummaries: CalendarDaySummary[];
 };
 
@@ -56,7 +54,6 @@ export type Task = {
   title: string;
   notes?: string;
   status: 'planned' | 'in_progress' | 'completed' | 'skipped';
-  actualMinutes: number;
 };
 
 export type DailyPlan = {
