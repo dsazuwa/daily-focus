@@ -9,6 +9,7 @@ import type {
 type CalendarDaySummaryRow = {
   date: string;
   target_minutes: number;
+  planned_minutes: number;
   completed_minutes: number;
 };
 
@@ -130,6 +131,7 @@ export async function getPlanSummaryByMonth(
     daySummaries: data.days.map((day) => ({
       date: day.date,
       targetMinutes: day.target_minutes,
+      plannedMinutes: day.planned_minutes,
       completedMinutes: day.completed_minutes,
     })),
   };

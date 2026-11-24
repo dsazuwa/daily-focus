@@ -1,3 +1,4 @@
+import ArrowUpRight from 'lucide-react/icons/arrow-up-right';
 import Check from 'lucide-react/icons/check';
 
 import { formatDate } from '@/lib/dates';
@@ -33,11 +34,15 @@ export default function CalendarDay({
   );
 
   const showSummary = !outsideMonth && Boolean(summary);
+  const showPlanHint = !outsideMonth && !summary && !disabled;
   const label = [
-    `Open ${formatDate(date)}`,
+    `${showPlanHint ? 'Plan' : 'Open'} ${formatDate(date)}`,
     ...(isLastOpened ? ['last opened day'] : []),
     ...(summary
-      ? [`${formatDuration(summary.completedMinutes)} completed`]
+      ? [
+          `${formatDuration(summary.completedMinutes)} completed out of ${formatDuration(summary.targetMinutes)}`,
+          `${formatDuration(summary.plannedMinutes)} planned`,
+        ]
       : []),
     ...(targetMet ? ['daily target met'] : []),
   ].join(', ');
@@ -50,7 +55,7 @@ export default function CalendarDay({
       aria-current={isToday ? 'date' : undefined}
       onClick={() => onSelect(date)}
       className={cn(
-        'hover:bg-accent/50 focus-visible:outline-ring relative flex min-h-24 min-w-0 flex-col gap-3 p-1.5 text-left transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 sm:min-h-36 sm:p-4',
+        'group/calendar-day hover:bg-accent/50 focus-visible:outline-ring relative flex min-h-24 min-w-0 flex-col gap-3 p-1.5 text-left transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 sm:min-h-36 sm:p-4',
         className,
         disabled && 'pointer-events-none opacity-50',
         outsideMonth && 'bg-muted text-muted-foreground',
@@ -71,6 +76,16 @@ export default function CalendarDay({
       </span>
 
       {!outsideMonth && summary && <DayProgress summary={summary} />}
+
+      {showPlanHint && (
+        <span
+          aria-hidden='true'
+          className='text-muted-foreground text-xxs mt-auto flex flex-wrap items-center gap-x-1 leading-tight opacity-0 transition-opacity group-hover/calendar-day:opacity-100 group-focus-visible/calendar-day:opacity-100'
+        >
+          Plan day
+          <ArrowUpRight className='size-3 shrink-0' />
+        </span>
+      )}
     </button>
   );
 }
@@ -96,12 +111,18 @@ function DayProgress({ summary }: { summary: CalendarDaySummary }) {
 
   return (
     <span className='mt-auto flex w-full flex-col gap-1.5'>
-      <span className='text-xxs font-semibold tabular-nums sm:text-xs md:text-sm'>
-        {formatDuration(summary.completedMinutes)} completed
+      <strong className='text-xs/none font-bold tabular-nums sm:text-sm/none'>
+        {formatDuration(summary.completedMinutes)}
+      </strong>
+
+      <span className='text-muted-foreground text-xxs leading-none tabular-nums sm:text-xs/none'>
+        {formatDuration(summary.plannedMinutes)}{' '}
+        <span className='sm:hidden'>plan</span>
+        <span className='hidden sm:inline'>planned</span>
       </span>
 
       <span
-        className='bg-muted block h-1 overflow-hidden rounded-full'
+        className='bg-muted-foreground/25 block h-1 w-full shrink-0 overflow-hidden rounded-full'
         aria-hidden='true'
       >
         <span

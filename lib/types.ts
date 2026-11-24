@@ -34,6 +34,7 @@ export type DailyPlanSnapshot = {
 export type CalendarDaySummary = {
   date: string;
   targetMinutes: number;
+  plannedMinutes: number;
   completedMinutes: number;
 };
 
