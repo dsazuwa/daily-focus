@@ -5,10 +5,10 @@ import DateToolbar from '../date-navigation/date-toolbar';
 import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { Button } from '@/components/ui/button';
-import type { DailyPlanSnapshot, ScheduleBlock, TaskBlock } from '@/lib/types';
+import type { DailyPlanSnapshot, ScheduleBlock, Task } from '@/lib/types';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 
-import type { BlockDraft } from './add-block-dialog';
+import type { TaskDraft } from './add-task-dialog';
 import DailyContent from './daily-content';
 import DayStats from './day-stats';
 import WeekBar from './week-bar';
@@ -28,7 +28,7 @@ export default function DailyView({
   onRetry: () => void;
   onSelectDate: (date: string) => void;
 }) {
-  const [addedBlocks, setAddedBlocks] = useState<TaskBlock[]>([]);
+  const [addedTasks, setAddedTasks] = useState<Task[]>([]);
 
   const { error: defaultsError, ...result } = usePlannerDefaults();
   const defaults = 'data' in result ? result.data : undefined;
@@ -42,7 +42,7 @@ export default function DailyView({
     targetMinutes: savedPlan?.targetMinutes ?? defaults?.targetMinutes,
     blocks: [
       ...(schedule?.blocks ?? []),
-      ...addedBlocks.filter(
+      ...addedTasks.filter(
         (block) =>
           block.date === selectedDate && categoryIds.has(block.categoryId),
       ),
@@ -50,14 +50,14 @@ export default function DailyView({
   };
   const summary = getDailySummary(plan, categories);
 
-  function addBlock({
+  function addTask({
     title,
     categoryId,
     startTime,
     durationMinutes,
     notes,
-  }: BlockDraft) {
-    const block: TaskBlock = {
+  }: TaskDraft) {
+    const task: Task = {
       id: crypto.randomUUID(),
       categoryId,
       title,
@@ -70,7 +70,7 @@ export default function DailyView({
       actualMinutes: 0,
     };
 
-    setAddedBlocks((current) => [...current, block]);
+    setAddedTasks((current) => [...current, task]);
   }
 
   return (
@@ -119,7 +119,7 @@ export default function DailyView({
             summary={summary}
             needsSetup={needsSetup}
             timezone={savedPlan?.timezone ?? defaults?.timezone}
-            onAddBlock={addBlock}
+            onAddTask={addTask}
           />
         </>
       )}

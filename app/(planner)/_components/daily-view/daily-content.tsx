@@ -4,7 +4,7 @@ import type { DailySummaryData } from '@/lib/daily-summary';
 import { PLANNER_TIME_ZONE } from '@/lib/dates';
 import type { DailyPlan, ScheduleBlock, TaskCategory } from '@/lib/types';
 import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
-import { AddBlockDialog, type BlockDraft } from './add-block-dialog';
+import { AddTaskDialog, type TaskDraft } from './add-task-dialog';
 import BreakRow from './break-row';
 import DailySummary from './daily-summary';
 import MotivationCard from './motivation-card';
@@ -16,7 +16,7 @@ type DailyContentProps = {
   needsSetup: boolean;
   categories: TaskCategory[];
   timezone?: string;
-  onAddBlock: (block: BlockDraft) => void;
+  onAddTask: (task: TaskDraft) => void;
 };
 
 export default function DailyContent({
@@ -25,7 +25,7 @@ export default function DailyContent({
   summary,
   needsSetup,
   timezone = PLANNER_TIME_ZONE,
-  onAddBlock,
+  onAddTask,
 }: DailyContentProps) {
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 
@@ -46,11 +46,11 @@ export default function DailyContent({
           </div>
 
           {categories.length > 0 && (
-            <AddBlockDialog
+            <AddTaskDialog
               key={plan.date}
               categories={categories}
               timezone={timezone}
-              onAddBlock={onAddBlock}
+              onAddTask={onAddTask}
             />
           )}
         </div>
@@ -126,5 +126,5 @@ function PlanBlockItem({
       </p>
     );
 
-  return <TaskCard block={block} category={category} timezone={timezone} />;
+  return <TaskCard task={block} category={category} timezone={timezone} />;
 }

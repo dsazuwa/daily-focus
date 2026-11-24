@@ -31,7 +31,7 @@ const durations = Array.from({ length: (4 * 60) / 15 }, (_, index) => {
   };
 });
 
-export type BlockDraft = {
+export type TaskDraft = {
   title: string;
   categoryId: string;
   startTime: string;
@@ -39,14 +39,14 @@ export type BlockDraft = {
   notes?: string;
 };
 
-export function AddBlockDialog({
+export function AddTaskDialog({
   categories,
   timezone,
-  onAddBlock,
+  onAddTask,
 }: {
   categories: readonly TaskCategory[];
   timezone: string;
-  onAddBlock: (block: BlockDraft) => void;
+  onAddTask: (task: TaskDraft) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
@@ -86,7 +86,7 @@ export function AddBlockDialog({
       return;
     }
 
-    onAddBlock({
+    onAddTask({
       title,
       categoryId,
       startTime,
@@ -101,13 +101,13 @@ export function AddBlockDialog({
     <ResponsiveDialog
       open={open}
       onOpenChange={changeOpen}
-      title='Add block'
+      title='Add task'
       description='Schedule time for a task today.'
 
       trigger={
         <Button type='button' variant='outline'>
           <Plus aria-hidden='true' />
-          Add block
+          Add task
         </Button>
       }
 
@@ -122,7 +122,7 @@ export function AddBlockDialog({
           </Button>
 
           <Button type='submit' form={formId}>
-            Add block
+            Add task
           </Button>
         </>
       }

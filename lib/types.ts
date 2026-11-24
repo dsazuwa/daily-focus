@@ -53,7 +53,7 @@ type BlockBase = {
   durationMinutes: number;
 };
 
-export type TaskBlock = BlockBase & {
+export type Task = BlockBase & {
   type: 'task';
   taskId?: string;
   categoryId: TaskCategory['id'];
@@ -69,7 +69,7 @@ export type BreakBlock = BlockBase & {
   status: 'planned' | 'in_progress' | 'completed' | 'skipped';
 };
 
-export type ScheduleBlock = TaskBlock | BreakBlock;
+export type ScheduleBlock = Task | BreakBlock;
 
 export type DailyPlan = {
   date: string; // YYYY-MM-DD
