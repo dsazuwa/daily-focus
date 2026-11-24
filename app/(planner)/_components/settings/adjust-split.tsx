@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/input-group';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
+import { focusNextFieldOnEnter } from '@/lib/form-navigation';
 import type { DailySummaryData } from '@/lib/daily-summary';
 import { CategoryIcon } from '../category-icon';
 import { usePlannerDefaults } from '../planner-defaults-provider';
@@ -111,7 +112,12 @@ export default function AdjustSplitDialog({
         </>
       }
     >
-      <form id={formId} className='grid gap-6' onSubmit={submitForm}>
+      <form
+        id={formId}
+        className='grid gap-6'
+        onKeyDown={focusNextFieldOnEnter}
+        onSubmit={submitForm}
+      >
         <Field className='gap-2'>
           <FieldLabel htmlFor={`${formId}-target-hours`}>
             Target hours

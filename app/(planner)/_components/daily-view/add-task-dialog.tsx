@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import TimeInput from '@/components/ui/time-input';
+import { focusNextFieldOnEnter } from '@/lib/form-navigation';
 import type { TaskCategory } from '@/lib/types';
 
 const durations = Array.from({ length: (4 * 60) / 15 }, (_, index) => {
@@ -144,6 +145,7 @@ export function AddTaskDialog({
         className='grid gap-5'
         inert={saving}
         aria-busy={saving}
+        onKeyDown={focusNextFieldOnEnter}
         onSubmit={submitForm}
       >
         <Field className='gap-2'>

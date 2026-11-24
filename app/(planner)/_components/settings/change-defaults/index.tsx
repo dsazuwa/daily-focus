@@ -15,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { Separator } from '@/components/ui/separator';
+import { focusNextFieldOnEnter } from '@/lib/form-navigation';
 import { useBrowserTimezone } from '@/hooks/use-browser-timezone';
 import { usePlannerDefaultsDialog } from '../../planner-defaults-provider';
 import { TotalAllocation } from '../total-allocation';
@@ -176,6 +177,7 @@ export default function ChangeDefaultsDialog() {
         className='grid gap-6'
         aria-busy={saving}
         inert={saving}
+        onKeyDown={focusNextFieldOnEnter}
         onSubmit={submitForm}
       >
         <TimezoneField
@@ -213,7 +215,8 @@ export default function ChangeDefaultsDialog() {
           </FieldLegend>
 
           <p className='text-muted-foreground text-sm'>
-            Rename, add, or remove categories. Enter hours in 15-minute increments, e.g. 0.25 hrs.
+            Rename, add, or remove categories. Enter hours in 15-minute
+            increments, e.g. 0.25 hrs.
           </p>
 
           {categories.length > 0 ? (
