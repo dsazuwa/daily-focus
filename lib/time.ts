@@ -15,15 +15,22 @@ export function formatDuration(minutes: number, includeUnit = true): string {
 
   if (hours === 0 && fraction) return `${fraction}${suffix}`;
 
-  if (hours > 0) return `${hours}${fraction}${suffix}`;
+  if (hours > 0 && (fraction || remainder === 0))
+    return `${hours}${fraction}${suffix}`;
+
+  if (hours > 0) return `${hours}h ${remainder}m`;
 
   return `${remainder}m`; // Fallback only if non-15m data ever enters the database
 }
 
+export function getMinutesSinceMidnight(time: string) {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
 /** Format an end time in the planner's clock, including any day rollover. */
 export function getEndTime(startTime: string, durationMinutes: number) {
-  const [hours, minutes] = startTime.split(':').map(Number);
-  const totalMinutes = hours * 60 + minutes + durationMinutes;
+  const totalMinutes = getMinutesSinceMidnight(startTime) + durationMinutes;
   const daysLater = Math.floor(totalMinutes / (24 * 60));
   const clockMinutes = totalMinutes % (24 * 60);
   const time = `${String(Math.floor(clockMinutes / 60)).padStart(2, '0')}:${String(

@@ -5,7 +5,7 @@ import DateToolbar from '../date-navigation/date-toolbar';
 import { addDays, MIN_DATE } from '@/lib/dates';
 import { getDailySummary } from '@/lib/daily-summary';
 import { Button } from '@/components/ui/button';
-import type { DailyPlanSnapshot, ScheduleBlock, Task } from '@/lib/types';
+import type { DailyPlanSnapshot, Task } from '@/lib/types';
 import { usePlannerDefaults } from '../planner-defaults-provider';
 
 import type { TaskDraft } from './add-task-dialog';
@@ -23,7 +23,7 @@ export default function DailyView({
 }: {
   selectedDate: string;
   today: string;
-  schedule: { plan: DailyPlanSnapshot; blocks: ScheduleBlock[] } | undefined;
+  schedule: { plan: DailyPlanSnapshot; tasks: Task[] } | undefined;
   scheduleError: string | undefined;
   onRetry: () => void;
   onSelectDate: (date: string) => void;
@@ -40,11 +40,11 @@ export default function DailyView({
   const plan = {
     date: selectedDate,
     targetMinutes: savedPlan?.targetMinutes ?? defaults?.targetMinutes,
-    blocks: [
-      ...(schedule?.blocks ?? []),
+    tasks: [
+      ...(schedule?.tasks ?? []),
       ...addedTasks.filter(
-        (block) =>
-          block.date === selectedDate && categoryIds.has(block.categoryId),
+        (task) =>
+          task.date === selectedDate && categoryIds.has(task.categoryId),
       ),
     ],
   };
@@ -65,7 +65,6 @@ export default function DailyView({
       date: selectedDate,
       startTime,
       durationMinutes,
-      type: 'task',
       status: 'planned',
       actualMinutes: 0,
     };

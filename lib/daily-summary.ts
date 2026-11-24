@@ -30,18 +30,18 @@ export function getDailySummary(
   let plannedMinutes = 0;
   let completedMinutes = 0;
 
-  for (const block of plan.blocks) {
-    if (block.type !== 'task' || block.date !== plan.date) continue;
+  for (const task of plan.tasks) {
+    if (task.date !== plan.date) continue;
 
     // Skipping removes planned time, but preserves any time already logged.
-    const planned = block.status === 'skipped' ? 0 : block.durationMinutes;
+    const planned = task.status === 'skipped' ? 0 : task.durationMinutes;
     plannedMinutes += planned;
-    completedMinutes += block.actualMinutes;
+    completedMinutes += task.actualMinutes;
 
-    const row = rowsById.get(block.categoryId);
+    const row = rowsById.get(task.categoryId);
     if (row) {
       row.plannedMinutes += planned;
-      row.completedMinutes += block.actualMinutes;
+      row.completedMinutes += task.actualMinutes;
     }
   }
 

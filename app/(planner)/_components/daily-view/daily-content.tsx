@@ -1,7 +1,10 @@
+import type { ReactNode } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailySummaryData } from '@/lib/daily-summary';
-import type { DailyPlan, ScheduleBlock, TaskCategory } from '@/lib/types';
+import { getMinutesSinceMidnight } from '@/lib/time';
+import type { DailyPlan, Task, TaskCategory } from '@/lib/types';
 import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
 import { AddTaskDialog, type TaskDraft } from './add-task-dialog';
 import BreakRow from './break-row';
@@ -28,9 +31,31 @@ export default function DailyContent({
 }: DailyContentProps) {
   const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
 
-  const sortedBlocks = plan.blocks
-    .filter((block) => block.date === plan.date)
+  const sortedTasks = plan.tasks
+    .filter((task) => task.date === plan.date)
     .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+  let scheduledUntil: number | undefined;
+  const taskRows: ReactNode[] = [];
+  for (const task of sortedTasks) {
+    const startMinutes = getMinutesSinceMidnight(task.startTime);
+    const gapMinutes =
+      scheduledUntil === undefined ? 0 : startMinutes - scheduledUntil;
+    const endMinutes = startMinutes + task.durationMinutes;
+    scheduledUntil = Math.max(scheduledUntil ?? endMinutes, endMinutes);
+
+    taskRows.push(
+      <div key={task.id} className='space-y-3'>
+        {gapMinutes > 0 && <BreakRow durationMinutes={gapMinutes} />}
+
+        <ScheduleTaskItem
+          task={task}
+          timezone={timezone}
+          categoryMap={categoryMap}
+        />
+      </div>,
+    );
+  }
 
   return (
     <div className='gap-uniform grid md:grid-cols-12'>
@@ -54,19 +79,12 @@ export default function DailyContent({
           )}
         </div>
 
-        {sortedBlocks.length === 0 ? (
+        {taskRows.length === 0 ? (
           <p className='text-muted-foreground py-8 text-center text-sm'>
-            No blocks scheduled for this day.
+            No tasks scheduled for this day.
           </p>
         ) : (
-          sortedBlocks.map((block) => (
-            <PlanBlockItem
-              key={block.id}
-              block={block}
-              timezone={timezone}
-              categoryMap={categoryMap}
-            />
-          ))
+          taskRows
         )}
       </div>
 
@@ -105,25 +123,23 @@ function PlannerSetupCard() {
   );
 }
 
-function PlanBlockItem({
-  block,
+function ScheduleTaskItem({
+  task,
   timezone,
   categoryMap,
 }: {
-  block: ScheduleBlock;
+  task: Task;
   timezone?: string;
   categoryMap: Map<string, TaskCategory>;
 }) {
-  if (block.type === 'break') return <BreakRow block={block} />;
-
-  const category = categoryMap.get(block.categoryId);
+  const category = categoryMap.get(task.categoryId);
 
   if (!category)
     return (
       <p className='text-destructive text-sm'>
-        Missing category for block {block.id}.
+        Missing category for task {task.id}.
       </p>
     );
 
-  return <TaskCard task={block} category={category} timezone={timezone} />;
+  return <TaskCard task={task} category={category} timezone={timezone} />;
 }

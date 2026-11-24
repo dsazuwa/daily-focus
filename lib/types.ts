@@ -46,15 +46,11 @@ export type PlanSummaryByMonth = {
   daySummaries: CalendarDaySummary[];
 };
 
-type BlockBase = {
+export type Task = {
   id: string;
   date: string; // YYYY-MM-DD
   startTime: string; // HH:mm, in the planner's timezone
   durationMinutes: number;
-};
-
-export type Task = BlockBase & {
-  type: 'task';
   taskId?: string;
   categoryId: TaskCategory['id'];
   title: string;
@@ -63,16 +59,8 @@ export type Task = BlockBase & {
   actualMinutes: number;
 };
 
-export type BreakBlock = BlockBase & {
-  type: 'break';
-  title: string;
-  status: 'planned' | 'in_progress' | 'completed' | 'skipped';
-};
-
-export type ScheduleBlock = Task | BreakBlock;
-
 export type DailyPlan = {
   date: string; // YYYY-MM-DD
   targetMinutes: number | undefined;
-  blocks: ScheduleBlock[];
+  tasks: Task[];
 };

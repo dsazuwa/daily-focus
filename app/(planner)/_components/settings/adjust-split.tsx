@@ -82,7 +82,7 @@ export default function AdjustSplitDialog({
       open={open}
       onOpenChange={changeOpen}
       title="Adjust today's plan"
-      description="Set today's target and choose how to spend it. Rebuilding replaces today's blocks, notes, and progress."
+      description="Set today's target and choose how to spend it. Rebuilding replaces today's tasks, notes, and progress."
       trigger={
         <Button
           type='button'

@@ -3,7 +3,7 @@ import type {
   DailyPlanSnapshot,
   PlannerDefaults,
   PlanSummaryByMonth,
-  ScheduleBlock,
+  Task,
 } from '@/lib/types';
 
 type CalendarDaySummaryRow = {
@@ -21,22 +21,21 @@ type PlanSummaryByMonthRow = {
   days: CalendarDaySummaryRow[];
 };
 
-type ScheduleBlockRow = {
+type ScheduledTaskRow = {
   id: string;
-  type: ScheduleBlock['type'];
   title: string;
   notes: string;
-  category_id: string | null;
+  category_id: string;
   task_id: string | null;
   start_time: string;
   duration_minutes: number;
   actual_minutes: number;
-  status: ScheduleBlock['status'];
+  status: Task['status'];
 };
 
 type DailyScheduleRow = Omit<DailyPlanSnapshot, 'targetMinutes'> & {
   target_minutes: number;
-  blocks: ScheduleBlockRow[];
+  tasks: ScheduledTaskRow[];
 };
 
 type PlannerDefaultsRow = {
@@ -88,40 +87,26 @@ export async function getDailySchedule(
   if (error) return { error: "Unable to load this day's schedule." };
   if (!data) return { data: undefined };
 
-  const { target_minutes, blocks: blockRows, ...snapshot } = data;
+  const { target_minutes, tasks: taskRows, ...snapshot } = data;
   const plan: DailyPlanSnapshot = {
     ...snapshot,
     targetMinutes: target_minutes,
   };
 
-  const blocks: ScheduleBlock[] = [];
-  for (const row of blockRows) {
-    const block = {
-      id: row.id,
-      date: plan.date,
-      title: row.title,
-      startTime: row.start_time.slice(0, 5),
-      durationMinutes: row.duration_minutes,
-      status: row.status,
-    };
+  const tasks: Task[] = taskRows.map((row) => ({
+    id: row.id,
+    date: plan.date,
+    title: row.title,
+    startTime: row.start_time.slice(0, 5),
+    durationMinutes: row.duration_minutes,
+    status: row.status,
+    categoryId: row.category_id,
+    taskId: row.task_id ?? undefined,
+    notes: row.notes,
+    actualMinutes: row.actual_minutes,
+  }));
 
-    if (row.type === 'break') {
-      blocks.push({ ...block, type: 'break' });
-    } else {
-      if (!row.category_id)
-        return { error: "Unable to load this day's schedule." };
-      blocks.push({
-        ...block,
-        type: 'task',
-        categoryId: row.category_id,
-        taskId: row.task_id ?? undefined,
-        notes: row.notes,
-        actualMinutes: row.actual_minutes,
-      });
-    }
-  }
-
-  return { data: { plan, blocks } };
+  return { data: { plan, tasks } };
 }
 
 export async function getPlanSummaryByMonth(
