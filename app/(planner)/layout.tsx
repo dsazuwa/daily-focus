@@ -13,7 +13,7 @@ export default async function PlannerLayout({ children }: LayoutProps<'/'>) {
       <AppBar />
 
       <main className='flex flex-1 flex-col'>
-        <div className='gap-uniform pt-uniform container mx-auto flex h-full flex-1 flex-col px-4'>
+        <div className='gap-planner pt-planner container mx-auto flex h-full flex-1 flex-col px-4'>
           <div className='space-y-1'>
             <h1 className='text-heading'>
               Plan Your Progress<span>.</span>

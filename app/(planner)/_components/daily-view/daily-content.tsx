@@ -1,6 +1,7 @@
 import Coffee from 'lucide-react/icons/coffee';
 import type { ReactNode } from 'react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import type { DailySummaryData } from '@/lib/daily-summary';
@@ -52,7 +53,17 @@ export default function DailyContent({
       <div className='space-y-3 md:col-span-7'>
         <div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-center'>
           <div className='space-y-1'>
-            <h2 className='text-section-title'>Your schedule</h2>
+            <div className='flex items-start gap-2'>
+              <h2 className='text-section-title'>Your tasks</h2>
+
+              <Badge
+                variant='secondary'
+                className='bg-muted min-w-5 px-1.5 py-0.5 tabular-nums'
+                aria-label={`${plan.tasks.length} scheduled tasks`}
+              >
+                {plan.tasks.length}
+              </Badge>
+            </div>
 
             <p className='text-section-description'>
               Breaks don&apos;t count toward your goal

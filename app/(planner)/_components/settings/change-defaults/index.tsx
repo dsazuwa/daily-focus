@@ -213,7 +213,7 @@ export default function ChangeDefaultsDialog() {
           </FieldLegend>
 
           <p className='text-muted-foreground text-sm'>
-            Rename, add, or remove categories. Blocks follow the order below.
+            Rename, add, or remove categories. Enter hours in 15-minute increments, e.g. 0.25 hrs.
           </p>
 
           {categories.length > 0 ? (

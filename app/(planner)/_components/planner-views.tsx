@@ -41,7 +41,7 @@ export default function PlannerViews({
 
   return (
     <Tabs
-      className='gap-uniform w-full flex-1'
+      className='gap-planner w-full flex-1'
       value={selectedMonth ? 'calendar-view' : 'daily-view'}
       onValueChange={(view) => {
         if (view === 'calendar-view') selectMonth(currentMonth);
@@ -60,7 +60,7 @@ export default function PlannerViews({
 
       <TabsContent
         value='daily-view'
-        className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
+        className='border-border py-planner gap-planner flex flex-col border-t border-solid'
       >
         {dailySchedule && (
           <DailyView
@@ -76,7 +76,7 @@ export default function PlannerViews({
 
       <TabsContent
         value='calendar-view'
-        className='border-border py-uniform gap-uniform flex flex-col border-t border-solid'
+        className='border-border py-planner gap-planner flex flex-col border-t border-solid'
       >
         {selectedMonth && (
           <CalendarView

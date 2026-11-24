@@ -9,6 +9,10 @@
 @source inline('{text,fill}-task-{sage,sky,sand,lavender,rose,teal,peach,indigo,amber,slate}'
 );
 
+@theme {
+  --spacing-planner: 16px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -68,6 +72,10 @@
 }
 
 :root {
+  @variant md {
+    --spacing-planner: 20px;
+  }
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.148 0.004 228.8);
   --card: oklch(1 0 0);

@@ -62,7 +62,7 @@ export function CategoryField({
   const categoryLabel = category.name.trim() || `Category ${index + 1}`;
 
   return (
-    <div className='grid min-w-0 grid-cols-[1fr_1fr_auto] items-center gap-2 sm:grid-cols-[minmax(0,1fr)_5rem_7rem_auto]'>
+    <div className='grid min-w-0 grid-cols-[minmax(6.25rem,1fr)_minmax(0,1fr)_auto] items-center gap-2 sm:grid-cols-[minmax(0,1fr)_6.25rem_8rem_auto]'>
       <div className='col-span-3 flex min-w-0 items-center gap-2 sm:col-span-1'>
         <IconPicker
           label={`Choose icon for ${categoryLabel}`}
@@ -90,6 +90,7 @@ export function CategoryField({
           aria-label={`Category ${index + 1} hours`}
           type='number'
           inputMode='decimal'
+          className='min-w-[calc(4ch+1.25rem)] [appearance:textfield] tabular-nums [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
           value={category.hours}
           onChange={(event) => onChange({ hours: event.target.value })}
           min={0}
@@ -113,14 +114,18 @@ export function CategoryField({
         <SelectTrigger
           aria-label={`Category ${index + 1} colour`}
           size='sm'
-          className='border-input dark:bg-input/30 w-full min-w-0 px-3'
+          className='border-input dark:bg-input/30 w-full min-w-0 px-2 sm:px-3'
         >
-          <SelectValue />
+          <SelectValue className='min-w-0'>
+            <ColorSwatch color={category.color} />
+            <span className='truncate'>{colors[category.color]}</span>
+          </SelectValue>
         </SelectTrigger>
 
         <SelectContent align='start' alignItemWithTrigger={false}>
           {Object.entries(colors).map(([color, label]) => (
             <SelectItem key={color} value={color}>
+              <ColorSwatch color={color} />
               {label}
             </SelectItem>
           ))}
@@ -162,5 +167,15 @@ export function CategoryField({
         </Button>
       </div>
     </div>
+  );
+}
+
+function ColorSwatch({ color }: { color: string }) {
+  return (
+    <span
+      aria-hidden='true'
+      className='size-3 shrink-0 self-center'
+      style={{ backgroundColor: `var(--task-${color})` }}
+    />
   );
 }
