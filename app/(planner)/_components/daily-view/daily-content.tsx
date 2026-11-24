@@ -8,7 +8,7 @@ import type { DailySummaryData } from '@/lib/daily-summary';
 import { formatDuration } from '@/lib/time';
 import type { DailyPlan, TaskCategory } from '@/lib/types';
 import { usePlannerDefaultsDialog } from '../planner-defaults-provider';
-import { AddTaskDialog } from './add-task-dialog';
+import { TaskDialog } from './task-dialog';
 import DailySummary from './daily-summary';
 import TaskCard from './task-card';
 
@@ -43,7 +43,12 @@ export default function DailyContent({
       <div key={task.id} className='space-y-3'>
         {gapMinutes > 0 && <BreakRow durationMinutes={gapMinutes} />}
 
-        <TaskCard task={task} category={task.category} timezone={timezone} />
+        <TaskCard
+          task={task}
+          categories={categories}
+          timezone={timezone}
+          date={plan.date}
+        />
       </div>,
     );
   }
@@ -71,7 +76,7 @@ export default function DailyContent({
           </div>
 
           {timezone && categories.length > 0 && (
-            <AddTaskDialog
+            <TaskDialog
               key={plan.date}
               categories={categories}
               timezone={timezone}

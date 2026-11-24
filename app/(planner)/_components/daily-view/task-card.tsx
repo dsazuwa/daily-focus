@@ -1,26 +1,52 @@
-import type { CSSProperties } from 'react';
+'use client';
+
+import { useState, type CSSProperties } from 'react';
 
 import ArrowRight from 'lucide-react/icons/arrow-right';
-import Pencil from 'lucide-react/icons/pencil';
 
+import { setScheduledTaskCompleted } from '@/app/actions/schedule';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Task, TaskCategory } from '@/lib/types';
 import { formatDuration } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import { CategoryIcon } from '../category-icon';
+import { TaskDialog } from './task-dialog';
 
 type TaskCardProps = {
   task: Task;
-  category: TaskCategory;
+  categories: TaskCategory[];
+  date: string;
   timezone?: string;
 };
 
-export default function TaskCard({ task, category, timezone }: TaskCardProps) {
+export default function TaskCard({
+  task,
+  categories,
+  timezone,
+  date,
+}: TaskCardProps) {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const { category } = task;
   const isCompleted = task.status === 'completed';
   const duration = formatDuration(task.durationMinutes);
+
+  async function changeCompletion(completed: boolean) {
+    if (saving) return;
+
+    setSaving(true);
+    setError('');
+    try {
+      const error = await setScheduledTaskCompleted(task.id, completed);
+      if (error) setError(error);
+    } catch {
+      setError('Unable to update task completion.');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <Card
@@ -36,10 +62,11 @@ export default function TaskCard({ task, category, timezone }: TaskCardProps) {
     >
       <CardContent className='flex items-center gap-3 sm:gap-4'>
         <Checkbox
-          aria-label={`Complete: ${task.title}`}
+          aria-label={`Completed: ${task.title}`}
+          disabled={saving}
           checked={isCompleted}
-          // onCheckedChange={(checked) => onCompletedChange?.(task.id, checked === true)}
-          className='mt-1 size-3.5 rounded-full sm:mt-0 md:size-4.5'
+          onCheckedChange={changeCompletion}
+          className='enabled:hover:border-primary enabled:hover:ring-primary/25 mt-1 size-3.5 rounded-full enabled:cursor-pointer enabled:hover:ring-2 sm:mt-0 md:size-4.5'
         />
 
         <div className='min-w-0 flex-1 space-y-1.5'>
@@ -81,16 +108,23 @@ export default function TaskCard({ task, category, timezone }: TaskCardProps) {
           </div>
         </div>
 
-        <Button
-          type='button'
-          variant='ghost'
-          size='icon-sm'
-          aria-label={`Edit ${task.title}`}
-          className='text-muted-foreground hover:text-foreground shrink-0'
-        >
-          <Pencil className='size-3.5 md:size-4.5' aria-hidden='true' />
-        </Button>
+        {timezone && (
+          <TaskDialog
+            task={task}
+            categories={categories}
+            timezone={timezone}
+            date={date}
+          />
+        )}
       </CardContent>
+
+      {error && (
+        <CardContent>
+          <p role='alert' className='text-destructive text-sm'>
+            {error}
+          </p>
+        </CardContent>
+      )}
     </Card>
   );
 }
