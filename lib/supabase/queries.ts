@@ -9,13 +9,13 @@ import type {
 type CalendarDaySummaryRow = {
   date: string;
   target_minutes: number;
-  planned_minutes: number;
+  completed_minutes: number;
 };
 
 type PlanSummaryByMonthRow = {
   days_planned: number;
-  targets_planned: number;
-  planned_minutes: number;
+  targets_met: number;
+  completed_minutes: number;
   days: CalendarDaySummaryRow[];
 };
 
@@ -125,12 +125,12 @@ export async function getPlanSummaryByMonth(
 
   const summary: PlanSummaryByMonth = {
     daysPlanned: data.days_planned,
-    targetsPlanned: data.targets_planned,
-    plannedMinutes: data.planned_minutes,
+    targetsMet: data.targets_met,
+    completedMinutes: data.completed_minutes,
     daySummaries: data.days.map((day) => ({
       date: day.date,
       targetMinutes: day.target_minutes,
-      plannedMinutes: day.planned_minutes,
+      completedMinutes: day.completed_minutes,
     })),
   };
 

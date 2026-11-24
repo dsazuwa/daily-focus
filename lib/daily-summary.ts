@@ -9,8 +9,9 @@ export type CategorySummary = {
 export type DailySummaryData = {
   rows: CategorySummary[];
   plannedMinutes: number;
-  completedTasks: number;
+  completedMinutes: number;
   targetMinutes: number | undefined;
+  remainingMinutes: number | undefined;
   progressPercentage: number;
 };
 
@@ -25,12 +26,12 @@ export function getDailySummary(
   }));
   const rowsById = new Map(rows.map((row) => [row.category.id, row]));
   let plannedMinutes = 0;
-  let completedTasks = 0;
+  let completedMinutes = 0;
 
   for (const task of plan.tasks) {
     const planned = task.status === 'skipped' ? 0 : task.durationMinutes;
     plannedMinutes += planned;
-    if (task.status === 'completed') completedTasks += 1;
+    if (task.status === 'completed') completedMinutes += task.durationMinutes;
 
     const row = rowsById.get(task.category.id);
     if (row) {
@@ -43,13 +44,17 @@ export function getDailySummary(
   return {
     rows,
     plannedMinutes,
-    completedTasks,
+    completedMinutes,
     targetMinutes: plan.targetMinutes,
+    remainingMinutes:
+      plan.targetMinutes === undefined
+        ? undefined
+        : Math.max(0, targetMinutes - completedMinutes),
     progressPercentage:
       targetMinutes > 0
         ? Math.min(
             100,
-            Math.max(0, Math.round((plannedMinutes / targetMinutes) * 100)),
+            Math.max(0, Math.round((completedMinutes / targetMinutes) * 100)),
           )
         : 0,
   };

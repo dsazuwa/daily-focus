@@ -26,18 +26,20 @@ export default function CalendarDay({
   onSelect,
   disabled = false,
 }: CalendarDayProps) {
-  const targetPlanned = Boolean(
+  const targetMet = Boolean(
     summary &&
     summary.targetMinutes !== undefined &&
-    summary.plannedMinutes >= summary.targetMinutes,
+    summary.completedMinutes >= summary.targetMinutes,
   );
 
   const showSummary = !outsideMonth && Boolean(summary);
   const label = [
     `Open ${formatDate(date)}`,
     ...(isLastOpened ? ['last opened day'] : []),
-    ...(summary ? [`${formatDuration(summary.plannedMinutes)} planned`] : []),
-    ...(targetPlanned ? ['daily target planned'] : []),
+    ...(summary
+      ? [`${formatDuration(summary.completedMinutes)} completed`]
+      : []),
+    ...(targetMet ? ['daily target met'] : []),
   ].join(', ');
 
   return (
@@ -65,7 +67,7 @@ export default function CalendarDay({
           {Number(date.slice(-2))}
         </span>
 
-        {showSummary && <DayIndicator targetPlanned={targetPlanned} />}
+        {showSummary && <DayIndicator targetMet={targetMet} />}
       </span>
 
       {!outsideMonth && summary && <DayProgress summary={summary} />}
@@ -73,8 +75,8 @@ export default function CalendarDay({
   );
 }
 
-function DayIndicator({ targetPlanned }: { targetPlanned: boolean }) {
-  return targetPlanned ? (
+function DayIndicator({ targetMet }: { targetMet: boolean }) {
+  return targetMet ? (
     <Check className='text-primary size-3 shrink-0' aria-hidden='true' />
   ) : (
     <span
@@ -88,14 +90,14 @@ function DayProgress({ summary }: { summary: CalendarDaySummary }) {
   const progressPercentage = summary.targetMinutes
     ? Math.min(
         100,
-        Math.round((summary.plannedMinutes / summary.targetMinutes) * 100),
+        Math.round((summary.completedMinutes / summary.targetMinutes) * 100),
       )
     : 0;
 
   return (
     <span className='mt-auto flex w-full flex-col gap-1.5'>
       <span className='text-xxs font-semibold tabular-nums sm:text-xs md:text-sm'>
-        {formatDuration(summary.plannedMinutes)} planned
+        {formatDuration(summary.completedMinutes)} completed
       </span>
 
       <span

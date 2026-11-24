@@ -34,13 +34,13 @@ export type DailyPlanSnapshot = {
 export type CalendarDaySummary = {
   date: string;
   targetMinutes: number;
-  plannedMinutes: number;
+  completedMinutes: number;
 };
 
 export type PlanSummaryByMonth = {
   daysPlanned: number;
-  targetsPlanned: number;
-  plannedMinutes: number;
+  targetsMet: number;
+  completedMinutes: number;
   daySummaries: CalendarDaySummary[];
 };
 

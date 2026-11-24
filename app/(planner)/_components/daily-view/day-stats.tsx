@@ -7,24 +7,35 @@ import type { DailySummaryData } from '@/lib/daily-summary';
 import { formatDuration } from '@/lib/time';
 
 export default function DayStats({ summary }: { summary: DailySummaryData }) {
-  const { completedTasks, plannedMinutes, progressPercentage, targetMinutes } =
-    summary;
+  const {
+    completedMinutes,
+    remainingMinutes,
+    progressPercentage,
+    targetMinutes,
+  } = summary;
 
   return (
     <SummaryCard
       title="How's your day going?"
-      description='See how much time you’ve planned and how many tasks you’ve finished.'
+      description="See how much of your daily target you've completed."
     >
       <CardContent className='flex shrink-0 justify-between gap-4 max-sm:flex-wrap md:gap-(--card-spacing) md:pl-0'>
         <div className='inline-flex gap-4 max-sm:flex-wrap md:gap-[calc(var(--card-spacing)/2)]'>
           <SummaryStat
-            label='Time planned'
-            value={formatDuration(plannedMinutes)}
+            label='completed'
+            value={formatDuration(completedMinutes)}
           />
 
           <Separator orientation='vertical' />
 
-          <SummaryStat label='Tasks completed' value={completedTasks} />
+          <SummaryStat
+            label='remaining'
+            value={
+              remainingMinutes === undefined
+                ? '—'
+                : formatDuration(remainingMinutes)
+            }
+          />
         </div>
 
         {targetMinutes === undefined ? (
@@ -45,7 +56,7 @@ function ProgressRing({ progress }: { progress: number }) {
       className='grid size-18 place-items-center rounded-full bg-[conic-gradient(var(--primary-foreground)_var(--progress,0%),color-mix(in_srgb,var(--primary),white_18%)_0%)] p-1'
       style={{ '--progress': `${clampedProgress}%` } as CSSProperties}
       role='progressbar'
-      aria-label='Share of daily target planned'
+      aria-label='Share of daily target completed'
       aria-valuenow={clampedProgress}
       aria-valuemin={0}
       aria-valuemax={100}

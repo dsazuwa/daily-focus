@@ -52,9 +52,9 @@ export default function CalendarView({
       {summary ? (
         <>
           <MonthStats
-            plannedMinutes={summary.plannedMinutes}
+            completedMinutes={summary.completedMinutes}
             daysPlanned={summary.daysPlanned}
-            targetsPlanned={summary.targetsPlanned}
+            targetsMet={summary.targetsMet}
           />
 
           <CalendarLegend />
@@ -96,7 +96,7 @@ function CalendarLegend() {
 
       <span className='inline-flex items-center gap-2'>
         <Check className='text-primary size-3 shrink-0' aria-hidden='true' />
-        Daily target planned
+        Daily target met
       </span>
 
       <span className='w-full sm:ml-auto sm:w-auto' role='status'>
